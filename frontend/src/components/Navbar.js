@@ -43,26 +43,28 @@ const Navbar = () => {
             <span>LeadMagnet</span>
           </Link>
           
-          <div className="navbar-menu">
-            <Link to="/" className={`navbar-link ${location.pathname === '/' ? 'active' : ''}`}>
-              Home
-            </Link>
-            <Link to="/about" className={`navbar-link ${location.pathname === '/about' ? 'active' : ''}`}>
-              About
-            </Link>
-            <Link to="/services" className={`navbar-link ${location.pathname === '/services' ? 'active' : ''}`}>
-              Services
-            </Link>
-            <Link to="/why-choose-us" className={`navbar-link ${location.pathname === '/why-choose-us' ? 'active' : ''}`}>
-              Why Choose Us
-            </Link>
-            <Link to="/contact" className={`navbar-link ${location.pathname === '/contact' ? 'active' : ''}`}>
-              Contact
-            </Link>
-          </div>
-          
-          <div className="navbar-cta">
-            <button className="cta-button btn-hover-slide">Start Free Trial</button>
+          <div className="navbar-right">
+            <div className="navbar-menu">
+              <Link to="/" className={`navbar-link ${location.pathname === '/' ? 'active' : ''}`}>
+                Home
+              </Link>
+              <Link to="/about" className={`navbar-link ${location.pathname === '/about' ? 'active' : ''}`}>
+                About
+              </Link>
+              <Link to="/services" className={`navbar-link ${location.pathname === '/services' ? 'active' : ''}`}>
+                Services
+              </Link>
+              <Link to="/why-choose-us" className={`navbar-link ${location.pathname === '/why-choose-us' ? 'active' : ''}`}>
+                Why Choose Us
+              </Link>
+              <Link to="/contact" className={`navbar-link ${location.pathname === '/contact' ? 'active' : ''}`}>
+                Contact
+              </Link>
+            </div>
+            
+            <div className="navbar-cta">
+              <button className="cta-button btn-hover-slide">Login</button>
+            </div>
           </div>
           
           <div className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu}>
@@ -90,7 +92,7 @@ const Navbar = () => {
             <Link to="/contact" className={`mobile-link ${location.pathname === '/contact' ? 'active' : ''}`} onClick={closeMobileMenu}>
               Contact
             </Link>
-            <button className="mobile-cta-button" onClick={closeMobileMenu}>Start Free Trial</button>
+            <button className="mobile-cta-button" onClick={closeMobileMenu}>Login</button>
           </div>
         </div>
         

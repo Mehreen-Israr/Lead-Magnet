@@ -3,10 +3,10 @@
 
 /* Add this global rule at the top */
 * {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Oswald', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 .home {
-  margin-top: 0px; /* Account for fixed navbar */
+  margin-top: 0;
 }
 
 
@@ -41,7 +41,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oswald', sans-serif;
 }
 
 .section-subtitle {
@@ -52,7 +52,7 @@
   line-height: 1.6;
   max-width: 600px;
   margin: 0 auto;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oswald', sans-serif;
   margin-bottom: 60px;
   max-width: 600px;
   margin-left: auto;

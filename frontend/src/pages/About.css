@@ -13,7 +13,7 @@
 .hero-title {
   font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 800;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oswald', sans-serif;
   letter-spacing: -0.02em;
   background: linear-gradient(135deg, #1a1a1a 0%, #FFD700 100%);
   -webkit-background-clip: text;
@@ -28,7 +28,7 @@
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Oswald', sans-serif;
   font-weight: 400;
 }
 
