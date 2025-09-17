@@ -17,7 +17,7 @@
 }
 
 .navbar.scrolled {
-  background: rgba(8, 3, 3, 0.98);
+  background: rgba(18, 14, 14, 0.98);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   border-radius: 25px 25px 25px 25px;
 }
@@ -123,7 +123,7 @@
 .hamburger span {
   width: 25px;
   height: 3px;
-  background: #ffffff;
+  background: #ffffff !important;
   margin: 3px 0;
   transition: 0.3s ease;
   border-radius: 2px;
