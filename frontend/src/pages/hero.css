@@ -3,21 +3,74 @@
 /* Hero Section */
 .hero {
   background: 
-    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),  /* black overlay */
-    url('/public/Background.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center 20%;
-  color: white;
-  padding: 160px 0 100px;
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+  url("/public/background2.jpg");
+  min-height: 70vh;
+  padding: 170px 0 60px;
   position: relative;
   overflow: hidden;
   border-radius: 0 0 40px 40px;
   margin-bottom: 20px;
-  padding-bottom: 70px;
   margin-top: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("/public/background2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  will-change: transform;
+  z-index: 0;
+  backface-visibility: hidden;
+  transform: translateX(0);
+}
+
+/* Second slide image */
+.hero::after {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("/public/Background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+/* Timelines: 6s total (3s each) */
+.hero::before { animation: heroSlideFirst 6s infinite; }
+.hero::after  { animation: heroSlide 6s infinite 0s; }
+
+/* First slide: starts visible, then exits left at 3s */
+@keyframes heroSlideFirst {
+  0%   { transform: translateX(0); }
+  42%  { transform: translateX(0); }      /* on screen ~2.5s */
+  50%  { transform: translateX(-100%); }  /* slide out */
+  100% { transform: translateX(-100%); }
+}
+
+/* Second slide: enters from right at 3s, then exits left by 6s */
+@keyframes heroSlide {
+  0%   { transform: translateX(100%); }   /* off right initially */
+  8%   { transform: translateX(0); }      /* slide in */
+  42%  { transform: translateX(0); }      /* hold ~2s */
+  50%  { transform: translateX(-100%); }  /* slide out */
+  100% { transform: translateX(-100%); }
+}
+
+/* Content above slides */
+.hero > * {
+  position: relative;
+  z-index: 2;
+}
 
 
 /* Video Background */
@@ -89,6 +142,7 @@
 }
 
 .hero-title {
+  text-align: left;
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 800;
   line-height: 1.2;
@@ -101,6 +155,7 @@
   -webkit-text-fill-color: #FFD700 !important;
   background-clip: initial !important;
   animation: fadeInUp 1s ease-out;
+  margin-left: 40px;
 }
 
 .highlight {
@@ -114,18 +169,18 @@
 }
 
 .hero-subtitle {
+  text-align: left !important;
   font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-  text-align: center !important;
   line-height: 1.6;
   font-family: 'Oswald', sans-serif;
-  font-weight: 400;
-  margin-top: -40px !important; /* move it up (adjust as needed) */
-  margin-bottom: 40px;
+  font-weight: 200 !important;
+  margin-top: -40px !important;
   color: #ffffff !important;
   max-width: 70% !important;
-  margin-left: auto !important;
+  margin-left: 40px !important;
   margin-right: auto !important;
   display: block;
+  margin-bottom: 10px !important;
 }
 
 /* Hero Action Button */
@@ -142,9 +197,11 @@
   gap: 12px;
   transition: all 0.3s ease;
   position: relative;
-  margin-top: -50px; /* adjust this value instead of translateY */
   text-align: left;
   border: none;
+  margin-top: 20px;
+  margin-left: 40px;
+  text-decoration: none;
 }
 
 /* Gradient border using pseudo-element */
