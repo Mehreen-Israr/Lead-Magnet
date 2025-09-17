@@ -13,31 +13,67 @@ const Contact = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear any previous error messages when user starts typing
+    if (errorMessage) {
+      setErrorMessage('');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMessage('');
+    setSubmitStatus('');
     
-    // Simulate form submission
-    setTimeout(() => {
-      setSubmitStatus('success');
-      setIsSubmitting(false);
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        phone: '',
-        message: '',
-        service: ''
+    try {
+      // Get the backend URL from environment or use default
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+      
+      const response = await fetch(`${backendUrl}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
       });
-    }, 2000);
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        // Reset form after successful submission
+        setFormData({
+          name: '',
+          email: '',
+          company: '',
+          phone: '',
+          message: '',
+          service: ''
+        });
+        
+        // Auto-hide success message after 5 seconds
+        setTimeout(() => {
+          setSubmitStatus('');
+        }, 5000);
+      } else {
+        // Handle validation errors or server errors
+        setErrorMessage(data.message || 'Failed to send message. Please try again.');
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setErrorMessage('Network error. Please check your connection and try again.');
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -114,6 +150,13 @@ const Contact = () => {
                 </div>
               )}
               
+              {submitStatus === 'error' && errorMessage && (
+                <div className="error-message">
+                  <span className="error-icon">⚠</span>
+                  {errorMessage}
+                </div>
+              )}
+              
               <form onSubmit={handleSubmit} className="contact-form">
                 <div className="form-row">
                   <div className="form-group">
@@ -126,6 +169,7 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       placeholder="Your full name"
+                      disabled={isSubmitting}
                     />
                   </div>
                   <div className="form-group">
@@ -138,6 +182,7 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       placeholder="your@email.com"
+                      disabled={isSubmitting}
                     />
                   </div>
                 </div>
@@ -152,6 +197,7 @@ const Contact = () => {
                       value={formData.company}
                       onChange={handleChange}
                       placeholder="Your company name"
+                      disabled={isSubmitting}
                     />
                   </div>
                   <div className="form-group">
@@ -163,6 +209,7 @@ const Contact = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="+1 (555) 123-4567"
+                      disabled={isSubmitting}
                     />
                   </div>
                 </div>
@@ -174,6 +221,7 @@ const Contact = () => {
                     name="service"
                     value={formData.service}
                     onChange={handleChange}
+                    disabled={isSubmitting}
                   >
                     <option value="">Select a service</option>
                     <option value="instagram">Instagram Outreach</option>
@@ -194,15 +242,23 @@ const Contact = () => {
                     required
                     rows="5"
                     placeholder="Tell us about your business and lead generation goals..."
+                    disabled={isSubmitting}
                   ></textarea>
                 </div>
                 
                 <button 
                   type="submit" 
-                  className="submit-btn"
+                  className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting ? (
+                    <>
+                      <span className="spinner"></span>
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Message'
+                  )}
                 </button>
               </form>
             </div>
