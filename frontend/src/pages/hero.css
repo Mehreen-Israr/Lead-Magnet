@@ -146,8 +146,6 @@
   border: none;
 }
 
-
-
 /* Gradient border using pseudo-element */
 .hero-action-btn::before {
   content: '';
