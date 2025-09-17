@@ -1,0 +1,121 @@
+/* Statistics Component Styles */
+.statistics-section {
+  padding: 80px 0;
+  background: #FFFFFF;
+  margin-top: 0;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 60px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.statistic-item {
+  text-align: center;
+  padding: 40px 20px;
+  background:#fffcfc;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(243, 238, 238, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.statistic-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+}
+
+.statistic-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.statistic-number {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.statistic-label {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .statistics-section {
+    padding: 60px 0;
+  }
+  
+  .statistics-grid {
+    gap: 40px;
+    max-width: 900px;
+  }
+  
+  .statistic-item {
+    padding: 30px 15px;
+  }
+  
+  .statistic-number {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .statistics-section {
+    padding: 50px 0;
+  }
+  
+  .statistics-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: 400px;
+  }
+  
+  .statistic-item {
+    padding: 25px 15px;
+  }
+  
+  .statistic-number {
+    font-size: 2.5rem;
+  }
+  
+  .statistic-label {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .statistics-section {
+    padding: 40px 0;
+  }
+  
+  .statistic-item {
+    padding: 20px 10px;
+  }
+  
+  .statistic-number {
+    font-size: 2rem;
+  }
+  
+  .statistic-label {
+    font-size: 1rem;
+  }
+}
