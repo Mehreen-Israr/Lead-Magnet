@@ -2,15 +2,22 @@
 
 /* Hero Section */
 .hero {
-  
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),  /* black overlay */
+    url('/public/Background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center 20%;
   color: white;
   padding: 190px 0 100px;
   position: relative;
   overflow: hidden;
   border-radius: 0 0 40px 40px;
   margin-bottom: 20px;
+  padding-bottom: 70px;
 }
+
+
 
 /* Video Background */
 .hero-video-bg {
@@ -51,18 +58,26 @@
   margin: 0 auto;
   padding: 0 40px;
   display: grid;
-  grid-template-columns:1fr;
+  grid-template-columns: 1fr;
   gap: 60px;
   align-items: center;
   position: relative;
   z-index: 3;
+
+
 }
 
 .hero-content {
   text-align: center;
   margin: 0 auto;
-  max-width: 800px;
+  background-image: url('/public/Background.png');
+  background-size: cover;      /* Ensures the image covers the whole container */
+  background-repeat: no-repeat; /* Prevents repeating */
+  background-position: center;  /* Centers the image */
+  width: 100%;                 /* Make sure container stretches full width */
+  height: 100%;                /* Or set a fixed height like 100vh */
 }
+
 
 .hero-graphic {
   display: flex;
@@ -103,13 +118,14 @@
   line-height: 1.6;
   font-family: 'Inter', sans-serif;
   font-weight: 400;
+  margin-top: -40px !important; /* move it up (adjust as needed) */
   margin-bottom: 40px;
   color: #ffffff !important;
-  max-width: 100% !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+  max-width: 70% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block;
 }
-
 
 /* Hero Action Button */
 .hero-action-btn {
@@ -125,10 +141,12 @@
   gap: 12px;
   transition: all 0.3s ease;
   position: relative;
-  margin-top: 32px;
+  margin-top: -50px; /* adjust this value instead of translateY */
   text-align: left;
   border: none;
 }
+
+
 
 /* Gradient border using pseudo-element */
 .hero-action-btn::before {
