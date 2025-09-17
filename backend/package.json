@@ -12,24 +12,23 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "axios": "^1.12.2",
     "bcrypt": "^6.0.0",
+    "cloudinary": "^1.40.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.18.1",
-    "nodemon": "^3.1.10",
+    "express-rate-limit": "^6.10.0",
     "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
-    "express-rate-limit": "^6.10.0",
-    "stripe": "^13.5.0",
-    "nodemailer": "^6.9.4",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.1",
     "multer": "^1.4.5-lts.1",
-    "cloudinary": "^1.40.0"
-
+    "nodemailer": "^6.9.4",
+    "nodemon": "^3.1.10",
+    "stripe": "^13.5.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   }
-  
 }

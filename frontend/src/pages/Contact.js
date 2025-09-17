@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { InlineWidget } from 'react-calendly';
 import './Contact.css';
 
 const Contact = () => {
@@ -14,6 +15,7 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showCalendly, setShowCalendly] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -283,14 +285,45 @@ const Contact = () => {
               <div className="calendly-section">
                 <h3>Schedule a Demo</h3>
                 <p>Book a 30-minute demo to see LeadMagnet in action.</p>
-                <a 
-                  href="https://calendly.com/leadmagnet-demo" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="calendly-btn"
-                >
-                  📅 Book Demo Call
-                </a>
+                
+                {!showCalendly ? (
+                  <button 
+                    onClick={() => setShowCalendly(true)}
+                    className="calendly-btn"
+                  >
+                    📅 Book Demo Call
+                  </button>
+                ) : (
+                  <div className="calendly-widget-container">
+                    <button 
+                      onClick={() => setShowCalendly(false)}
+                      className="calendly-close-btn"
+                    >
+                      ✕ Close Scheduler
+                    </button>
+                    <InlineWidget 
+                      url="https://calendly.com/leadmagnet-notifications/demo"
+                      styles={{
+                        height: '700px',
+                        width: '100%'
+                      }}
+                      prefill={{
+                        name: formData.name,
+                        email: formData.email
+                      }}
+                      utm={{
+                        utmCampaign: 'contact-page',
+                        utmSource: 'website',
+                        utmMedium: 'inline-widget'
+                      }}
+                      onEventScheduled={(e) => {
+                        console.log('Event scheduled:', e.data.payload);
+                        // Optional: Show success message or redirect
+                        setShowCalendly(false);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
