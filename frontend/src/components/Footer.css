@@ -265,6 +265,12 @@
   .footer-bottom-links {
     gap: 20px;
   }
+  
+  /* Hide Quick Links and Contact Info sections on mobile */
+  .footer-section:nth-child(2),
+  .footer-section:nth-child(3) {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
