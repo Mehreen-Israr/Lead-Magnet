@@ -48,22 +48,26 @@ const About = () => {
 
   return (
     <div className="about">
-      {/* Hero Section */}
-      <section className="about-hero">
-        <div className="container">
-          <h1 className="hero-title">About LeadMagnet</h1>
-          <p className="hero-subtitle">
+      {/* Hero Banner */}
+      <div className="banner-container">
+        <div className="banner-background"></div>
+        <div className="banner-overlay"></div>
+        <div className="banner-content">
+          <h1 className="banner-title">About LeadMagnet</h1>
+          <p className="banner-subtitle">
             We're revolutionizing how businesses generate leads through the power of AI and automation.
           </p>
         </div>
-      </section>
+      </div>
 
       {/* Mission & Vision */}
       <section className="mission-vision">
         <div className="container">
           <div className="mission-vision-grid">
             <div className="mission-card">
-              <div className="card-icon">🎯</div>
+              <div className="card-image">
+                <img src="/1.png" alt="Our Mission"  className="horizontal-image" />
+              </div>
               <h3>Our Mission</h3>
               <p>
                 To empower businesses of all sizes with AI-driven lead generation tools that 
@@ -72,7 +76,9 @@ const About = () => {
               </p>
             </div>
             <div className="vision-card">
-              <div className="card-icon">🚀</div>
+              <div className="card-image">
+                <img src="/2.png" alt="Our Vision" className="horizontal-image" />
+              </div>
               <h3>Our Vision</h3>
               <p>
                 To become the world's leading AI-powered lead generation platform, helping 
@@ -148,25 +154,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="team">
-        <div className="container">
-          <h2 className="section-title">Meet Our Team</h2>
-          <p className="section-subtitle">
-            The experts behind LeadMagnet's success, dedicated to your growth.
-          </p>
-          <div className="team-grid">
-            {team.map((member, index) => (
-              <div key={index} className="team-card">
-                <div className="team-image">{member.image}</div>
-                <h3>{member.name}</h3>
-                <h4>{member.role}</h4>
-                <p>{member.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* CTA Section */}
       <section className="about-cta">

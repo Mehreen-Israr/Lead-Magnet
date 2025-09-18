@@ -127,14 +127,16 @@ const Services = () => {
   return (
     <div className="services">
       {/* Hero Section */}
-      <section className="services-hero">
-        <div className="container">
-          <h1 className="Service-hero-title">Our Lead Generation Services</h1>
-          <p className="Service-hero-subtitle">
+      <div className="banner-container">
+        <div className="banner-background"></div>
+        <div className="banner-overlay"></div>
+        <div className="banner-content">
+          <h1 className="banner-title">Our Lead Generation Services</h1>
+          <p className="banner-subtitle">
             Choose from our specialized platforms to reach your ideal customers where they spend their time.
           </p>
         </div>
-      </section>
+      </div>
 
       {/* Services Grid */}
       <section className="services-grid-section">
