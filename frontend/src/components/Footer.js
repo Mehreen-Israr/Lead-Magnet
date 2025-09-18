@@ -52,19 +52,7 @@ const Footer = () => {
               <li><a href="/contact">Contact</a></li>
             </ul>
           </div>
-
-          {/* Services */}
-          <div className="footer-section">
-            <h3 className="footer-title">Services</h3>
-            <ul className="footer-links">
-              <li><a href="/services#instagram">Instagram Outreach</a></li>
-              <li><a href="/services#linkedin">LinkedIn Starter</a></li>
-              <li><a href="/services#x-growth">X Growth</a></li>
-              <li><a href="/services#ai-targeting">AI Targeting</a></li>
-              <li><a href="/services#analytics">Analytics Dashboard</a></li>
-            </ul>
-          </div>
-
+          
           {/* Contact Info */}
           <div className="footer-section">
             <h3 className="footer-title">Contact Info</h3>

@@ -35,7 +35,7 @@
   padding: 0 20px;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1.5fr;
-  gap: 40px;
+  gap: 60px;
 }
 
 .footer-section {
@@ -52,6 +52,12 @@
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 1px;
+}
+.footer-section:nth-of-type(2) {
+  margin-right: 40px !important; /* Adjust as needed */
+}
+.footer-section:nth-of-type(3) {
+  margin-left: 50px !important; /* Adjust as needed */
 }
 
 .logo-icon {
