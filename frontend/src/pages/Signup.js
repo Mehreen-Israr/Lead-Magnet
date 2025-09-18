@@ -151,7 +151,7 @@ const Signup = () => {
             <div className="form-row">
               <div className="form-group half-width">
                 <div className="input-wrapper">
-                  <FaUser className="input-icon" />
+                 
                   <input
                     type="text"
                     name="firstName"
@@ -167,7 +167,7 @@ const Signup = () => {
               
               <div className="form-group half-width">
                 <div className="input-wrapper">
-                  <FaUser className="input-icon" />
+                 
                   <input
                     type="text"
                     name="lastName"
@@ -184,7 +184,7 @@ const Signup = () => {
 
             <div className="form-group">
               <div className="input-wrapper">
-                <FaEnvelope className="input-icon" />
+            
                 <input
                   type="email"
                   name="email"
@@ -200,7 +200,7 @@ const Signup = () => {
 
             <div className="form-group">
               <div className="input-wrapper">
-                <FaPhone className="input-icon" />
+              
                 <input
                   type="tel"
                   name="phone"
@@ -215,7 +215,7 @@ const Signup = () => {
 
             <div className="form-group">
               <div className="input-wrapper">
-                <FaLock className="input-icon" />
+                
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
@@ -239,7 +239,7 @@ const Signup = () => {
 
             <div className="form-group">
               <div className="input-wrapper">
-                <FaLock className="input-icon" />
+     
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   name="confirmPassword"
@@ -263,7 +263,7 @@ const Signup = () => {
 
             <button 
               type="submit" 
-              className={`signup-btn ${loading ? 'loading' : ''}`}
+              className={`signup-button ${loading ? 'loading' : ''}`}
               disabled={loading}
             >
               {loading ? (
@@ -272,7 +272,7 @@ const Signup = () => {
                   Creating Account...
                 </>
               ) : (
-                'Create Account'
+                'Sign Up'
               )}
             </button>
           </form>

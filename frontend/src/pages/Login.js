@@ -107,7 +107,7 @@ const Login = () => {
 
             <div className="form-group">
               <div className="input-wrapper">
-                <FaEnvelope className="input-icon" />
+            
                 <input
                   type="email"
                   name="email"
@@ -124,7 +124,7 @@ const Login = () => {
 
             <div className="form-group">
               <div className="input-wrapper">
-                <FaLock className="input-icon" />
+       
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
@@ -157,7 +157,7 @@ const Login = () => {
 
             <button 
               type="submit" 
-              className={`login-btn ${loading ? 'loading' : ''}`}
+              className={`login-button ${loading ? 'loading' : ''}`}
               disabled={loading}
             >
               {loading ? (
