@@ -126,15 +126,17 @@ const Contact = () => {
 
   return (
     <div className="contact">
-      {/* Hero Section */}
-      <section className="contact-hero">
-        <div className="container">
-          <h1 className="hero-title">Get In Touch</h1>
-          <p className="hero-subtitle">
+      {/* Hero Banner */}
+      <div className="banner-container">
+        <div className="banner-background"></div>
+        <div className="banner-overlay"></div>
+        <div className="banner-content">
+          <h1 className="banner-title">Get In Touch</h1>
+          <p className="banner-subtitle">
             Ready to transform your lead generation? Let's discuss how LeadMagnet can help grow your business.
           </p>
         </div>
-      </section>
+      </div>
 
       {/* Contact Form & Info Section */}
       <section className="contact-main">
@@ -330,48 +332,11 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="faq">
-        <div className="container">
-          <h2 className="section-title">Frequently Asked Questions</h2>
-          <div className="faq-grid">
-            {faqs.map((faq, index) => (
-              <div key={index} className="faq-item">
-                <h3>{faq.question}</h3>
-                <p>{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+     
 
-      {/* Map Section */}
-      <section className="map-section">
-        <div className="container">
-          <h2 className="section-title">Our Location</h2>
-          <div className="map-container">
-            <div className="map-placeholder">
-              <div className="map-content">
-                <div className="map-icon">📍</div>
-                <h3>LeadMagnet Headquarters</h3>
-                <p>123 Business Avenue<br />Silicon Valley, CA 94000<br />United States</p>
-                <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="map-link">
-                  View on Google Maps
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
-      {/* CTA Section */}
-      <section className="contact-cta">
-        <div className="container">
-          <h2>Ready to Get Started?</h2>
-          <p>Don't wait – start generating qualified leads today with our free trial.</p>
-          <button className="btn-primary">Start Free Trial</button>
-        </div>
-      </section>
+     
     </div>
   );
 };
