@@ -1,0 +1,456 @@
+/* Growth Plan Section Styles */
+.growth-plan-section {
+  padding: 5px 0;
+  background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%);
+  color: white;
+  position: relative;
+  overflow: visible !important;
+  border-radius: 50px; /* Adjust this value as needed */
+}
+
+.growth-plan-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.growth-plan-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+.growth-plan-section .section-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, #FFD700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.growth-plan-section .section-subtitle {
+  font-size: 1.3rem;
+  text-align: center;
+  color: #cccccc;
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto 60px;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.pricing-card {
+  background: rgba(30, 30, 30, 0.8);
+  border-radius: 15px;
+  padding: 60px 30px 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.popular {
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, rgba(40, 40, 40, 0.9) 0%, rgba(30, 30, 30, 0.9) 100%);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FFD700;
+  color: #000;
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  text-align: center;
+  border-radius: 20px;
+  width: 140px;
+}
+
+/* Discount badge styling */
+.discount-badge {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  background-color: #ff4d4d;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.free-trial {
+  color: #ffc107;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.platform-name {
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-weight: normal;
+}
+
+@keyframes pulse {
+  0% {
+    transform: rotate(-5deg) scale(1);
+  }
+  50% {
+    transform: rotate(-5deg) scale(1.05);
+  }
+  100% {
+    transform: rotate(-5deg) scale(1);
+  }
+}
+
+/* Logo container styling */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.brand-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  padding: 8px;
+  /* background-color: rgba(255, 255, 255, 0.15); ← REMOVED */
+  background-color: transparent; /* ← ADDED for clarity */
+  margin-bottom: 5px;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+.brand-logo:hover {
+  transform: scale(1.1);
+}
+
+/* Plan header styling */
+.plan-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.plan-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: #fff;
+  text-align: center;
+}
+
+.plan-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.original-price {
+  font-size: 1.5rem;
+  color: #aaa;
+  text-decoration: line-through;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+.original-price::after {
+  content: '';
+  position: absolute;
+  left: -5%;
+  top: 50%;
+  width: 110%;
+  height: 2px;
+  background-color: #ff3366;
+  transform: rotate(-5deg);
+}
+
+.price {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #FFD700;
+}
+
+.period {
+  font-size: 1rem;
+  color: #aaa;
+  margin-left: 5px;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.plan-features li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  color: #ddd;
+  text-align: left;
+}
+
+.check-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  color: #FFD700;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.plan-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #000;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: auto;
+}
+
+.plan-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-hover-slide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.btn-hover-slide:hover::before {
+  left: 100%;
+}
+
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+}
+
+/* Slick Slider Custom Styles */
+.pricing-carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 40px; /* Add padding for the arrows */
+  box-sizing: border-box;
+  overflow: visible !important;
+}
+
+.pricing-cards-container {
+  position: relative;
+  overflow: visible !important;
+  padding: 20px 0;
+  width: 100%;
+  margin-top: 40px;
+}
+
+/* Custom arrow styles */
+.slick-prev, 
+.slick-next {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.slick-prev:hover, 
+.slick-next:hover {
+  background: rgba(255, 215, 0, 0.3);
+}
+
+.slick-prev {
+  left: -50px;
+}
+
+.slick-next {
+  right: -50px;
+}
+
+.slick-prev:before, 
+.slick-next:before {
+  font-size: 24px;
+  opacity: 1;
+}
+
+/* Card spacing */
+.slick-slide {
+  padding:  40px 20px;
+  transition: transform 0.5s ease;
+  opacity: 0.8;
+}
+
+/* Active slide effect */
+.slick-center .pricing-card {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+.slick-active {
+  opacity: 1;
+}
+
+.pricing-grid-container {
+  width: 100%;
+  overflow: visible !important;
+  margin-top: 40px;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  transition: transform 0.5s ease;
+  width: 100%;
+}
+
+/* Slide animations */
+.pricing-grid.slide-left {
+  animation: slideLeft 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.pricing-grid.slide-right {
+  animation: slideRight 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@keyframes slideLeft {
+  0% { transform: translateX(0); opacity: 1; }
+  20% { opacity: 0.9; }
+  100% { transform: translateX(-33.33%); opacity: 1; }
+}
+
+@keyframes slideRight {
+  0% { transform: translateX(0); opacity: 1; }
+  20% { opacity: 0.9; }
+  100% { transform: translateX(33.33%); opacity: 1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .carousel-arrow-left {
+    left: -15px;
+  }
+  
+  .carousel-arrow-right {
+    right: -15px;
+  }
+}
+
+@media (max-width: 992px) {
+  .pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .carousel-arrow {
+    top: -60px;
+    transform: translateY(0);
+  }
+  
+  .carousel-arrow-left {
+    left: auto;
+    right: 70px;
+  }
+  
+  .carousel-arrow-right {
+    right: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .growth-plan-section {
+    padding: 60px 0;
+  }
+  
+  .growth-plan-section .section-title {
+    font-size: 2.5rem;
+  }
+}
+
+.slick-list {
+  overflow-x: hidden;
+  overflow-y: visible; /* prevents top/bottom clipping */
+}
+
+.pricing-card.popular {
+  padding-bottom: 80px; /* increased from 40px */
+  min-height: calc(100% + 60px); /* push it taller */
+}
