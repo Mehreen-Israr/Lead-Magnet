@@ -4,6 +4,7 @@ import './hero.css';
 import '../animations.css';
 import { AnimatedSection } from '../hooks/useScrollAnimation';
 import Statistics from '../components/Statistics';
+import HowItWorks from '../components/HowItWorks';
 import GrowthPlanSection from '../components/GrowthPlanSection';
 
 const Home = () => {
@@ -82,6 +83,9 @@ const Home = () => {
 
         {/* Statistics Section */}
         <Statistics />
+
+        {/* How It Works Section */}
+        <HowItWorks />
 
         {/* Pricing Section */}
       <GrowthPlanSection />

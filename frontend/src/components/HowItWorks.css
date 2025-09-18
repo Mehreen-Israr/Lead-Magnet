@@ -1,0 +1,173 @@
+.how-it-works {
+  padding: 10px 0 80px 0; /* top 10px, right 0, bottom 100px, left 0 */
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 3rem !important;
+  margin-bottom: 2px;
+  color: #FFD700;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #606036;
+  margin-bottom: 10px;
+}
+
+.timeline-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 0;
+  min-height: 500px;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  background: #F8BD0A;
+  transform: translateX(-50%);
+  z-index: 1;
+  margin: 0; /* ensure no margin affects positioning */
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 50%; /* center relative to container */
+  width: 25px;
+  height: 25px;
+  background: #F8BD0A; /* filled yellow */
+  border-radius: 50%;
+  transform: translateX(-50%) !important; /* center perfectly on the line */
+  margin-left: 0; /* ensure no additional offset */
+  z-index: 2;
+  box-shadow: 0 0 0 2px white; /* add white border effect */
+}
+
+.timeline-dot:nth-child(1) {
+  top: 20%;
+}
+
+.timeline-dot:nth-child(2) {
+  top: 55%;
+}
+
+.timeline-dot:nth-child(3) {
+  top: 85%;
+}
+
+.timeline-step {
+  position: relative;
+  width: 45%;
+  background: transparent;
+  padding: 20px 0;
+  margin-bottom: 50px;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.timeline-step.left {
+  margin-right: auto;
+  margin-top: 0%;
+}
+
+.timeline-step.right {
+  margin-left: auto;
+  margin-top: 10%;
+}
+
+.step-number {
+  position: absolute;
+  top: -15px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #F8BD0A;;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+.left .step-number {
+  right: 20px;
+}
+
+.right .step-number {
+  left: 20px;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-icon-container {
+  margin-bottom: 20px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.step-icon {
+  font-size: 2.5rem;
+  color: #F8BD0A;;
+}
+
+.step-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #1a1a1a;
+}
+
+.step-description {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 992px) {
+  .timeline-line {
+    left: 30px;
+  }
+  
+  .timeline-dot {
+    left: 30px;
+  }
+  
+  .timeline-step {
+    width: 85%;
+    margin-left: auto;
+  }
+  
+  .timeline-step.left,
+  .timeline-step.right {
+    margin-top: 0;
+    margin-bottom: 80px;
+  }
+  
+  .left .step-number,
+  .right .step-number {
+    left: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .timeline-step {
+    width: 80%;
+    padding: 20px;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+}
