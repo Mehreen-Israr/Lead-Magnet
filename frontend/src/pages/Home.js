@@ -7,6 +7,7 @@ import Statistics from '../components/Statistics';
 import HowItWorks from '../components/HowItWorks';
 import GrowthPlanSection from '../components/GrowthPlanSection';
 import Testimonials from '../components/Testimonials';
+import ScheduleDemo from '../components/ScheduleDemo';
 
 const Home = () => {
 
@@ -50,11 +51,9 @@ const Home = () => {
               </h1>
             </AnimatedSection>
             <AnimatedSection animation="slide-up" delay={400}>
-            <p className="home-hero-subtitle">
-                AI-powered lead generation platform that helps businesses generate qualified leads 
-                across LinkedIn, Instagram, and X (Twitter). Save time, optimize outreach, and 
-                generate real paying customers.
-              </p>
+            <p className="home-hero-subtitle desktop-only">
+                AI-powered lead generation platform that drives qualified leads from LinkedIn, Instagram, and X saving time, optimizing outreach, and converting into real customers.
+              </p>
             </AnimatedSection>
             <AnimatedSection animation="slide-up" delay={600}>
               <button className="hero-action-btn">
@@ -93,6 +92,9 @@ const Home = () => {
 
       {/* Testimonials Section */}
       <Testimonials />
+
+      {/* Schedule Demo Section */}
+      <ScheduleDemo />
 
       
     </div>

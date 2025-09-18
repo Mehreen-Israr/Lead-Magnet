@@ -172,7 +172,7 @@ html {
   flex-direction: column;
   cursor: pointer;
   padding: 0.5rem;
-  z-index: 1001;
+  z-index: 10002;
 }
 
 .hamburger span {
@@ -211,7 +211,7 @@ html {
   border-bottom: 1px solid rgba(255, 215, 0, 0.2);
   transform: translateY(-100%);
   transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
-  z-index: 999;
+  z-index: 10001;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
   opacity: 0;
   visibility: hidden;
@@ -234,7 +234,7 @@ html {
 
 .mobile-link {
   color: #f8f8f8;
-  text-decoration: none;
+  text-decoration: none !important;
   font-weight: 500;
   font-size: 16px;
   padding: 0.75rem 0;
@@ -244,6 +244,8 @@ html {
   opacity: 0;
   animation: slideInMobileHorizontal 0.3s ease forwards;
   position: relative;
+  display: block;
+  cursor: pointer;
 }
 
 .mobile-menu.open .mobile-link {
@@ -298,6 +300,8 @@ html {
   opacity: 0;
   animation: slideInMobileHorizontal 0.3s ease forwards;
   animation-delay: 0.6s;
+  text-decoration: none !important;
+  text-align: center;
 }
 
 .mobile-menu.open .mobile-cta-button {

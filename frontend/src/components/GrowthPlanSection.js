@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { AnimatedSection } from '../hooks/useScrollAnimation';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -6,6 +6,21 @@ import 'slick-carousel/slick/slick-theme.css';
 import './GrowthPlanSection.css';
 
 const GrowthPlanSection = () => {
+  const sliderRef = useRef(null);
+  
+  // Mobile navigation functions
+  const goToPrevSlide = () => {
+    if (sliderRef.current) {
+      sliderRef.current.slickPrev();
+    }
+  };
+
+  const goToNextSlide = () => {
+    if (sliderRef.current) {
+      sliderRef.current.slickNext();
+    }
+  };
+
   // Define pricing plans directly in this component
   const pricingPlans = [
     {
@@ -77,25 +92,57 @@ const GrowthPlanSection = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false,
     centerMode: false,
+    variableWidth: false,
     cssEase: 'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
+    swipeToSlide: false,
+    touchThreshold: 10,
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1200,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          arrows: false
         }
       },
       {
-        breakpoint: 600,
+        breakpoint: 992,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 2,
           slidesToScroll: 1,
-          centerMode: true
+          arrows: false
         }
-      }
+      },
+      {
+         breakpoint: 768,
+         settings: {
+           slidesToShow: 1,
+           slidesToScroll: 1,
+           centerMode: false,
+           centerPadding: '0px',
+           arrows: false,
+           infinite: false,
+           swipeToSlide: false,
+           touchMove: true,
+           variableWidth: false
+         }
+       },
+      {
+         breakpoint: 480,
+         settings: {
+           slidesToShow: 1,
+           slidesToScroll: 1,
+           centerMode: false,
+           centerPadding: '0px',
+           arrows: false,
+           swipeToSlide: false,
+           touchMove: true,
+           infinite: false,
+           variableWidth: false
+         }
+       }
     ]
   };
   
@@ -146,8 +193,24 @@ const GrowthPlanSection = () => {
         </AnimatedSection>
         
         <div className="pricing-carousel-container">
+          {/* Custom Mobile Navigation Buttons */}
+          <button 
+            className="mobile-nav-button mobile-nav-prev" 
+            onClick={goToPrevSlide}
+            aria-label="Previous slide"
+          >
+            ‹
+          </button>
+          <button 
+            className="mobile-nav-button mobile-nav-next" 
+            onClick={goToNextSlide}
+            aria-label="Next slide"
+          >
+            ›
+          </button>
+          
           {/* Slick Slider */}
-          <Slider {...sliderSettings} className="pricing-cards-container">
+          <Slider ref={sliderRef} {...sliderSettings} className="pricing-cards-container">
             {pricingPlans.map((plan, index) => (
               <div
                 key={index}

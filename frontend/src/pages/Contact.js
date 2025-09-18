@@ -127,18 +127,6 @@ const Contact = () => {
       title: "Call Us",
       details: "+1 (555) 123-4567",
       description: "Speak directly with our lead generation experts"
-    },
-    {
-      icon: "📍",
-      title: "Visit Us",
-      details: "123 Business Avenue, Silicon Valley, CA, USA",
-      description: "Our headquarters in the heart of tech innovation"
-    },
-    {
-      icon: "🕐",
-      title: "Business Hours",
-      details: "24/7 Support Available",
-      description: "We're here whenever you need assistance"
     }
   ];
 
