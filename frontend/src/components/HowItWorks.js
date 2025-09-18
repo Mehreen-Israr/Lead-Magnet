@@ -9,20 +9,20 @@ const HowItWorks = () => {
   const steps = [
     {
       id: 1,
-      title: "Open free account",
-      description: "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+      title: "REGISTER",
+      description: "The user creates an account on the platform by providing the necessary details such as name, email, and password.",
       icon: <FaUserPlus className="step-icon" />
     },
     {
       id: 2,
-      title: "Submit your design",
-      description: "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+      title: "SELECT PACKAGE",
+      description: "After registration, the user chooses a suitable package based on their needs and preferences.",
       icon: <FaBoxOpen className="step-icon" />
     },
     {
       id: 3,
-      title: "Grow in the community",
-      description: "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+      title: "LEAD GENERATION",
+      description: "Once the package is selected, LeadMagnet automatically generates leads for the user, streamlining their marketing or outreach efforts.",
       icon: <FaMagnet className="step-icon" />
     }
   ];
@@ -32,11 +32,12 @@ const HowItWorks = () => {
   <div className="container">
     {/* Wrap heading and subtitle */}
     <div className="how-it-works-text">
-      <h1 className='.section-title'>
+
+      <h1 className='section-headingis'>
         How It Works
       </h1>
       <motion.p 
-        className="section-subtitle"
+        className="section-subtitleis"
         initial={{ opacity: 5, y: 20 }}
         whileInView={{ opacity: 5, y: 0 }}
         viewport={{ once: true }}
