@@ -7,6 +7,7 @@ import Statistics from '../components/Statistics';
 import HowItWorks from '../components/HowItWorks';
 import GrowthPlanSection from '../components/GrowthPlanSection';
 import Testimonials from '../components/Testimonials';
+import ScheduleDemo from '../components/ScheduleDemo';
 
 const Home = () => {
 
@@ -91,6 +92,9 @@ const Home = () => {
 
       {/* Testimonials Section */}
       <Testimonials />
+
+      {/* Schedule Demo Section */}
+      <ScheduleDemo />
 
       
     </div>
