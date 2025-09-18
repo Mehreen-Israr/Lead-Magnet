@@ -80,10 +80,12 @@ const HowItWorks = () => {
       }}
     >
       <div className="step-number">0{step.id}</div>
-      <div className="step-content">
-        <div className="step-icon-container">{step.icon}</div>
-        <h3 className="step-title">{step.title}</h3>
-        <p className="step-description">{step.description}</p>
+      <div className="gradient-box">
+        <div className="step-content">
+          <div className="step-icon-container">{step.icon}</div>
+          <h3 className="step-title">{step.title}</h3>
+          <p className="step-description">{step.description}</p>
+        </div>
       </div>
     </motion.div>
   ))}
