@@ -9,9 +9,20 @@
 
 .services-cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   margin-top: 50px;
+  padding: 0 20px;
+}
+
+/* Ensure 3 columns on larger screens */
+@media (min-width: 1200px) {
+  .services-cards {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .service-card {
@@ -30,6 +41,22 @@
 
 .service-card:hover {
   transform: translateY(-10px);
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .service-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .service-card:hover {
+    transform: none;
+  }
+  
+  .service-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
 }
 
 /* Instagram card hover effect - orange shadow */
@@ -764,8 +791,59 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  /* Services Grid Section */
   .services-grid {
+    padding: 40px 0;
+    margin-bottom: 60px;
+  }
+  
+  .services-cards {
     grid-template-columns: 1fr;
+    gap: 25px;
+    margin-top: 30px;
+    padding: 0 15px;
+  }
+  
+  .service-card {
+    padding: 30px 20px;
+    margin: 0 auto;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .service-icon {
+    margin-bottom: 30px;
+  }
+  
+  .platform-logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .service-title {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+  }
+  
+  .service-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding: 0 10px;
+  }
+  
+  .Services-section-title {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  .section-subtitleService {
+    font-size: 1.1rem;
+    padding: 0 20px;
+    margin-bottom: 30px;
   }
   
   .service-process {
@@ -846,7 +924,76 @@
   }
 }
 
+/* Tablet responsive styles */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .services-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+  
+  .service-card {
+    padding: 35px 25px;
+  }
+  
+  .Services-section-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* Large mobile devices */
 @media (max-width: 480px) {
+  /* Services Grid Section for small mobile */
+  .services-grid {
+    padding: 30px 0;
+    margin-bottom: 40px;
+  }
+  
+  .services-cards {
+    gap: 20px;
+    margin-top: 25px;
+    padding: 0 10px;
+  }
+  
+  .service-card {
+    padding: 25px 15px;
+    max-width: 100%;
+    border-radius: 15px;
+  }
+  
+  .service-icon {
+    margin-bottom: 25px;
+  }
+  
+  .platform-logo {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .service-title {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+  
+  .service-description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    padding: 0 5px;
+  }
+  
+  .Services-section-title {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    padding: 0 15px;
+  }
+  
+  .section-subtitleService {
+    font-size: 1rem;
+    padding: 0 15px;
+    margin-bottom: 25px;
+  }
+  
   .service-process {
     padding: 40px 0 !important;
   }
@@ -882,5 +1029,47 @@
   .process-step p {
     font-size: 0.9rem;
     padding: 0 5px;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 360px) {
+  .services-grid {
+    padding: 25px 0;
+  }
+  
+  .services-cards {
+    padding: 0 5px;
+    gap: 15px;
+  }
+  
+  .service-card {
+    padding: 20px 12px;
+    border-radius: 12px;
+  }
+  
+  .platform-logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .service-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .service-description {
+    font-size: 0.9rem;
+    padding: 0;
+  }
+  
+  .Services-section-title {
+    font-size: 1.6rem;
+    padding: 0 10px;
+  }
+  
+  .section-subtitleService {
+    font-size: 0.95rem;
+    padding: 0 10px;
   }
 }
