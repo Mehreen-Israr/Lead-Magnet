@@ -1,7 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Services.css';
 
 const Services = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const cardsPerPage = 3;
+  
+  const nextPage = () => {
+    setCurrentIndex((prev) => 
+      prev + 1 >= processSteps.length ? 0 : prev + 1
+    );
+  };
+  
+  const prevPage = () => {
+    setCurrentIndex((prev) => 
+      prev - 1 < 0 ? processSteps.length - 1 : prev - 1
+    );
+  };
+  
+  // Calculate which cards to show based on current index
+  const getVisibleCards = () => {
+    const cards = [];
+    for (let i = 0; i < cardsPerPage; i++) {
+      const index = (currentIndex + i) % processSteps.length;
+      cards.push(processSteps[index]);
+    }
+    return cards;
+  };
   const services = [
     {
       name: "Instagram Outreach",
@@ -105,8 +129,8 @@ const Services = () => {
       {/* Hero Section */}
       <section className="services-hero">
         <div className="container">
-          <h1 className="hero-title">Our Lead Generation Services</h1>
-          <p className="hero-subtitle">
+          <h1 className="Service-hero-title">Our Lead Generation Services</h1>
+          <p className="Service-hero-subtitle">
             Choose from our specialized platforms to reach your ideal customers where they spend their time.
           </p>
         </div>
@@ -162,62 +186,89 @@ const Services = () => {
       </section>
 
       {/* Process Section */}
-      <section className="process">
-        <div className="container">
+      <section className="process" style={{background: "linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%)", padding: "120px 0"}}>
+        <div className="container" style={{background: "transparent"}}>
           <h2 className="section-title">How It Works</h2>
           <p className="section-subtitle">
             Our proven 4-step process ensures maximum results from your lead generation campaigns.
           </p>
-          <div className="process-grid">
-            {processSteps.map((step, index) => (
-              <div key={index} className="process-step">
-                <div className="step-number">{step.step}</div>
-                <h3>{step.title}</h3>
-                <p>{step.description}</p>
+          <div className="process-carousel">
+            <div className="process-grid">
+              {getVisibleCards().map((step, index) => (
+                <div key={`${currentIndex}-${index}`} className="process-step">
+                  <div className="step-number">{step.step}</div>
+                  <h3>{step.title}</h3>
+                  <p>{step.description}</p>
+                </div>
+              ))}
+            </div>
+            <div className="carousel-controls">
+              <button className="carousel-control prev" onClick={prevPage}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <div className="carousel-indicators">
+                {processSteps.map((_, index) => (
+                  <span 
+                    key={index} 
+                    className={index >= currentIndex && index < currentIndex + cardsPerPage ? "indicator active" : "indicator"}
+                    onClick={() => setCurrentIndex(index)}
+                  ></span>
+                ))}
               </div>
-            ))}
+              <button className="carousel-control next" onClick={nextPage}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Comparison Section */}
-      <section className="comparison">
-        <div className="container">
-          <h2 className="section-title">Platform Comparison</h2>
-          <div className="comparison-table">
-            <div className="table-header">
-              <div className="header-cell">Feature</div>
-              <div className="header-cell">Instagram</div>
-              <div className="header-cell">LinkedIn</div>
-              <div className="header-cell">X (Twitter)</div>
-            </div>
-            <div className="table-row">
-              <div className="cell feature-cell">Best For</div>
-              <div className="cell">B2C, Visual Brands</div>
-              <div className="cell">B2B, Professionals</div>
-              <div className="cell">Real-time Engagement</div>
-            </div>
-            <div className="table-row">
-              <div className="cell feature-cell">Lead Volume</div>
-              <div className="cell">1,000+/month</div>
-              <div className="cell">2,000+/month</div>
-              <div className="cell">5,000+/month</div>
-            </div>
-            <div className="table-row">
-              <div className="cell feature-cell">Targeting</div>
-              <div className="cell">Hashtags, Interests</div>
-              <div className="cell">Job Titles, Companies</div>
-              <div className="cell">Keywords, Trends</div>
-            </div>
-            <div className="table-row">
-              <div className="cell feature-cell">Engagement Type</div>
-              <div className="cell">Visual Content</div>
-              <div className="cell">Professional Network</div>
-              <div className="cell">Conversations</div>
-            </div>
-          </div>
-        </div>
-      </section>
+     {/* Comparison Section */}
+<section className="comparison">
+  <div className="container">
+    <h2 className="section-title">Platform Comparison</h2>
+    <div className="comparison-table">
+      <div className="table-header">
+        <div className="header-cell">Feature</div>
+        <div className="header-cell">Instagram</div>
+        <div className="header-cell">LinkedIn</div>
+        <div className="header-cell">X (Twitter)</div>
+      </div>
+      
+      <div className="table-row">
+        <div className="cell feature-cell">Best For</div>
+        <div className="cell">B2C, Visual Brands</div>
+        <div className="cell">B2B, Professionals</div>
+        <div className="cell">Real-time Engagement</div>
+      </div>
+      
+      <div className="table-row">
+        <div className="cell feature-cell">Lead Volume</div>
+        <div className="cell">1,000+/month</div>
+        <div className="cell">2,000+/month</div>
+        <div className="cell">5,000+/month</div>
+      </div>
+      
+      <div className="table-row">
+        <div className="cell feature-cell">Targeting</div>
+        <div className="cell">Hashtags, Interests</div>
+        <div className="cell">Job Titles, Companies</div>
+        <div className="cell">Keywords, Trends</div>
+      </div>
+      
+      <div className="table-row">
+        <div className="cell feature-cell">Engagement Type</div>
+        <div className="cell">Visual Content</div>
+        <div className="cell">Professional Network</div>
+        <div className="cell">Conversations</div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* CTA Section */}
       <section className="services-cta">
