@@ -141,19 +141,20 @@ html {
 .cta-button {
   background: linear-gradient(45deg, #FFD700, #FFA500);
   color: #000;
-  padding: 14px 28px;
-  border-radius: 30px;
+  padding: 10px 20px; /* reduced size */
+  border-radius: 18px; /* slightly smaller curve */
   text-decoration: none;
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 500; /* lighter weight */
+  font-size: 13px; /* smaller text */
   font-family: 'Oswald', sans-serif;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   transition: all 0.3s ease;
   border: 2px solid transparent;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.25);
 }
+
 
 .cta-button:hover {
   background: transparent;
