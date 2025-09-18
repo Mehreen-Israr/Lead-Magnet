@@ -9,6 +9,7 @@
   padding-left: 2rem;
   padding-right: 2rem;
   z-index: 1;
+  padding-bottom: 50px;
 }
 .login-background {
   position: absolute;
