@@ -2,8 +2,9 @@
 
 /* Services Grid Styles */
 .services-grid {
-  padding: 80px 0;
+  padding: 20px 0;
   background-color: #ffffff;
+  margin-bottom: 100px;
 }
 
 .services-cards {
@@ -404,7 +405,6 @@
   font-weight: 800;
   margin-bottom: 20px;
   color: #160d0d;
-  text-transform: uppercase;
   letter-spacing: 2px;
   position: relative;
 }
@@ -434,13 +434,13 @@
   border-radius: 20px;
 }
 
-.section-subtitle {
+.section-subtitleService {
   color: #666;
   font-size: 1.3rem;
   max-width: 700px;
-  margin: 25px auto 40px;
+  margin: 10px auto 40px;
   line-height: 1.6;
-  font-weight: 300;
+  font-weight: 300; 
 }
 
 .process-grid {
@@ -531,7 +531,7 @@
 .process-step {
   background-color: rgba(40, 40, 40, 0.9);
   border-radius: 15px;
-  padding: 30px 25px;
+  padding: 0px 25px;
   position: relative;
   transition: all 0.3s ease;
   display: flex;
@@ -612,8 +612,9 @@
 
 /* Comparison Section */
 .comparison {
-  padding: 100px 0;
-  background: #f8f9fa;
+  padding: 0px 0;
+  background: #ffffff;
+  margin-bottom:80px;
 }
 
 .comparison .section-title {
