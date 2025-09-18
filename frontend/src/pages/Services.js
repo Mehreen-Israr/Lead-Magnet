@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Services.css';
-
+import GrowthPlanSection from '../components/GrowthPlanSection';
 const Services = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const cardsPerPage = 3;
@@ -139,56 +139,55 @@ const Services = () => {
       </div>
 
       {/* Services Grid */}
-      <section className="services-grid-section">
+      <section className="services-grid">
         <div className="container">
-          <div className="services-grid">
-            {services.map((service, index) => (
-              <div key={index} className={`service-card ${service.popular ? 'popular' : ''}`}>
-                {service.popular && <div className="popular-badge">Most Popular</div>}
-                
-                <div className="service-header">
-                  <div className="service-icon">{service.icon}</div>
-                  <h3 className="service-name">{service.name}</h3>
-                  <div className="service-price">
-                    <span className="price">{service.price}</span>
-                    <span className="period">{service.period}</span>
-                  </div>
-                </div>
-                
-                <p className="service-description">{service.description}</p>
-                
-                <div className="service-features">
-                  <h4>Features Included:</h4>
-                  <ul>
-                    {service.features.map((feature, idx) => (
-                      <li key={idx}>
-                        <svg className="check-icon" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className="service-benefits">
-                  <h4>Key Benefits:</h4>
-                  <ul className="benefits-list">
-                    {service.benefits.map((benefit, idx) => (
-                      <li key={idx}>{benefit}</li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <button className="service-cta">Get Started</button>
+          <h2 className="Services-section-title">Our Social Media Services</h2>
+          <p className="section-subtitle">
+            Specialized solutions to grow your brand across major social platforms
+          </p>
+          
+          <div className="services-cards">
+            {/* Instagram Service Card */}
+            <div className="service-card instagram-card">
+              <div className="service-icon">
+                <img src="/instagram.png" alt="Instagram" className="platform-logo" />
+               
               </div>
-            ))}
+              <h3 className="service-title">INSTAGRAM OUTREACH</h3>
+              <p className="service-description">
+                The user connects with their ideal audience on Instagram through targeted outreach and engagement strategies.
+              </p>
+            </div>
+            
+            {/* LinkedIn Service Card */}
+            <div className="service-card linkedin-card">
+              <div className="service-icon">
+                <img src="/linkedin.png" alt="LinkedIn" className="platform-logo" />
+               
+              </div>
+              <h3 className="service-title">LINKEDIN STARTER</h3>
+              <p className="service-description">
+                Professional networking at scale to connect with decision-makers and industry leaders on the world's largest professional platform.
+              </p>
+            </div>
+            
+            {/* X (Twitter) Service Card */}
+            <div className="service-card x-card">
+              <div className="service-icon">
+                <img src="/twitter.png" alt="X (Twitter)" className="platform-logo" />
+               
+              </div>
+              <h3 className="service-title">X GROWTH</h3>
+              <p className="service-description">
+                Harness the power of real-time conversations on X (Twitter) to engage with prospects and build your brand presence.
+              </p>
+            </div>
           </div>
         </div>
       </section>
-
+      <GrowthPlanSection />
       {/* Process Section */}
-      <section className="process" style={{background: "linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%)", padding: "120px 0"}}>
+      <section className="service-process" style={{background: "white", padding: "120px 0"}}>
         <div className="container" style={{background: "transparent"}}>
           <h2 className="section-title">How It Works</h2>
           <p className="section-subtitle">
@@ -273,16 +272,7 @@ const Services = () => {
 </section>
 
       {/* CTA Section */}
-      <section className="services-cta">
-        <div className="container">
-          <h2>Ready to Start Generating Leads?</h2>
-          <p>Choose your platform and start your free trial today. No setup fees, no long-term contracts.</p>
-          <div className="cta-buttons">
-            <button className="btn-primary">Start Free Trial</button>
-            <button className="btn-secondary">Schedule Consultation</button>
-          </div>
-        </div>
-      </section>
+      
     </div>
   );
 };
