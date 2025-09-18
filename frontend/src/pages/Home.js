@@ -44,13 +44,13 @@ const Home = () => {
         <div className="hero-overlay"></div>
         <div className="hero-container">
             <AnimatedSection animation="fade-in" delay={200}>
-              <h1 className="hero-title">
+              <h1 className="home-hero-title">
                 GROW YOUR BUSINESS WITH US<br />
-                <span className="highlight">WE BRING YOU PAYING CUSTOMERS</span>
+                <span className="home-highlight">WE BRING YOU PAYING CUSTOMERS</span>
               </h1>
             </AnimatedSection>
             <AnimatedSection animation="slide-up" delay={400}>
-            <p className="hero-subtitle">
+            <p className="home-hero-subtitle">
                 AI-powered lead generation platform that helps businesses generate qualified leads 
                 across LinkedIn, Instagram, and X (Twitter). Save time, optimize outreach, and 
                 generate real paying customers.
