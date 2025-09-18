@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser, FaPhone } from 'react-icons/fa';
+import axios from 'axios';
 import './Signup.css';
 import '../animations.css';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     password: '',
@@ -15,11 +17,16 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
-  const { name, email, phone, password, confirmPassword } = formData;
+  const { firstName, lastName, email, phone, password, confirmPassword } = formData;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear errors when user starts typing
+    if (error) setError('');
   };
 
   const togglePasswordVisibility = () => {
@@ -33,13 +40,68 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+    setError('');
+    setSuccess('');
+
+    // Client-side validation
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       setLoading(false);
-      // In a real app, you would handle signup logic here
-      console.log('Signup attempt with:', formData);
-    }, 1500);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
+    if (!firstName.trim() || !lastName.trim()) {
+      setError('First name and last name are required');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+      
+      const response = await axios.post(`${backendUrl}/api/auth/register`, {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        password
+      });
+
+      if (response.data.success) {
+        setSuccess('Registration successful! Please check your email to verify your account.');
+        // Clear form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          password: '',
+          confirmPassword: ''
+        });
+        // Redirect to login after 3 seconds
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err.response?.data?.errors) {
+        // Handle validation errors
+        const errorMessages = err.response.data.errors.map(error => error.msg).join(', ');
+        setError(errorMessages);
+      } else {
+        setError('Registration failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,108 +118,167 @@ const Signup = () => {
           </div>
           
           <form className="signup-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <div className="input-wrapper">
-                <input
-                  type="text"
-                  name="name"
-                  value={name}
-                  onChange={handleChange}
-                  placeholder="Full Name"
-                  required
-                  className="form-input"
-                />
+            {error && (
+              <div className="error-message" style={{
+                color: '#ff4444',
+                backgroundColor: '#ffebee',
+                padding: '12px',
+                borderRadius: '8px',
+                marginBottom: '20px',
+                border: '1px solid #ffcdd2',
+                fontSize: '14px',
+                textAlign: 'center'
+              }}>
+                {error}
+              </div>
+            )}
+            
+            {success && (
+              <div className="success-message" style={{
+                color: '#4caf50',
+                backgroundColor: '#e8f5e8',
+                padding: '12px',
+                borderRadius: '8px',
+                marginBottom: '20px',
+                border: '1px solid #c8e6c9',
+                fontSize: '14px',
+                textAlign: 'center'
+              }}>
+                {success}
+              </div>
+            )}
+
+            <div className="form-row">
+              <div className="form-group half-width">
+                <div className="input-wrapper">
+                  <FaUser className="input-icon" />
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={handleChange}
+                    required
+                    className="form-input"
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+              
+              <div className="form-group half-width">
+                <div className="input-wrapper">
+                  <FaUser className="input-icon" />
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={handleChange}
+                    required
+                    className="form-input"
+                    disabled={loading}
+                  />
+                </div>
               </div>
             </div>
-            
+
             <div className="form-group">
               <div className="input-wrapper">
+                <FaEnvelope className="input-icon" />
                 <input
                   type="email"
                   name="email"
+                  placeholder="Email Address"
                   value={email}
                   onChange={handleChange}
-                  placeholder="Email Address"
                   required
                   className="form-input"
+                  disabled={loading}
                 />
               </div>
             </div>
-            
+
             <div className="form-group">
               <div className="input-wrapper">
+                <FaPhone className="input-icon" />
                 <input
                   type="tel"
                   name="phone"
+                  placeholder="Phone Number (Optional)"
                   value={phone}
                   onChange={handleChange}
-                  placeholder="Phone Number (Optional)"
                   className="form-input"
+                  disabled={loading}
                 />
               </div>
             </div>
-            
+
             <div className="form-group">
               <div className="input-wrapper">
+                <FaLock className="input-icon" />
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   name="password"
+                  placeholder="Password"
                   value={password}
                   onChange={handleChange}
-                  placeholder="Password"
                   required
                   className="form-input"
+                  disabled={loading}
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="password-toggle"
                   onClick={togglePasswordVisibility}
+                  disabled={loading}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
             </div>
-            
+
             <div className="form-group">
               <div className="input-wrapper">
+                <FaLock className="input-icon" />
                 <input
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showConfirmPassword ? 'text' : 'password'}
                   name="confirmPassword"
+                  placeholder="Confirm Password"
                   value={confirmPassword}
                   onChange={handleChange}
-                  placeholder="Confirm Password"
                   required
                   className="form-input"
+                  disabled={loading}
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="password-toggle"
                   onClick={toggleConfirmPasswordVisibility}
+                  disabled={loading}
                 >
                   {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
             </div>
-            
-            <div className="form-options">
-              <div className="terms-agreement">
-                <input type="checkbox" id="terms" required />
-                <label htmlFor="terms">I agree to the <Link to="/terms">Terms of Service</Link></label>
-              </div>
-            </div>
-            
+
             <button 
               type="submit" 
-              className={`signup-button ${loading ? 'loading' : ''}`}
+              className={`signup-btn ${loading ? 'loading' : ''}`}
               disabled={loading}
             >
-              {loading ? 'Creating Account...' : 'Sign Up'}
-              {loading && <span className="spinner"></span>}
+              {loading ? (
+                <>
+                  <span className="spinner"></span>
+                  Creating Account...
+                </>
+              ) : (
+                'Create Account'
+              )}
             </button>
           </form>
           
           <div className="signup-footer">
-            <p>Already have an account? <Link to="/login" className="login-link">Log In</Link></p>
+            <p>Already have an account? <Link to="/login" className="login-link">Sign In</Link></p>
           </div>
         </div>
       </div>

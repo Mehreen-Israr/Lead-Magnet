@@ -53,8 +53,8 @@ const Navbar = () => {
             </div>
             
             <div className="navbar-cta">
-              <button className="cta-button btn-hover-slide">Login</button>
-            </div>
+  <Link to="/login" className="cta-button btn-hover-slide">Login</Link>
+</div>
           </div>
           
           <div className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu}>
@@ -82,7 +82,7 @@ const Navbar = () => {
             <Link to="/contact" className={`mobile-link ${location.pathname === '/contact' ? 'active' : ''}`} onClick={closeMobileMenu}>
               Contact
             </Link>
-            <button className="mobile-cta-button" onClick={closeMobileMenu}>Login</button>
+            <Link to="/login" className="mobile-cta-button" onClick={closeMobileMenu}>Login</Link>
           </div>
         </div>
         

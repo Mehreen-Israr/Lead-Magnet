@@ -43,6 +43,7 @@ router.post('/register', [
       firstName,
       lastName,
       email,
+      phone, // Direct field instead of profile.phone
       password
     });
 
