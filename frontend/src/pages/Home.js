@@ -94,16 +94,7 @@ const Home = () => {
       {/* Testimonials Section */}
       <Testimonials />
 
-      {/* CTA Section */}
-      <section className="cta">
-        <div className="container">
-          <AnimatedSection animation="fade-in">
-            <h2>Ready to Transform Your Lead Generation?</h2>
-            <p>Join thousands of businesses already growing with LeadMagnet</p>
-            <button className="btn-primary large hover-lift btn-hover-slide">Start Your Free Trial Today</button>
-          </AnimatedSection>
-        </div>
-      </section>
+      
     </div>
   );
 };

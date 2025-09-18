@@ -1,5 +1,6 @@
 import React from 'react';
 import './Testimonials.css';
+import useInView from '../hooks/useInView';
 
 const testimonialData = [
   {
@@ -41,17 +42,23 @@ const testimonialData = [
 ];
 
 const Testimonials = () => {
+  const [sectionRef, sectionInView] = useInView({ threshold: 0.1 });
+
   return (
-    <section className="testimonials-section">
+    <section ref={sectionRef} className="testimonials-section">
       <div className="testimonials-container">
-        <div className="testimonials-header">
+        <div className={`testimonials-header ${sectionInView ? 'animate' : ''}`}>
           <span className="testimonials-label">Testimonial</span>
           <h2 className="testimonials-title">We Care About Our Customers<br />Experience Too</h2>
         </div>
         
         <div className="testimonials-grid">
-          {testimonialData.map((testimonial) => (
-            <div key={testimonial.id} className="testimonial-card">
+          {testimonialData.map((testimonial, index) => (
+            <div 
+              key={testimonial.id} 
+              className={`testimonial-card ${sectionInView ? 'animate' : ''}`}
+              style={{ animationDelay: `${0.2 * index}s` }}
+            >
               <div className="testimonial-image-container">
                 <img src={testimonial.image} alt={testimonial.name} className="testimonial-image" />
               </div>
@@ -60,7 +67,13 @@ const Testimonials = () => {
               <p className="testimonial-text">{testimonial.text}</p>
               <div className="testimonial-rating" style={{ color: testimonial.color }}>
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <span key={i} className="star">★</span>
+                  <span 
+                    key={i} 
+                    className={`star ${sectionInView ? 'animate' : ''}`}
+                    style={{ animationDelay: `${0.2 * index + 0.1 * i + 0.5}s` }}
+                  >
+                    ★
+                  </span>
                 ))}
               </div>
             </div>

@@ -14,6 +14,14 @@
 .testimonials-header {
   text-align: center;
   margin-bottom: 60px;
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.testimonials-header.animate {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .testimonials-label {
@@ -45,12 +53,19 @@
   padding: 30px 20px;
   width: 250px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.4s ease;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.testimonial-card.animate {
+  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .testimonial-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .testimonial-image-container {
@@ -60,12 +75,23 @@
   overflow: hidden;
   margin: 0 auto 20px;
   border: 3px solid #F8BD0A;
+  transition: transform 0.3s ease, border-width 0.3s ease;
+}
+
+.testimonial-card:hover .testimonial-image-container {
+  transform: scale(1.05);
+  border-width: 4px;
 }
 
 .testimonial-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.testimonial-card:hover .testimonial-image {
+  transform: scale(1.1);
 }
 
 .testimonial-name {
@@ -73,6 +99,11 @@
   font-weight: 600;
   margin: 0 0 5px;
   color: #333;
+  transition: color 0.3s ease;
+}
+
+.testimonial-card:hover .testimonial-name {
+  color: #F8BD0A;
 }
 
 .testimonial-role {
@@ -99,6 +130,39 @@
 
 .star {
   display: inline-block;
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.star.animate {
+  animation: starPop 0.5s ease-out forwards;
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes starPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Responsive adjustments */
