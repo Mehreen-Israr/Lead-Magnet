@@ -89,23 +89,29 @@
 
 .step-number {
   position: absolute;
-  top: 50px;
-  font-size: 1.5rem;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.5rem;
   font-weight: bold;
   color: #F8BD0A;
   background: white;
-  padding: 10px 15px;
-  border-radius: 20px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px 25px;
+  border-radius: 50%;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
   z-index: 999;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #F8BD0A;
 }
 
-.left .step-number {
-  right: 20px;
-}
-
+.left .step-number,
 .right .step-number {
-  left: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .gradient-box {
@@ -176,27 +182,30 @@
 
 @media (max-width: 992px) {
   .timeline-line {
-    left: 30px;
+    display: none; /* Hide the yellow line on mobile */
   }
   
   .timeline-dot {
-    left: 30px;
+    display: none; /* Hide the timeline dots on mobile */
   }
   
   .timeline-step {
-    width: 85%;
-    margin-left: auto;
+    width: 90%;
+    margin: 0 auto 40px auto; /* Center all steps */
   }
   
   .timeline-step.left,
   .timeline-step.right {
-    margin-top: 0;
-    margin-bottom: 80px;
+    margin: 0 auto 40px auto; /* Same centered layout for all steps */
   }
   
   .left .step-number,
   .right .step-number {
-    left: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.2rem;
+    width: 70px;
+    height: 70px;
   }
   
   .gradient-box {
@@ -207,17 +216,35 @@
 
 @media (max-width: 768px) {
   .timeline-step {
-    width: 80%;
-    padding: 20px;
+    width: 95%;
+    padding: 15px;
+    margin: 0 auto 30px auto; /* Consistent centered layout */
   }
   
-  .section-title {
-    font-size: 2rem;
+  .timeline-step.left,
+  .timeline-step.right {
+    margin: 0 auto 30px auto; /* Ensure all steps are centered */
+  }
+  
+  .section-headingis {
+    font-size: 2.5rem !important;
+  }
+  
+  .section-subtitleis {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
   }
   
   .gradient-box {
     padding: 20px 15px;
     border-radius: 15px;
+  }
+  
+  .step-number {
+    font-size: 2rem;
+    width: 65px;
+    height: 65px;
+    top: -12px;
   }
   
   .step-icon {
@@ -230,5 +257,63 @@
   
   .step-description {
     font-size: 0.9rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .timeline-container {
+    padding: 20px 0;
+  }
+  
+  .timeline-step {
+    width: 100%;
+    padding: 10px;
+    margin: 0 auto 25px auto;
+  }
+  
+  .timeline-step.left,
+  .timeline-step.right {
+    margin: 0 auto 25px auto;
+  }
+  
+  .section-headingis {
+    font-size: 2rem !important;
+    margin-bottom: 10px;
+  }
+  
+  .section-subtitleis {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    padding: 0 10px;
+  }
+  
+  .gradient-box {
+    padding: 15px 12px;
+    border-radius: 12px;
+  }
+  
+  .step-number {
+    font-size: 1.8rem;
+    width: 60px;
+    height: 60px;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0;
+  }
+  
+  .step-icon {
+    font-size: 1.8rem;
+  }
+  
+  .step-title {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+  
+  .step-description {
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
 }
