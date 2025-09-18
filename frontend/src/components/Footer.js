@@ -10,8 +10,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="footer-section">
             <div className="footer-logo">
-              <span className="logo-icon">📊</span>
-              <span className="logo-text">LeadMagnet</span>
+              <img src="/logo.png" alt="LeadMagnet" className="footer-logo-img" />
             </div>
             <p className="footer-description">
               AI-powered lead generation platform that helps businesses generate qualified leads 
