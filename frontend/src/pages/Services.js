@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Services.css';
+import '../animations.css';
 import GrowthPlanSection from '../components/GrowthPlanSection';
 const Services = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -124,6 +125,34 @@ const Services = () => {
     }
   ];
 
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate');
+        }
+      });
+    }, observerOptions);
+
+    // Add a small delay to ensure DOM is fully rendered
+    const timer = setTimeout(() => {
+      const animatedElements = document.querySelectorAll('.fade-in, .slide-left, .slide-right, .slide-up, .scale-in, .rotate-in');
+      animatedElements.forEach((el) => observer.observe(el));
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      const animatedElements = document.querySelectorAll('.fade-in, .slide-left, .slide-right, .slide-up, .scale-in, .rotate-in');
+      animatedElements.forEach((el) => observer.unobserve(el));
+    };
+  }, []);
+
   return (
     <div className="services">
       {/* Hero Section */}
@@ -131,8 +160,8 @@ const Services = () => {
         <div className="banner-background"></div>
         <div className="banner-overlay"></div>
         <div className="banner-content">
-          <h1 className="banner-title">Our Lead Generation Services</h1>
-          <p className="banner-subtitle">
+          <h1 className="banner-title fade-in">Our Lead Generation Services</h1>
+          <p className="banner-subtitle fade-in animate-delay-2">
             Choose from our specialized platforms to reach your ideal customers where they spend their time.
           </p>
         </div>
@@ -141,14 +170,14 @@ const Services = () => {
       {/* Services Grid */}
       <section className="services-grid">
         <div className="container">
-          <h2 className="Services-section-title">Our Social Media Services</h2>
-          <p className="section-subtitle">
+          <h2 className="Services-section-title fade-in">Our Social Media Services</h2>
+          <p className="section-subtitleService fade-in animate-delay-1">
             Specialized solutions to grow your brand across major social platforms
           </p>
           
           <div className="services-cards">
             {/* Instagram Service Card */}
-            <div className="service-card instagram-card">
+            <div className="service-card instagram-card scale-in animate-delay-1">
               <div className="service-icon">
                 <img src="/instagram.png" alt="Instagram" className="platform-logo" />
                
@@ -160,7 +189,7 @@ const Services = () => {
             </div>
             
             {/* LinkedIn Service Card */}
-            <div className="service-card linkedin-card">
+            <div className="service-card linkedin-card scale-in animate-delay-2">
               <div className="service-icon">
                 <img src="/linkedin.png" alt="LinkedIn" className="platform-logo" />
                
@@ -172,7 +201,7 @@ const Services = () => {
             </div>
             
             {/* X (Twitter) Service Card */}
-            <div className="service-card x-card">
+            <div className="service-card x-card scale-in animate-delay-3">
               <div className="service-icon">
                 <img src="/twitter.png" alt="X (Twitter)" className="platform-logo" />
                
@@ -189,14 +218,14 @@ const Services = () => {
       {/* Process Section */}
       <section className="service-process" style={{background: "white", padding: "120px 0"}}>
         <div className="container" style={{background: "transparent"}}>
-          <h2 className="section-title">How It Works</h2>
-          <p className="section-subtitle">
+          <h2 className="section-title fade-in">How It Works</h2>
+          <p className="section-subtitle fade-in animate-delay-1">
             Our proven 4-step process ensures maximum results from your lead generation campaigns.
           </p>
           <div className="process-carousel">
             <div className="process-grid">
               {getVisibleCards().map((step, index) => (
-                <div key={`${currentIndex}-${index}`} className="process-step">
+                <div key={`${currentIndex}-${index}`} className={`process-step slide-up animate-delay-${index + 1}`}>
                   <div className="step-number">{step.step}</div>
                   <h3>{step.title}</h3>
                   <p>{step.description}</p>
@@ -231,8 +260,8 @@ const Services = () => {
      {/* Comparison Section */}
 <section className="comparison">
   <div className="container">
-    <h2 className="section-title">Platform Comparison</h2>
-    <div className="comparison-table">
+    <h2 className="section-title fade-in">Platform Comparison</h2>
+    <div className="comparison-table fade-in animate-delay-1">
       <div className="table-header">
         <div className="header-cell">Feature</div>
         <div className="header-cell">Instagram</div>

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import './About.css';
+import '../animations.css';
 
 const About = () => {
   const values = [
@@ -46,6 +47,30 @@ const About = () => {
     }
   ];
 
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements with animation classes
+    const animatedElements = document.querySelectorAll('.fade-in, .slide-left, .slide-right, .slide-up, .scale-in');
+    animatedElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      animatedElements.forEach((el) => observer.unobserve(el));
+    };
+  }, []);
+
   return (
     <div className="about">
       {/* Hero Banner */}
@@ -64,7 +89,7 @@ const About = () => {
       <section className="mission-vision">
         <div className="container">
           <div className="mission-vision-grid">
-            <div className="mission-card">
+            <div className="mission-card slide-left">
               <div className="card-image">
                 <img src="/1.png" alt="Our Mission"  className="horizontal-image" />
               </div>
@@ -75,7 +100,7 @@ const About = () => {
                 cutting-edge technology that drives growth and success.
               </p>
             </div>
-            <div className="vision-card">
+            <div className="vision-card slide-right">
               <div className="card-image">
                 <img src="/2.png" alt="Our Vision" className="horizontal-image" />
               </div>
@@ -94,7 +119,7 @@ const About = () => {
       <section className="story">
         <div className="container">
           <div className="story-content">
-            <div className="story-text">
+            <div className="story-text fade-in">
               <h2>Our Story</h2>
               <p>
                 LeadMagnet was born from a simple frustration: traditional lead generation 
@@ -113,20 +138,20 @@ const About = () => {
                 through our multi-platform lead generation system.
               </p>
             </div>
-            <div className="story-stats">
-              <div className="stat-item">
+            <div className="story-stats slide-up">
+              <div className="stat-item scale-in animate-delay-1">
                 <span className="stat-number">500+</span>
                 <span className="stat-label">Businesses Served</span>
               </div>
-              <div className="stat-item">
+              <div className="stat-item scale-in animate-delay-2">
                 <span className="stat-number">1M+</span>
                 <span className="stat-label">Leads Generated</span>
               </div>
-              <div className="stat-item">
+              <div className="stat-item scale-in animate-delay-3">
                 <span className="stat-number">95%</span>
                 <span className="stat-label">Client Satisfaction</span>
               </div>
-              <div className="stat-item">
+              <div className="stat-item scale-in animate-delay-4">
                 <span className="stat-number">24/7</span>
                 <span className="stat-label">Support Available</span>
               </div>
@@ -138,13 +163,13 @@ const About = () => {
       {/* Values Section */}
       <section className="values">
         <div className="container">
-          <h2 className="section-titleAbout">What Makes Us Unique</h2>
-          <p className="section-subtitleAbout">
+          <h2 className="section-titleAbout fade-in">What Makes Us Unique</h2>
+          <p className="section-subtitleAbout fade-in">
             Our core values drive everything we do and set us apart in the lead generation industry.
           </p>
           <div className="values-grid">
             {values.map((value, index) => (
-              <div key={index} className="value-card">
+              <div key={index} className={`value-card scale-in animate-delay-${index + 1}`}>
                 <div className="value-icon">
                   {value.icon.startsWith('/') ? 
                     <img src={value.icon} alt={value.title} className="value-icon-img" /> :
@@ -163,7 +188,7 @@ const About = () => {
 
       {/* CTA Section */}
       <section className="about-cta">
-        <div className="containerAbout">
+        <div className="containerAbout fade-in">
           <h2>Ready to Join Our Success Story?</h2>
           <p>Let's work together to transform your lead generation and grow your business.</p>
           <div className="cta-buttons">
