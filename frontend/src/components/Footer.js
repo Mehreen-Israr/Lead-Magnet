@@ -4,20 +4,6 @@ import './Footer.css';
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="footer-wave">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="footerWaveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#FFD700" stopOpacity="0.3" />
-              <stop offset="50%" stopColor="#FFA500" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#FFD700" stopOpacity="0.3" />
-            </linearGradient>
-          </defs>
-          <path d="M0,0 C300,30 600,10 900,40 C1050,55 1150,45 1200,30 L1200,0 Z" fill="url(#footerWaveGradient)">
-            <animate attributeName="d" dur="12s" repeatCount="indefinite" values="M0,0 C300,30 600,10 900,40 C1050,55 1150,45 1200,30 L1200,0 Z;M0,0 C300,20 600,30 900,20 C1050,15 1150,25 1200,10 L1200,0 Z;M0,0 C300,30 600,10 900,40 C1050,55 1150,45 1200,30 L1200,0 Z" />
-          </path>
-        </svg>
-      </div>
       
       <div className="footer-content">
         <div className="footer-container">
@@ -107,20 +93,7 @@ const Footer = () => {
       </div>
 
       {/* Footer Bottom */}
-      <div className="footer-bottom">
-        <div className="footer-container">
-          <div className="footer-bottom-content">
-            <p className="copyright">
-              © 2024 LeadMagnet. All rights reserved.
-            </p>
-            <div className="footer-bottom-links">
-              <a href="/privacy">Privacy Policy</a>
-              <a href="/terms">Terms of Service</a>
-              <a href="/cookies">Cookie Policy</a>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </footer>
   );
 };

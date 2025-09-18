@@ -4,7 +4,7 @@ import './About.css';
 const About = () => {
   const values = [
     {
-      icon: "🎯",
+      icon: "/about1.png",
       title: "Precision Targeting",
       description: "Our AI algorithms identify and target the most qualified prospects for your business."
     },
@@ -14,7 +14,7 @@ const About = () => {
       description: "Automated processes that work 24/7 to generate leads while you focus on closing deals."
     },
     {
-      icon: "📊",
+      icon: "/about2.png",
       title: "Data-Driven Results",
       description: "Every campaign is backed by comprehensive analytics and real-time performance metrics."
     },
@@ -48,22 +48,26 @@ const About = () => {
 
   return (
     <div className="about">
-      {/* Hero Section */}
-      <section className="about-hero">
-        <div className="container">
-          <h1 className="hero-title">About LeadMagnet</h1>
-          <p className="hero-subtitle">
+      {/* Hero Banner */}
+      <div className="banner-container">
+        <div className="banner-background"></div>
+        <div className="banner-overlay"></div>
+        <div className="banner-content">
+          <h1 className="banner-title">About LeadMagnet</h1>
+          <p className="banner-subtitle">
             We're revolutionizing how businesses generate leads through the power of AI and automation.
           </p>
         </div>
-      </section>
+      </div>
 
       {/* Mission & Vision */}
       <section className="mission-vision">
         <div className="container">
           <div className="mission-vision-grid">
             <div className="mission-card">
-              <div className="card-icon">🎯</div>
+              <div className="card-image">
+                <img src="/1.png" alt="Our Mission"  className="horizontal-image" />
+              </div>
               <h3>Our Mission</h3>
               <p>
                 To empower businesses of all sizes with AI-driven lead generation tools that 
@@ -72,7 +76,9 @@ const About = () => {
               </p>
             </div>
             <div className="vision-card">
-              <div className="card-icon">🚀</div>
+              <div className="card-image">
+                <img src="/2.png" alt="Our Vision" className="horizontal-image" />
+              </div>
               <h3>Our Vision</h3>
               <p>
                 To become the world's leading AI-powered lead generation platform, helping 
@@ -132,14 +138,19 @@ const About = () => {
       {/* Values Section */}
       <section className="values">
         <div className="container">
-          <h2 className="section-title">What Makes Us Unique</h2>
-          <p className="section-subtitle">
+          <h2 className="section-titleAbout">What Makes Us Unique</h2>
+          <p className="section-subtitleAbout">
             Our core values drive everything we do and set us apart in the lead generation industry.
           </p>
           <div className="values-grid">
             {values.map((value, index) => (
               <div key={index} className="value-card">
-                <div className="value-icon">{value.icon}</div>
+                <div className="value-icon">
+                  {value.icon.startsWith('/') ? 
+                    <img src={value.icon} alt={value.title} className="value-icon-img" /> :
+                    value.icon
+                  }
+                </div>
                 <h3>{value.title}</h3>
                 <p>{value.description}</p>
               </div>
@@ -148,34 +159,16 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="team">
-        <div className="container">
-          <h2 className="section-title">Meet Our Team</h2>
-          <p className="section-subtitle">
-            The experts behind LeadMagnet's success, dedicated to your growth.
-          </p>
-          <div className="team-grid">
-            {team.map((member, index) => (
-              <div key={index} className="team-card">
-                <div className="team-image">{member.image}</div>
-                <h3>{member.name}</h3>
-                <h4>{member.role}</h4>
-                <p>{member.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* CTA Section */}
       <section className="about-cta">
-        <div className="container">
+        <div className="containerAbout">
           <h2>Ready to Join Our Success Story?</h2>
           <p>Let's work together to transform your lead generation and grow your business.</p>
           <div className="cta-buttons">
-            <button className="btn-primary">Start Free Trial</button>
-            <button className="btn-secondary">Schedule a Demo</button>
+            <button className="btn-primaryAbout">Start Free Trial</button>
+            
           </div>
         </div>
       </section>

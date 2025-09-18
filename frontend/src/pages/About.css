@@ -1,35 +1,73 @@
 /* About Page Styles */
 .about {
-  margin-top: 80px;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-/* Hero Section */
-.about-hero {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 80px 0;
+/* Banner Container */
+.banner-container {
+  position: relative;
+  width: 100%;
+  height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0 0 50px 50px;
+}
+
+/* Banner Background */
+.banner-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/Bgimg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+/* Semi-transparent Overlay */
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+/* Banner Content */
+.banner-content {
+  position: relative;
+  z-index: 3;
   text-align: center;
+  max-width: 800px;
+  padding: 0 20px;
 }
 
-.hero-title {
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 800;
-  font-family: 'Oswald', sans-serif;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #1a1a1a 0%, #FFD700 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.banner-title {
+  color: #F8BD0A;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
   margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  line-height: 1.2;
 }
 
-.hero-subtitle {
-  font-size: clamp(1.1rem, 2vw, 1.3rem);
-  color: #666;
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.6;
-  font-family: 'Oswald', sans-serif;
+.banner-subtitle {
+  color: white;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
   font-weight: 400;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  opacity: 0.95;
 }
 
 /* Mission & Vision Section */
@@ -62,9 +100,27 @@
   border-color: #FFD700;
 }
 
-.card-icon {
-  font-size: 3rem;
+.card-image {
   margin-bottom: 20px;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.horizontal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.horizontal-image:hover {
+  transform: scale(1.05);
 }
 
 .mission-card h3,
@@ -142,21 +198,22 @@
 /* Values Section */
 .values {
   padding: 100px 0;
-  background: #f8f9fa;
+  background:#ffffff;
 }
 
-.section-title {
-  font-size: clamp(2rem, 4vw, 3rem);
+.section-titleAbout {
+    font-size: clamp(2rem, 4vw, 3rem);
+
   font-weight: 700;
   text-align: center;
   margin-bottom: 16px;
-  color: #1a1a1a;
+  color: #F8BD0A;
 }
 
-.section-subtitle {
+.section-subtitleAbout {
   font-size: 1.2rem;
   text-align: center;
-  color: #666;
+  color: #4e4c4c;
   margin-bottom: 60px;
   max-width: 600px;
   margin-left: auto;
@@ -171,7 +228,7 @@
 }
 
 .value-card {
-  background: white;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   padding: 30px;
   border-radius: 20px;
   text-align: center;
@@ -189,10 +246,22 @@
   margin-bottom: 20px;
 }
 
+.value-icon-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.value-icon-img:hover {
+  transform: scale(1.1);
+}
+
 .value-card h3 {
   font-size: 1.3rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #F8BD0A;
   margin-bottom: 15px;
 }
 
@@ -215,7 +284,7 @@
 }
 
 .team-card {
-  background: #f8f9fa;
+  background: white;
   padding: 40px 30px;
   border-radius: 20px;
   text-align: center;
@@ -253,21 +322,23 @@
 
 /* CTA Section */
 .about-cta {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  color: white;
-  padding: 80px 0;
+  border-radius: 25px;
+  background: #ffffff;
+  padding: 20px 0;
   text-align: center;
+  margin-bottom: 50px;
 }
 
 .about-cta h2 {
-  font-size: clamp(2rem, 4vw, 2.5rem);
+  color: #F8BD0A;
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
   margin-bottom: 16px;
 }
 
 .about-cta p {
   font-size: 1.2rem;
-  color: #e0e0e0;
+  color: #403d3d;
   margin-bottom: 40px;
 }
 
@@ -277,7 +348,7 @@
   justify-content: center;
 }
 
-.btn-primary {
+.btn-primaryAbout {
   background: linear-gradient(45deg, #FFD700, #FFA500);
   color: #000;
   border: none;
@@ -291,7 +362,7 @@
   display: inline-block;
 }
 
-.btn-primary:hover {
+.btn-primaryAbout:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
 }

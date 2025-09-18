@@ -89,12 +89,12 @@
 
 .step-number {
   position: absolute;
-  top: -15px;
-  font-size: 0.9rem;
+  top: 50px;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #F8BD0A;
   background: white;
-  padding: 5px 10px;
+  padding: 10px 15px;
   border-radius: 20px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   z-index: 999;
@@ -108,11 +108,45 @@
   left: 20px;
 }
 
+.gradient-box {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+  border-radius: 20px;
+  padding: 30px 25px;
+  margin: 10px 0;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 1px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(248, 189, 10, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.gradient-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #F8BD0A 0%, #FFD700 50%, #F8BD0A 100%);
+  border-radius: 20px 20px 0 0;
+}
+
+.gradient-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 5px 15px rgba(248, 189, 10, 0.2);
+  border-color: rgba(248, 189, 10, 0.4);
+}
+
 .step-content {
   display: flex;
   flex-direction: column;
-  max-width: 80%;
-  margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .step-icon-container {
@@ -164,6 +198,11 @@
   .right .step-number {
     left: 20px;
   }
+  
+  .gradient-box {
+    padding: 25px 20px;
+    margin: 5px 0;
+  }
 }
 
 @media (max-width: 768px) {
@@ -174,5 +213,22 @@
   
   .section-title {
     font-size: 2rem;
+  }
+  
+  .gradient-box {
+    padding: 20px 15px;
+    border-radius: 15px;
+  }
+  
+  .step-icon {
+    font-size: 2rem;
+  }
+  
+  .step-title {
+    font-size: 1.3rem;
+  }
+  
+  .step-description {
+    font-size: 0.9rem;
   }
 }
