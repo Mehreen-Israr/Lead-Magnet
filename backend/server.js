@@ -19,7 +19,15 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://lead-magnet-oc4d.vercel.app", // your Vercel frontend
+    "http://localhost:3000" // allow local dev frontend
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true
+}));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
