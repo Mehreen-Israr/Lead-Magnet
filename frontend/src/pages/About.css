@@ -141,8 +141,32 @@
 /* Story Section */
 .story {
   padding: 100px 0;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  position: relative;
   color: white;
+  background-image: url('../assets/story.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 600px;
+}
+
+/* Story section overlay for better text readability and aesthetic */
+.story::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.85) 0%, rgba(45, 45, 45, 0.85) 100%);
+  z-index: 1;
+}
+
+/* Ensure content appears above the overlay */
+.story .container {
+  position: relative;
+  z-index: 2;
 }
 
 .story-content {
@@ -391,6 +415,12 @@
     grid-template-columns: 1fr;
   }
   
+  .story {
+    background-attachment: scroll; /* Better performance on mobile */
+    min-height: 500px;
+    padding: 60px 0;
+  }
+  
   .story-content {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -409,5 +439,38 @@
   .cta-buttons {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+/* Tablet responsive adjustments */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .story {
+    background-attachment: scroll; /* Better performance on tablets */
+    min-height: 550px;
+  }
+}
+
+/* High DPI displays optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .story {
+    background-image: url('../assets/story.jpg'); /* Use same image but ensure crisp rendering */
+  }
+}
+
+/* Accessibility: Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .story {
+    background-attachment: scroll;
+  }
+  
+  .story::before {
+    transition: none;
+  }
+}
+
+/* Fallback for browsers that don't support background-attachment: fixed */
+@supports not (background-attachment: fixed) {
+  .story {
+    background-attachment: scroll;
   }
 }
