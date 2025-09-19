@@ -127,6 +127,29 @@
   font-weight: normal;
 }
 
+/* Platform logos styling for Premium Service Plan */
+.platform-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.platform-logo-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  border-radius: 3px;
+  transition: transform 0.2s ease;
+  opacity: 0.8;
+}
+
+.platform-logo-icon:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
 @keyframes pulse {
   0% {
     transform: rotate(-5deg) scale(1);
@@ -161,6 +184,37 @@
 
 .brand-logo:hover {
   transform: scale(1.1);
+}
+
+/* Multi-brand logos styling for Premium Service Plan */
+.multi-brand-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 60px;
+  height: 60px;
+  padding: 4px;
+  background-color: transparent;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.multi-brand-logos:hover {
+  transform: scale(1.1);
+}
+
+.brand-logo-small {
+  width: 16px !important;
+  height: 16px !important;
+  object-fit: contain;
+  border-radius: 3px;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.brand-logo-small:hover {
+  transform: scale(1.2);
 }
 
 /* Plan header styling */

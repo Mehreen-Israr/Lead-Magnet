@@ -38,16 +38,17 @@ const GrowthPlanSection = () => {
       popular: false,
       trialDays: 14
     },
-    {
-      name: "LinkedIn Starter",
-      price: "$299",
-      originalPrice: "499",
+        {
+      name: "Premium Service",
+      price: "$1697",
+      originalPrice: "1060",
       period: "/month",
-      discount: "40% OFF",
+      discount: "60% OFF",
       features: [
-        "1000 leads/month",
-        "Basic analytics",
-        "Email support"
+        "Support for 5 Channels",
+        "Scalable Business Growth",
+        "Priority Support",
+        "Multi-Platform Compaign"
       ],
       popular: true,
       trialDays: 14
@@ -69,16 +70,15 @@ const GrowthPlanSection = () => {
       trialDays: 14
     },
     {
-      name: "Facebook Pro",
-      price: "$399",
-      originalPrice: "699",
+      name: "LinkedIn Starter",
+      price: "$299",
+      originalPrice: "499",
       period: "/month",
       discount: "40% OFF",
       features: [
-        "Audience targeting",
-        "Ad campaign management",
-        "Performance analytics",
-        "24/7 support"
+        "1000 leads/month",
+        "Basic analytics",
+        "Email support"
       ],
       popular: false,
       trialDays: 14
@@ -152,6 +152,14 @@ const GrowthPlanSection = () => {
       <img 
         src={process.env.PUBLIC_URL + "/instagram.png"} 
         alt="Instagram Logo" 
+        className="brand-logo"
+        style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
+      />
+    ),
+    'Premium Service': (
+      <img 
+        src={process.env.PUBLIC_URL + "/premium.png"} 
+        alt="Premium Logo" 
         className="brand-logo"
         style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
       />
@@ -233,7 +241,29 @@ const GrowthPlanSection = () => {
                     )}
                   </div>
                   <h3 className="plan-name">{plan.name}</h3>
-                  <div className="platform-name">{plan.name.split(' ')[0]}</div>
+                  <div className="platform-name">
+                    {plan.name === 'Premium Service' ? (
+                      <div className="platform-logos">
+                        <img 
+                          src={process.env.PUBLIC_URL + "/instagram.png"} 
+                          alt="Instagram" 
+                          className="platform-logo-icon"
+                        />
+                        <img 
+                          src={process.env.PUBLIC_URL + "/linkedin.png"} 
+                          alt="LinkedIn" 
+                          className="platform-logo-icon"
+                        />
+                        <img 
+                          src={process.env.PUBLIC_URL + "/twitter.png"} 
+                          alt="Twitter" 
+                          className="platform-logo-icon"
+                        />
+                      </div>
+                    ) : (
+                      plan.name.split(' ')[0]
+                    )}
+                  </div>
                 </div>
                 
                 <div className="plan-price">

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import './WhyChooseUs.css';
+import { Link } from 'react-router-dom';
 
 const WhyChooseUs = () => {
   const advantagesRef = useRef(null);
@@ -123,7 +124,9 @@ const WhyChooseUs = () => {
             <p className="cta-subtitle">
               Join thousands of businesses already growing with LeadMagnet
             </p>
-            <button className="cta-button123">Start Your Free Trial</button>
+            <Link to="/signup" style={{ textDecoration: "none" }}>
+  <button className="cta-button123">Register Now</button>
+</Link>
           </div>
         </div>
       </section>
