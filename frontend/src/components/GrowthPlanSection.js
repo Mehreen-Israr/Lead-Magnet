@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { AnimatedSection } from '../hooks/useScrollAnimation';
 import useEmblaCarousel from 'embla-carousel-react';

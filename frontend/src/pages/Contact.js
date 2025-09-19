@@ -119,13 +119,13 @@ const Contact = () => {
     {
       icon: "📧",
       title: "Email Us",
-      details: "support@leadmagnet.ai",
+      details: "contact@magnetleads.ai",
       description: "Get in touch for any questions or support needs"
     },
     {
       icon: "📞",
       title: "Call Us",
-      details: "+1 (555) 123-4567",
+      details: "001 262 327 6717",
       description: "Speak directly with our lead generation experts"
     }
   ];
