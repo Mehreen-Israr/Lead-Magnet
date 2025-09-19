@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Services.css';
 import '../animations.css';
 import GrowthPlanSection from '../components/GrowthPlanSection';
 const Services = () => {
-  const [isMobile, setIsMobile] = useState(false);
   
   // Define processSteps array first
   const processSteps = [
@@ -23,94 +22,6 @@ const Services = () => {
       description: "We launch your campaigns across selected platforms with automated sequences and monitoring."
     },
     
-  ];
-  
-  // Check if screen is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-  
-
-  const services = [
-    {
-      name: "Instagram Outreach",
-      price: "$297",
-      period: "/month",
-      icon: "📸",
-      description: "Leverage Instagram's visual platform to connect with your ideal customers through targeted outreach and engagement.",
-      features: [
-        "1000+ verified leads/month",
-        "AI-powered hashtag targeting",
-        "Automated DM sequences",
-        "Story and post engagement",
-        "Influencer identification",
-        "Content performance analytics",
-        "24/7 support"
-      ],
-      benefits: [
-        "Reach visual-first audiences",
-        "Build brand awareness",
-        "Generate high-quality leads",
-        "Increase follower engagement"
-      ],
-      popular: false
-    },
-    {
-      name: "LinkedIn Starter",
-      price: "$497",
-      period: "/month",
-      icon: "💼",
-      description: "Professional networking at scale. Connect with decision-makers and industry leaders on the world's largest professional platform.",
-      features: [
-        "2000+ verified leads/month",
-        "Advanced professional targeting",
-        "Personalized connection requests",
-        "Multi-touch message sequences",
-        "Company and role-based filtering",
-        "LinkedIn Sales Navigator integration",
-        "Priority support",
-        "Custom campaign templates"
-      ],
-      benefits: [
-        "Access C-level executives",
-        "Build professional network",
-        "Generate B2B leads",
-        "Establish thought leadership"
-      ],
-      popular: true
-    },
-    {
-      name: "X Growth",
-      price: "$797",
-      period: "/month",
-      icon: "🐦",
-      description: "Harness the power of real-time conversations on X (Twitter) to engage with prospects and build your brand presence.",
-      features: [
-        "5000+ verified leads/month",
-        "Real-time trend monitoring",
-        "Automated engagement sequences",
-        "Hashtag and keyword targeting",
-        "Competitor audience analysis",
-        "Tweet scheduling and optimization",
-        "Dedicated account manager",
-        "Custom integrations",
-        "Advanced analytics dashboard"
-      ],
-      benefits: [
-        "Tap into trending conversations",
-        "Build thought leadership",
-        "Generate viral content",
-        "Connect with industry influencers"
-      ],
-      popular: false
-    }
   ];
 
   // Intersection Observer for scroll animations

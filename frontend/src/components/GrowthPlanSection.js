@@ -1,27 +1,71 @@
-import React, { useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AnimatedSection } from '../hooks/useScrollAnimation';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import useEmblaCarousel from 'embla-carousel-react';
 import './GrowthPlanSection.css';
 
 const GrowthPlanSection = () => {
-  const sliderRef = useRef(null);
-  
-  // Mobile navigation functions
-  const goToPrevSlide = () => {
-    if (sliderRef.current) {
-      sliderRef.current.slickPrev();
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  // Embla Carousel setup with responsive options
+  const options = {
+    align: 'start',
+    containScroll: 'trimSnaps',
+    dragFree: false,
+    loop: false,
+    skipSnaps: false,
+    startIndex: 0,
+    slidesToScroll: 1,
+    breakpoints: {
+      '(max-width: 768px)': { 
+        slidesToScroll: 1,
+        align: 'center'
+      },
+      '(max-width: 992px)': { 
+        slidesToScroll: 1,
+        align: 'start'
+      }
     }
   };
 
-  const goToNextSlide = () => {
-    if (sliderRef.current) {
-      sliderRef.current.slickNext();
-    }
-  };
+  const [emblaRef, emblaApi] = useEmblaCarousel(options);
 
-  // Define pricing plans directly in this component
+  // Viewport detection
+  const detectViewport = useCallback(() => {
+    const width = window.innerWidth;
+    const newIsMobile = width <= 768;
+    const newIsTablet = width > 768 && width <= 992;
+    
+    setIsMobile(newIsMobile);
+    setIsTablet(newIsTablet);
+  }, []);
+
+  // Handle resize events
+  useEffect(() => {
+    detectViewport();
+    
+    const handleResize = () => {
+      detectViewport();
+      // Embla handles resize automatically, no manual intervention needed
+      if (emblaApi) {
+        emblaApi.reInit();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [detectViewport, emblaApi]);
+
+  // Navigation functions
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  // Define pricing plans
   const pricingPlans = [
     {
       name: "Instagram Outreach",
@@ -38,7 +82,7 @@ const GrowthPlanSection = () => {
       popular: false,
       trialDays: 14
     },
-        {
+    {
       name: "Premium Service",
       price: "$1697",
       originalPrice: "1060",
@@ -48,7 +92,7 @@ const GrowthPlanSection = () => {
         "Support for 5 Channels",
         "Scalable Business Growth",
         "Priority Support",
-        "Multi-Platform Compaign"
+        "Multi-Platform Campaign"
       ],
       popular: true,
       trialDays: 14
@@ -63,8 +107,7 @@ const GrowthPlanSection = () => {
         "Unlimited posts",
         "Advanced analytics",
         "Priority support",
-        "Dedicated dashboard",
-
+        "Dedicated dashboard"
       ],
       popular: false,
       trialDays: 14
@@ -85,68 +128,7 @@ const GrowthPlanSection = () => {
     }
   ];
 
-  // Slick slider settings
-  const sliderSettings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    arrows: false,
-    centerMode: false,
-    variableWidth: false,
-    cssEase: 'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
-    swipeToSlide: false,
-    touchThreshold: 10,
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          arrows: false
-        }
-      },
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          arrows: false
-        }
-      },
-      {
-         breakpoint: 768,
-         settings: {
-           slidesToShow: 1,
-           slidesToScroll: 1,
-           centerMode: false,
-           centerPadding: '0px',
-           arrows: false,
-           infinite: false,
-           swipeToSlide: false,
-           touchMove: true,
-           variableWidth: false
-         }
-       },
-      {
-         breakpoint: 480,
-         settings: {
-           slidesToShow: 1,
-           slidesToScroll: 1,
-           centerMode: false,
-           centerPadding: '0px',
-           arrows: false,
-           swipeToSlide: false,
-           touchMove: true,
-           infinite: false,
-           variableWidth: false
-         }
-       }
-    ]
-  };
-  
-  // Brand logos mapping using social media logos from public folder
+  // Brand logos mapping
   const brandLogos = {
     'Instagram Outreach': (
       <img 
@@ -157,12 +139,28 @@ const GrowthPlanSection = () => {
       />
     ),
     'Premium Service': (
-      <img 
-        src={process.env.PUBLIC_URL + "/premium.png"} 
-        alt="Premium Logo" 
-        className="brand-logo"
-        style={{ maxWidth: '100%', height: 'auto', display: 'block' }}
-      />
+      <div className="multi-brand-logos">
+        <img 
+          src={process.env.PUBLIC_URL + "/instagram.png"} 
+          alt="Instagram" 
+          className="brand-logo-small"
+        />
+        <img 
+          src={process.env.PUBLIC_URL + "/twitter.png"} 
+          alt="Twitter" 
+          className="brand-logo-small"
+        />
+        <img 
+          src={process.env.PUBLIC_URL + "/linkedin.png"} 
+          alt="LinkedIn" 
+          className="brand-logo-small"
+        />
+        <img 
+          src={process.env.PUBLIC_URL + "/logo192.png"} 
+          alt="Facebook" 
+          className="brand-logo-small"
+        />
+      </div>
     ),
     'LinkedIn Starter': (
       <img 
@@ -201,96 +199,106 @@ const GrowthPlanSection = () => {
         </AnimatedSection>
         
         <div className="pricing-carousel-container">
-          {/* Custom Mobile Navigation Buttons */}
+          {/* Custom Navigation Buttons */}
           <button 
-            className="mobile-nav-button mobile-nav-prev" 
-            onClick={goToPrevSlide}
+            className="embla-nav-button embla-nav-prev" 
+            onClick={scrollPrev}
             aria-label="Previous slide"
           >
             ‹
           </button>
           <button 
-            className="mobile-nav-button mobile-nav-next" 
-            onClick={goToNextSlide}
+            className="embla-nav-button embla-nav-next" 
+            onClick={scrollNext}
             aria-label="Next slide"
           >
             ›
           </button>
           
-          {/* Slick Slider */}
-          <Slider ref={sliderRef} {...sliderSettings} className="pricing-cards-container">
-            {pricingPlans.map((plan, index) => (
-              <div
-                key={index}
-                className={`pricing-card card-hover hover-lift ${
-                  plan.popular ? 'popular hover-glow' : ''
-                }`}
-              >
-                {plan.popular && <div className="popular-badge">Most Popular</div>}
-                
-                {/* Discount label */}
-                {plan.discount && <div className="discount-badge">{plan.discount}</div>}
-                
-                <div className="plan-header">
-                  {/* Brand logo */}
-                  <div className="logo-container">
-                    {brandLogos[plan.name] || (
-                      <svg className="brand-logo" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                      </svg>
-                    )}
-                  </div>
-                  <h3 className="plan-name">{plan.name}</h3>
-                  <div className="platform-name">
-                    {plan.name === 'Premium Service' ? (
-                      <div className="platform-logos">
-                        <img 
-                          src={process.env.PUBLIC_URL + "/instagram.png"} 
-                          alt="Instagram" 
-                          className="platform-logo-icon"
-                        />
-                        <img 
-                          src={process.env.PUBLIC_URL + "/linkedin.png"} 
-                          alt="LinkedIn" 
-                          className="platform-logo-icon"
-                        />
-                        <img 
-                          src={process.env.PUBLIC_URL + "/twitter.png"} 
-                          alt="Twitter" 
-                          className="platform-logo-icon"
-                        />
+          {/* Embla Carousel */}
+          <div className="embla" ref={emblaRef}>
+            <div className="embla__container">
+              {pricingPlans.map((plan, index) => (
+                <div key={index} className="embla__slide">
+                  <div
+                    className={`pricing-card card-hover hover-lift ${
+                      plan.popular ? 'popular hover-glow' : ''
+                    }`}
+                  >
+                    {plan.popular && <div className="popular-badge">Most Popular</div>}
+                    
+                    {/* Discount label */}
+                    {plan.discount && <div className="discount-badge">{plan.discount}</div>}
+                    
+                    <div className="plan-header">
+                      {/* Brand logo */}
+                      <div className="logo-container">
+                        {brandLogos[plan.name] || (
+                          <svg className="brand-logo" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                          </svg>
+                        )}
                       </div>
-                    ) : (
-                      plan.name.split(' ')[0]
-                    )}
+                      <h3 className="plan-name">{plan.name}</h3>
+                      <div className="platform-name">
+                        {plan.name === 'Premium Service' ? (
+                          <div className="platform-logos">
+                            <img 
+                              src={process.env.PUBLIC_URL + "/instagram.png"} 
+                              alt="Instagram" 
+                              className="platform-logo-icon"
+                            />
+                            <img 
+                              src={process.env.PUBLIC_URL + "/twitter.png"} 
+                              alt="Twitter" 
+                              className="platform-logo-icon"
+                            />
+                            <img 
+                              src={process.env.PUBLIC_URL + "/linkedin.png"} 
+                              alt="LinkedIn" 
+                              className="platform-logo-icon"
+                            />
+                            <img 
+                              src={process.env.PUBLIC_URL + "/logo192.png"} 
+                              alt="Facebook" 
+                              className="platform-logo-icon"
+                            />
+                          </div>
+                        ) : (
+                          plan.name.split(' ')[0]
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="plan-price">
+                      {plan.originalPrice && (
+                        <div className="original-price">${plan.originalPrice}</div>
+                      )}
+                      <div className="price">
+                        {plan.price}
+                        <span className="period">{plan.period}</span>
+                      </div>
+                      {plan.trialDays && (
+                        <div className="free-trial">{plan.trialDays}-day free trial</div>
+                      )}
+                    </div>
+                    
+                    <ul className="plan-features">
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx}>
+                          <svg className="check-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                    <button className="plan-button btn-hover-slide hover-lift">Start Free Trial</button>
                   </div>
                 </div>
-                
-                <div className="plan-price">
-                  {plan.originalPrice && (
-                    <span className="original-price">${plan.originalPrice}</span>
-                  )}
-                  <span className="price">{plan.price}</span>
-                  <span className="period">{plan.period}</span>
-                  {plan.trialDays && (
-                    <div className="free-trial">{plan.trialDays}-day free trial</div>
-                  )}
-                </div>
-                
-                <ul className="plan-features">
-                  {plan.features.map((feature, idx) => (
-                    <li key={idx}>
-                      <svg className="check-icon" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <button className="plan-button btn-hover-slide hover-lift">Start Free Trial</button>
-              </div>
-            ))}
-          </Slider>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
