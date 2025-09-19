@@ -25,12 +25,11 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="navbar-container">
           <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
-            <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
-              <path d="M20 20h60v60H20z" fill="#FFD700"/>
-              <path d="M30 30h40v40H30z" fill="#1a1a1a"/>
-              <path d="M40 40h20v20H40z" fill="#FFD700"/>
-            </svg>
-            <span>LeadMagnet</span>
+            <img 
+              src="/logo.png" 
+              alt="LeadMagnet Logo" 
+              className="navbar-logo-img"
+            />
           </Link>
           
           <div className="navbar-right">

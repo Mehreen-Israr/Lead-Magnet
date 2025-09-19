@@ -8,6 +8,8 @@ import HowItWorks from '../components/HowItWorks';
 import GrowthPlanSection from '../components/GrowthPlanSection';
 import Testimonials from '../components/Testimonials';
 import ScheduleDemo from '../components/ScheduleDemo';
+import { Link } from "react-router-dom";
+
 
 const Home = () => {
 
@@ -56,12 +58,14 @@ const Home = () => {
               </p>
             </AnimatedSection>
             <AnimatedSection animation="slide-up" delay={600}>
-              <button className="hero-action-btn">
-                Get Started
-                <svg className="btn-arrow" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                </svg>
-              </button>
+              <Link to="/signup" style={{ textDecoration: "none" }}>
+                <button className="hero-action-btn">
+                  Get Started
+                  <svg className="btn-arrow" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+                  </svg>
+                </button>
+              </Link>
             </AnimatedSection>
           </div>
           
