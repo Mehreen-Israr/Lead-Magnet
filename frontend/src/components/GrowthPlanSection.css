@@ -359,7 +359,7 @@
   justify-content: center;
   width: 100%;
   margin: 0 auto;
-  padding: 0 40px; /* Add padding for the arrows */
+  padding: 0 80px; /* Increased padding for better arrow visibility */
   box-sizing: border-box;
   overflow: visible !important;
 }
@@ -418,27 +418,31 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   border: none;
   border-radius: 50%;
-  background: #FFD700;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   color: #000;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 10;
+  z-index: 1000; /* Increased z-index to ensure visibility */
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 
-    0 4px 15px rgba(255, 215, 0, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 6px 20px rgba(255, 215, 0, 0.4),
+    0 3px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.3);
   animation: pulse 3s ease-in-out infinite;
+  /* Ensure buttons don't get cut off */
+  min-width: 50px;
+  min-height: 50px;
+  flex-shrink: 0;
 }
 
 .embla-nav-button:hover {
@@ -535,35 +539,47 @@
 }
 
 .embla-nav-prev {
-  left: -60px;
+  left: 10px; /* Moved inside the container */
 }
 
 .embla-nav-next {
-  right: -60px;
+  right: 10px; /* Moved inside the container */
 }
 
 /* Responsive navigation button positioning */
 @media (max-width: 1200px) {
+  .pricing-carousel-container {
+    padding: 0 70px; /* Adjusted padding for medium screens */
+  }
+  
   .embla-nav-prev {
-    left: -50px;
+    left: 8px;
   }
   
   .embla-nav-next {
-    right: -50px;
+    right: 8px;
   }
 }
 
 @media (max-width: 992px) {
+  .pricing-carousel-container {
+    padding: 0 60px; /* Adjusted padding for tablets */
+  }
+  
   .embla-nav-prev {
-    left: -40px;
+    left: 5px;
   }
   
   .embla-nav-next {
-    right: -40px;
+    right: 5px;
   }
 }
 
 @media (max-width: 768px) {
+  .pricing-carousel-container {
+    padding: 0 50px; /* Adjusted padding for mobile */
+  }
+  
   .embla-nav-button {
     width: 40px;
     height: 40px;
@@ -571,11 +587,11 @@
   }
   
   .embla-nav-prev {
-    left: -35px;
+    left: 5px;
   }
   
   .embla-nav-next {
-    right: -35px;
+    right: 5px;
   }
   
   .growth-plan-section {
@@ -588,6 +604,10 @@
 }
 
 @media (max-width: 480px) {
+  .pricing-carousel-container {
+    padding: 0 45px; /* Adjusted padding for small mobile */
+  }
+  
   .embla-nav-button {
     width: 35px;
     height: 35px;
@@ -595,11 +615,61 @@
   }
   
   .embla-nav-prev {
-    left: -30px;
+    left: 5px;
   }
   
   .embla-nav-next {
-    right: -30px;
+    right: 5px;
+  }
+}
+
+/* Additional safety for very small screens */
+@media (max-width: 360px) {
+  .pricing-carousel-container {
+    padding: 0 40px;
+  }
+  
+  .embla-nav-button {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .embla-nav-prev {
+    left: 3px;
+  }
+  
+  .embla-nav-next {
+    right: 3px;
+  }
+}
+
+.embla-nav-prev {
+  left: 10px; /* Moved inside the container */
+}
+
+.embla-nav-next {
+  right: 10px; /* Moved inside the container */
+}
+
+/* Additional safety for very small screens */
+@media (max-width: 360px) {
+  .pricing-carousel-container {
+    padding: 0 40px;
+  }
+  
+  .embla-nav-button {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .embla-nav-prev {
+    left: 3px;
+  }
+  
+  .embla-nav-next {
+    right: 3px;
   }
 }
 
