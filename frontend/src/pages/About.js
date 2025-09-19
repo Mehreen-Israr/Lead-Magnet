@@ -91,7 +91,7 @@ const About = () => {
           <div className="mission-vision-grid">
             <div className="mission-card slide-left">
               <div className="card-image">
-                <img src="/1.png" alt="Our Mission"  className="horizontal-image" />
+                <img src="/mission.jpg" alt="Our Mission"  className="horizontal-image" />
               </div>
               <h3>Our Mission</h3>
               <p>
@@ -102,7 +102,7 @@ const About = () => {
             </div>
             <div className="vision-card slide-right">
               <div className="card-image">
-                <img src="/2.png" alt="Our Vision" className="horizontal-image" />
+                <img src="/vision.jpg" alt="Our Vision" className="horizontal-image" />
               </div>
               <h3>Our Vision</h3>
               <p>
