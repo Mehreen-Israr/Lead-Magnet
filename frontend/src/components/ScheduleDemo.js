@@ -18,7 +18,7 @@ const ScheduleDemo = ({ variant = 'default' }) => {
             onClick={() => setShowCalendly(true)}
             className="schedule-demo-btn"
           >
-            📅 Book Demo Call
+            Book Demo Call
           </button>
         ) : (
           <div className="calendly-widget-container">

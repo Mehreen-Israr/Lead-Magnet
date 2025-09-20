@@ -78,7 +78,7 @@ const Home = () => {
       <GrowthPlanSection />
 
       {/* Testimonials Section */}
-      <Testimonials />
+      
 
       {/* Schedule Demo Section */}
       <ScheduleDemo />
