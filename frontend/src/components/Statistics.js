@@ -5,16 +5,16 @@ import { AnimatedSection } from '../hooks/useScrollAnimation';
 const Statistics = () => {
   const statsData = [
     {
-      number: "10,000+",
-      label: "Leads Generated"
+      number: "3+",
+      label: "Platforms"
     },
     {
-      number: "500+",
-      label: "Happy Clients"
+      number: "100%",
+      label: "Secure Payments"
     },
     {
-      number: "95%",
-      label: "Success Rate"
+      number: "24/7",
+      label: "Support"
     }
   ];
 

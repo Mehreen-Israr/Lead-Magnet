@@ -5,7 +5,7 @@
   background: 
     linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
   url("/public/background2.jpg");
-  min-height: 70vh;
+  min-height: 50vh;
   padding: 170px 0 60px;
   position: relative;
   overflow: hidden;
@@ -144,7 +144,7 @@
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 800;
   line-height: 1.2;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   font-family: 'Oswald', sans-serif;
   letter-spacing: -0.02em;
   color: #FFD700 !important; /* solid gold color */
@@ -164,6 +164,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-size: clamp(1.4rem, 2vw, 1.7rem);
+  margin-top: 0% !important;
 }
 
 .home-hero-subtitle {
@@ -179,7 +180,7 @@
   margin-right: auto !important;
   display: block;
   margin-bottom: 10px !important;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
 }
 
 /* Desktop Only Content */
@@ -203,8 +204,8 @@
   position: relative;
   text-align: left;
   border: none;
-  margin-top: 20px;
-  margin-left: 40px;
+  margin-top: 10px;
+  margin-left: -82%;
   text-decoration: none;
 }
 
@@ -403,7 +404,7 @@
   
   .hero-container {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 12px;
     text-align: center;
     padding: 0 30px;
   }
@@ -425,6 +426,7 @@
   }
   
   .home-hero-title {
+    margin-top: 50px;
     margin-left: 30px;
   }
   
@@ -474,10 +476,10 @@
   }
   
   .home-hero-title {
-    margin-left: 20px;
+    margin-left: 20px ;
     text-align: left;
     font-weight: 600;
-    margin-top: 20px;
+    margin-top: 50px ;
   }
   
   .home-hero-subtitle {
@@ -492,10 +494,11 @@
 }
 
 @media (max-width: 480px) {
-  .hero {
-    padding: 60px 0 50px;
-    border-radius: 0 0 15px 15px;
-  }
+ .hero {
+  padding: 30px 0 25px !important; /* smaller top + bottom padding */
+  border-radius: 0 0 15px 15px;
+  
+}
   
   .hero-content {
     padding: 0 15px;
@@ -521,16 +524,18 @@
     margin-left: 15px;
     text-align: left;
     font-weight: 500;
-    margin-top: 25px;
+    margin-top: 120px;
   }
   
   .home-hero-subtitle {
     margin-left: 15px !important;
     text-align: left !important;
+    
   }
   
   .hero-action-btn {
-    margin-left: 15px;
+    margin-left: -48%;
+    margin-top: 0%;
     align-self: flex-start;
     padding: 14px 28px;
     font-size: 1rem;

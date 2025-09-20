@@ -38,11 +38,7 @@ const Home = () => {
     <div className="home">
       {/* Hero Section */}
       <section className="hero">
-        {/* Video Background */}
-        <video className="hero-video-bg" autoPlay muted loop playsInline>
-          <source src="/videobg.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+       
         {/* Dark Overlay */}
         <div className="hero-overlay"></div>
         <div className="hero-container">
@@ -69,20 +65,7 @@ const Home = () => {
             </AnimatedSection>
           </div>
           
-        <div className="hero-stats">
-          <div className="stat">
-            <span className="stat-number"></span>
-            <span className="stat-label"></span>
-          </div>
-          <div className="stat">
-            <span className="stat-number"></span>
-            <span className="stat-label"></span>
-          </div>
-          <div className="stat">
-            <span className="stat-number"></span>
-            <span className="stat-label"></span>
-          </div>
-        </div>
+       
       </section>
 
         {/* Statistics Section */}

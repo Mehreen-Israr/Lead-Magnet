@@ -58,7 +58,7 @@ https://www.instagram.com/magnetleads.ai/
                 <svg className="contact-icon" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
-                <span>Coming Soon</span>
+                <span>330 East Charleston Road, Palo Alto, 94306 California</span>
               </div>
               <div className="contact-item">
                 <svg className="contact-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -73,6 +73,7 @@ https://www.instagram.com/magnetleads.ai/
                 </svg>
                 <span>contact@magnetleads.ai</span>
               </div>
+              
             </div>
           </div>
         </div>

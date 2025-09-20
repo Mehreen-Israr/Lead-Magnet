@@ -170,8 +170,8 @@
 }
 
 .contact-item {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 20px 1fr; /* icon + text */
   gap: 12px;
   color: #b0b0b0;
 }
@@ -181,7 +181,6 @@
   height: 20px;
   color: #FFD700;
   margin-top: 2px;
-  flex-shrink: 0;
 }
 
 .contact-item span {
