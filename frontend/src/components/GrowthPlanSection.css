@@ -24,6 +24,7 @@
 .growth-plan-section .container {
   position: relative;
   z-index: 1;
+  margin-bottom: 30px;
 }
 
 .growth-plan-section .section-title {
@@ -46,7 +47,7 @@
   line-height: 1.6;
   max-width: 600px;
   margin: 0 auto 60px;
-  margin-bottom: -5%;
+  margin-bottom: 0;
 }
 
 .pricing-grid {
@@ -618,7 +619,11 @@
 
 @media (max-width: 480px) {
   .pricing-carousel-container {
-    padding: 0 45px; /* Adjusted padding for small mobile */
+    padding: 0 35px; /* Reduced padding to allow wider cards */
+  }
+  
+  .embla__slide {
+    flex: 0 0 calc(100% - 10px); /* Increased width for better content display */
   }
   
   .embla-nav-button {

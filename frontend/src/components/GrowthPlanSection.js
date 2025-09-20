@@ -69,7 +69,7 @@ const GrowthPlanSection = () => {
   // Define pricing plans
   const pricingPlans = [
     {
-      name: "Instagram Outreach",
+      name: "Instagram Growth",
       price: "$359",
       originalPrice: "599",
       period: "/month",
@@ -122,7 +122,9 @@ const GrowthPlanSection = () => {
       features: [
         "1000 leads/month",
         "Basic analytics",
-        "Email support"
+        "Email support",
+        "Secure Payments"
+
       ],
       popular: false,
       trialDays: 14
@@ -131,7 +133,7 @@ const GrowthPlanSection = () => {
 
   // Brand logos mapping
   const brandLogos = {
-    'Instagram Outreach': (
+    'Instagram Growth': (
       <img 
         src={process.env.PUBLIC_URL + "/instagram.png"} 
         alt="Instagram Logo" 
