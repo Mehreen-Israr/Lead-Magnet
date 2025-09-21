@@ -56,7 +56,7 @@ const Login = () => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
         
         // Redirect to dashboard or home page
-        navigate('/');
+        navigate('/services');
       }
     } catch (err) {
       console.error('Login error:', err);

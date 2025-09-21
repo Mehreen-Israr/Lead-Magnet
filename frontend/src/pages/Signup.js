@@ -83,9 +83,9 @@ const Signup = () => {
           password: '',
           confirmPassword: ''
         });
-        // Redirect to login after 3 seconds
+        // Redirect to services after 3 seconds
         setTimeout(() => {
-          navigate('/login');
+          navigate('/services');
         }, 3000);
       }
     } catch (err) {
