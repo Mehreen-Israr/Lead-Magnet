@@ -3,10 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 // Security middleware
 app.use(helmet());
@@ -21,7 +20,8 @@ app.use(limiter);
 // Middleware
 app.use(cors({
   origin: [
-    "https://lead-magnet-oc4d.vercel.app", // your Vercel frontend
+    "https://lead-magnet-frontend.onrender.com", // your new Render frontend
+    "https://lead-magnet-oc4d.vercel.app", // your Vercel frontend (keep for backup)
     "http://localhost:3000" // allow local dev frontend
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -32,10 +32,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/leadmagnet', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/leadmagnet')
 .then(() => console.log('✅ MongoDB Connected'))
 .catch(err => console.log('❌ MongoDB connection error:', err));
 
@@ -115,24 +112,30 @@ app.use((err, req, res, next) => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received. Shutting down gracefully...');
-  mongoose.connection.close(() => {
+  mongoose.connection.close().then(() => {
     console.log('MongoDB connection closed.');
     process.exit(0);
+  }).catch((err) => {
+    console.error('Error closing MongoDB connection:', err);
+    process.exit(1);
   });
 });
 
 process.on('SIGINT', () => {
   console.log('SIGINT received. Shutting down gracefully...');
-  mongoose.connection.close(() => {
+  mongoose.connection.close().then(() => {
     console.log('MongoDB connection closed.');
     process.exit(0);
+  }).catch((err) => {
+    console.error('Error closing MongoDB connection:', err);
+    process.exit(1);
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 API Base URL: http://localhost:${PORT}`);
+  console.log(`🔗 API Base URL: https://lead-magnet-bb.onrender.com`);
   console.log(`📋 Available routes:`);
   console.log(`   GET  /              - API status`);
   console.log(`   GET  /health        - Health check`);
