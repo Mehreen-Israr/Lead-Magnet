@@ -127,7 +127,14 @@ const Contact = () => {
       title: "Call Us",
       details: "001 262 327 6717",
       description: "Speak directly with our lead generation experts"
-    }
+    },
+    {
+  icon: "📍",
+  title: "Our Location",
+  details: "330 East Charleston Road, Palo Alto, 94306 California",
+  description: "Visit us at our office for a personalized consultation"
+}
+
   ];
 
   const faqs = [
