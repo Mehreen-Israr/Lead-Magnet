@@ -27,13 +27,9 @@ const Subscriptions = () => {
             "Priority Support",
             "Multi-Platform Campaign"
           ],
-          usage: {
-            leads: { current: 8420, limit: 10000 },
-            campaigns: { current: 12, limit: 15 },
-            channels: { current: 4, limit: 5 }
-          },
           logo: "/instagram.png"
         },
+        
         {
           id: 2,
           name: "Instagram Growth",
@@ -48,11 +44,6 @@ const Subscriptions = () => {
             "Basic analytics",
             "Email support"
           ],
-          usage: {
-            posts: { current: 45, limit: 60 },
-            analytics: { current: "Basic", limit: "Basic" },
-            support: { current: "Email", limit: "Email" }
-          },
           logo: "/instagram.png"
         }
       ]);
@@ -186,7 +177,7 @@ const Subscriptions = () => {
         {activeSubscriptions.length > 0 && (
           <AnimatedSection animation="slide-up" delay={200}>
             <section className="active-subscriptions-section">
-              <h2 className="section-title">Active Subscriptions</h2>
+              <h2 className="Subscription-section-title">Active Subscriptions</h2>
               <div className="subscriptions-grid" ref={containerRef}>
                 {activeSubscriptions.map((subscription, index) => (
                   <div 
@@ -298,7 +289,7 @@ const Subscriptions = () => {
         {/* Available Packages Section */}
         <AnimatedSection animation="slide-up" delay={400}>
           <section className="available-packages-section">
-            <h2 className="section-title">Available Packages</h2>
+            <h2 className="Subscription-section-title">Available Packages</h2>
             <p className="section-subtitle">Expand your reach with additional platforms and features</p>
             
             <div className="packages-grid">
@@ -326,7 +317,7 @@ const Subscriptions = () => {
 
                   <div className="package-pricing">
                     {pkg.originalPrice && (
-                      <div className="original-price">${pkg.originalPrice}</div>
+                      <div className="sub-original-price">${pkg.originalPrice}</div>
                     )}
                     <div className="package-price">
                       {pkg.price}<span className="period">{pkg.period}</span>
