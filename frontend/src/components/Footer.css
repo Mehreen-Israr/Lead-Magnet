@@ -264,14 +264,17 @@
   
   .footer-logo-img {
     width: 180px;
+    margin-left:70%;
   }
   
   .footer-description {
     max-width: 100%;
+    margin-left:20%;
   }
   
   .social-links {
     justify-content: center;
+            margin-left: 15%;
   }
   
   .footer-title::after {
