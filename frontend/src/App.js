@@ -10,6 +10,7 @@ import WhyChooseUs from './pages/WhyChooseUs';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Subscriptions from './pages/Subscriptions';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/subscriptions" element={<Subscriptions />} />
         </Routes>
         <Footer />
       </div>

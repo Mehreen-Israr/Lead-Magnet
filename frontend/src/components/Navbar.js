@@ -1,13 +1,17 @@
 import React, { useState} from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaUserCircle, FaChevronDown } from 'react-icons/fa';
 import './Navbar.css';
 import '../animations.css';
 import { useScrollProgress } from '../hooks/useScrollAnimation';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Mock logged-in state
   const location = useLocation();
   const scrollProgress = useScrollProgress();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -15,6 +19,39 @@ const Navbar = () => {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const toggleProfileDropdown = () => {
+    setIsProfileDropdownOpen(!isProfileDropdownOpen);
+  };
+
+  const closeProfileDropdown = () => {
+    setIsProfileDropdownOpen(false);
+  };
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isProfileDropdownOpen && !event.target.closest('.profile-dropdown-container')) {
+        setIsProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProfileDropdownOpen]);
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setIsProfileDropdownOpen(false);
+    navigate('/');
+  };
+
+  const handleSubscriptionsClick = () => {
+    setIsProfileDropdownOpen(false);
+    navigate('/subscriptions');
   };
 
   return (
@@ -52,8 +89,38 @@ const Navbar = () => {
             </div>
             
             <div className="navbar-cta">
-  <Link to="/login" className="cta-button btn-hover-slide">Login</Link>
-</div>
+              {isLoggedIn ? (
+                <div className="profile-dropdown-container">
+                  <button 
+                    className="profile-button" 
+                    onClick={toggleProfileDropdown}
+                  >
+                    <FaUserCircle className="profile-icon" />
+                    <span className="profile-text">Account</span>
+                    <FaChevronDown className={`dropdown-arrow ${isProfileDropdownOpen ? 'open' : ''}`} />
+                  </button>
+                  
+                  {isProfileDropdownOpen && (
+                    <div className="profile-dropdown">
+                      <button 
+                        className="dropdown-item" 
+                        onClick={handleSubscriptionsClick}
+                      >
+                        See Subscribed Packages
+                      </button>
+                      <button 
+                        className="dropdown-item logout" 
+                        onClick={handleLogout}
+                      >
+                        Log out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link to="/login" className="cta-button btn-hover-slide">Login</Link>
+              )}
+            </div>
           </div>
           
           <div className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu}>
@@ -81,7 +148,30 @@ const Navbar = () => {
             <Link to="/contact" className={`mobile-link ${location.pathname === '/contact' ? 'active' : ''}`} onClick={closeMobileMenu}>
               Contact
             </Link>
-            <Link to="/login" className="mobile-cta-button" onClick={closeMobileMenu}>Login</Link>
+            {isLoggedIn ? (
+              <>
+                <button 
+                  className="mobile-link" 
+                  onClick={() => {
+                    handleSubscriptionsClick();
+                    closeMobileMenu();
+                  }}
+                >
+                  See Subscribed Packages
+                </button>
+                <button 
+                  className="mobile-link logout" 
+                  onClick={() => {
+                    handleLogout();
+                    closeMobileMenu();
+                  }}
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <Link to="/login" className="mobile-cta-button" onClick={closeMobileMenu}>Login</Link>
+            )}
           </div>
         </div>
         

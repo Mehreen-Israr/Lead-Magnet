@@ -35,8 +35,8 @@
   margin: 0 auto;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1.2fr;
-  gap: 40px;
+  grid-template-columns: 2fr 0.8fr 1.2fr; /* Reduced quick links column width to shift it left */
+  gap: 30px; /* Slightly reduced gap for better spacing */
   justify-content: space-between;
 }
 
@@ -45,11 +45,22 @@
   flex-direction: column;
 }
 
+/* Center content in the first footer section (company info) */
+.footer-section:first-child {
+  align-items: center;
+  text-align: center;
+  margin-left: -30%;
+}
+
+ .footer-section:nth-child(2){
+  margin-left: -90%;
+ }
+
 /* Logo Section */
 .footer-logo {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center; /* Center the logo */
   margin-bottom: 20px;
 }
 
@@ -69,12 +80,16 @@
   line-height: 1.6;
   margin-bottom: 30px;
   max-width: 300px;
+  text-align: center; /* Center the text content */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Social Links */
 .social-links {
   display: flex;
   gap: 15px;
+  justify-content: center; /* Center the social media logos */
 }
 
 .social-link {
@@ -115,7 +130,7 @@
   content: '';
   position: absolute;
   bottom: -8px;
-  left: 0;
+  left: 15px; /* Offset the yellow line slightly to the right */
   width: 30px;
   height: 2px;
   background: linear-gradient(45deg, #FFD700, #FFA500);

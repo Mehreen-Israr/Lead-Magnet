@@ -38,6 +38,7 @@ html {
 
 
 .navbar-container {
+  align-items: center !important;
   max-width: 1400px !important;
   margin: 0 auto !important;
   padding: 0 3rem !important;
@@ -188,12 +189,12 @@ html {
 /* Mobile Menu */
 .mobile-menu {
   position: absolute;        /* was fixed */
-  top: 80px;
+  top: 50px;
   left: 0;
   right: 0;
   width: 100%;
   height: auto;
-  max-height: 400px;
+  max-height: 700px;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%);
   backdrop-filter: blur(15px);
   border-bottom: 1px solid rgba(255, 215, 0, 0.2);
@@ -204,9 +205,13 @@ html {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  border-radius: 25px 25px 25px 25px;
 }
 
 .mobile-menu.open {
+  top: 80px;
+  left: 0;
+  right: 0;
   transform: translateY(0);
   opacity: 1;
   visibility: visible;
@@ -225,7 +230,7 @@ html {
   text-decoration: none !important;
   font-weight: 500;
   font-size: 16px;
-  padding: 0.75rem 0;
+  padding: 12px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   transform: translateY(-20px);
@@ -234,6 +239,23 @@ html {
   position: relative;
   display: block;
   cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+/* Ensure buttons in mobile menu look like text links */
+.mobile-link[type="button"],
+button.mobile-link {
+  background: none !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+  text-align: left !important;
+  width: 100% !important;
+  margin: 0 !important;
+  outline: none !important;
 }
 
 .mobile-menu.open .mobile-link {
@@ -436,13 +458,159 @@ html {
   }
   
   .mobile-menu {
-    left: 10px;
-    right: 10px;
-    width: calc(100% - 20px);
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
   }
   
   .mobile-menu-content {
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
+  }
+  
+  /* Ensure consistent styling for all mobile links on small screens */
+  .mobile-link {
+    padding: 12px 0 !important;
+    font-size: 16px !important;
+    text-align: center !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* Specific styling for button elements in mobile menu */
+  button.mobile-link {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #f8f8f8 !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    width: 100% !important;
+    padding: 12px 0 !important;
+  }
+  
+  /* Hover effects for mobile menu items */
+  .mobile-link:hover,
+  button.mobile-link:hover {
+    color: #FFD700 !important;
+    padding-left: 0 !important; /* Remove left padding shift on small screens */
+    text-align: center !important;
+  }
+}
+
+/* Profile/Account Button and Dropdown Styling */
+.profile-dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 25px;
+  padding: 8px 16px;
+  color: #f8f8f8;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profile-button:hover {
+  background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+  border-color: #FFD700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.profile-icon {
+  font-size: 18px;
+  color: #FFD700;
+}
+
+.profile-text {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.dropdown-arrow {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  color: #FFD700;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(26, 26, 26, 0.95) 100%);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  z-index: 10002;
+  overflow: hidden;
+  animation: dropdownSlideIn 0.3s ease-out;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: #f8f8f8;
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+  color: #FFD700;
+  padding-left: 20px;
+}
+
+.dropdown-item.logout {
+  color: #ff6b6b;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-item.logout:hover {
+  background: linear-gradient(90deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.15));
+  color: #ff8a8a;
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -458,5 +626,18 @@ html {
   
   .navbar-cta {
     display: flex !important;
+  }
+}
+
+/* Responsive adjustments for profile dropdown */
+@media (max-width: 768px) {
+  .profile-dropdown-container {
+    display: none; /* Hidden on mobile, functionality is in mobile menu */
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-dropdown-container {
+    display: none; /* Hidden on small mobile, functionality is in mobile menu */
   }
 }

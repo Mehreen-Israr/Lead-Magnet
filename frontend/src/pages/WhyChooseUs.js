@@ -70,7 +70,13 @@ const WhyChooseUs = () => {
       title: "24/7 support",
       description: "Our dedicated support team is always available to assist you and resolve any issues, anytime.",
       direction: "up"
-    }
+    },
+     {
+  icon: "/6.png",
+  title: "Seamless CRM Integration",
+  description: "Connect effortlessly with popular CRMs and tools to streamline your sales pipeline and keep all your leads organized in one place.",
+  direction: "right"
+}
   ];
 
   return (
