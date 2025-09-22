@@ -196,6 +196,8 @@
   height: 20px;
   color: #FFD700;
   margin-top: 2px;
+  margin-left:100%;
+  margin-right: -20%;
 }
 
 .contact-item span {
