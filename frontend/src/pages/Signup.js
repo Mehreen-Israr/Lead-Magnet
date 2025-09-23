@@ -4,6 +4,7 @@ import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser, FaPhone } from 'react-ic
 import axios from 'axios';
 import './Signup.css';
 import '../animations.css';
+import { useAuth } from '../contexts/AuthContext';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const { firstName, lastName, email, phone, password, confirmPassword } = formData;
@@ -56,6 +58,14 @@ const Signup = () => {
       return;
     }
 
+    // Check for special character
+    const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (!specialCharRegex.test(password)) {
+      setError('Password must contain at least one special character (!@#$%^&*()_+-=[]{};\':"|\\,.<>?/)');
+      setLoading(false);
+      return;
+    }
+
     if (!firstName.trim() || !lastName.trim()) {
       setError('First name and last name are required');
       setLoading(false);
@@ -73,8 +83,10 @@ const Signup = () => {
       });
 
       if (response.data.success) {
+        // Use the auth context login method
+        login(response.data.token, response.data.user);
+        
         setSuccess('Registration successful! Please check your email to verify your account.');
-        // Clear form
         setFormData({
           firstName: '',
           lastName: '',
@@ -83,9 +95,9 @@ const Signup = () => {
           password: '',
           confirmPassword: ''
         });
-        // Redirect to services after 3 seconds
+        // Redirect to subscriptions page after 3 seconds
         setTimeout(() => {
-          navigate('/services');
+          navigate('/subscriptions');
         }, 3000);
       }
     } catch (err) {
