@@ -4,11 +4,12 @@ import { FaUserCircle, FaChevronDown } from 'react-icons/fa';
 import './Navbar.css';
 import '../animations.css';
 import { useScrollProgress } from '../hooks/useScrollAnimation';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Mock logged-in state
+  const { isLoggedIn, user, logout } = useAuth();
   const location = useLocation();
   const scrollProgress = useScrollProgress();
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const Navbar = () => {
   }, [isProfileDropdownOpen]);
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    logout();
     setIsProfileDropdownOpen(false);
     navigate('/');
   };

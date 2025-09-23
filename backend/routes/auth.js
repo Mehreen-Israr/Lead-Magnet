@@ -1,9 +1,11 @@
 const express = require('express');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '');
 const { body, validationResult } = require('express-validator');
 const crypto = require('crypto');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 const sendEmail = require('../utils/sendEmail');
+const sendPasswordResetEmail = require('../controllers/passwordController');
 
 const router = express.Router();
 
@@ -72,6 +74,20 @@ router.post('/register', [
       // Don't fail registration if email fails
     }
 
+    // Create Stripe customer (non-blocking if fails)
+    try {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || undefined,
+        metadata: { userId: String(user._id) }
+      });
+      user.subscription = user.subscription || {};
+      user.subscription.stripeCustomerId = customer.id;
+      await user.save();
+    } catch (e) {
+      console.warn('Stripe customer creation failed at signup:', e.message);
+    }
+
     // Generate token
     const token = user.generateAuthToken();
 
@@ -85,7 +101,8 @@ router.post('/register', [
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        isEmailVerified: user.isEmailVerified
+        isEmailVerified: user.isEmailVerified,
+        subscription: user.subscription
       }
     });
   } catch (error) {
@@ -161,7 +178,8 @@ router.post('/login', [
         email: user.email,
         role: user.role,
         isEmailVerified: user.isEmailVerified,
-        lastLogin: user.lastLogin
+        lastLogin: user.lastLogin,
+        subscription: user.subscription
       }
     });
   } catch (error) {
@@ -177,68 +195,57 @@ router.post('/login', [
 // @route   POST /api/auth/forgot-password
 // @access  Public
 router.post('/forgot-password', [
-  body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email')
+  body('email').isEmail().withMessage('Please provide a valid email')
 ], async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
+        message: 'Please provide a valid email',
         errors: errors.array()
       });
     }
 
     const { email } = req.body;
 
-    // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'No user found with this email address'
+        message: 'No user found with that email address'
       });
     }
 
     // Generate reset token
     const resetToken = user.generatePasswordResetToken();
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     // Create reset URL
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    const message = `
-      <h1>Password Reset Request</h1>
-      <p>You have requested a password reset for your LeadMagnet account.</p>
-      <p>Please click the link below to reset your password:</p>
-      <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
-      <p>This link will expire in 10 minutes.</p>
-      <p>If you didn't request this reset, please ignore this email.</p>
-    `;
-
     try {
-      await sendEmail({
-        email: user.email,
-        subject: 'LeadMagnet - Password Reset Request',
-        html: message
-      });
+      // Use the new password controller
+      await sendPasswordResetEmail(user, resetUrl);
 
-      res.json({
+      res.status(200).json({
         success: true,
         message: 'Password reset email sent successfully'
       });
-    } catch (emailError) {
-      console.error('Email sending failed:', emailError);
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      
+      // Reset the token fields if email fails
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
-      await user.save();
+      await user.save({ validateBeforeSave: false });
 
       return res.status(500).json({
         success: false,
         message: 'Email could not be sent. Please try again later.'
       });
     }
+
   } catch (error) {
     console.error('Forgot password error:', error);
     res.status(500).json({
@@ -249,13 +256,16 @@ router.post('/forgot-password', [
 });
 
 // @desc    Reset password
-// @route   PUT /api/auth/reset-password/:resetToken
+// @route   PUT /api/auth/reset-password/:token
 // @access  Public
-router.put('/reset-password/:resetToken', [
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+router.put('/reset-password/:token', [
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number')
 ], async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -265,13 +275,16 @@ router.put('/reset-password/:resetToken', [
       });
     }
 
-    // Hash the token from URL
+    const { password } = req.body;
+    const { token } = req.params;
+
+    // Hash the token to compare with stored hashed token
     const resetPasswordToken = crypto
       .createHash('sha256')
-      .update(req.params.resetToken)
+      .update(token)
       .digest('hex');
 
-    // Find user with valid reset token
+    // Find user by token and check if token hasn't expired
     const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() }
@@ -285,26 +298,30 @@ router.put('/reset-password/:resetToken', [
     }
 
     // Set new password
-    user.password = req.body.password;
+    user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save();
 
-    // Generate new token
-    const token = user.generateAuthToken();
+    // Generate JWT token for immediate login
+    const jwtToken = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRE || '30d' }
+    );
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: 'Password reset successful',
-      token,
+      token: jwtToken,
       user: {
         id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
         email: user.email,
-        role: user.role
+        isEmailVerified: user.isEmailVerified
       }
     });
+
   } catch (error) {
     console.error('Reset password error:', error);
     res.status(500).json({

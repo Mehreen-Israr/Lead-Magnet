@@ -1,4 +1,6 @@
+require('dotenv').config();
 const express = require('express');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -28,6 +30,77 @@ app.use(cors({
   credentials: true
 }));
 
+// Stripe webhook BEFORE body parsers to use raw body
+app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    let event = req.body;
+
+    if (endpointSecret) {
+      const signature = req.headers['stripe-signature'];
+      try {
+        event = stripe.webhooks.constructEvent(req.body, signature, endpointSecret);
+      } catch (err) {
+        console.error('❌ Webhook signature verification failed.', err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+      }
+    }
+
+    const User = require('./models/User');
+
+    switch (event.type) {
+      case 'checkout.session.completed':
+        // Handled on subscription events
+        break;
+      case 'customer.subscription.created':
+      case 'customer.subscription.updated': {
+        const subscription = event.data.object;
+        const customerId = subscription.customer;
+        const stripePriceId = subscription.items?.data?.[0]?.price?.id;
+        const status = subscription.status;
+        const currentPeriodEnd = subscription.current_period_end ? new Date(subscription.current_period_end * 1000) : undefined;
+        const trialEnd = subscription.trial_end ? new Date(subscription.trial_end * 1000) : undefined;
+
+        const user = await User.findOne({ 'subscription.stripeCustomerId': customerId });
+        if (user) {
+          const priceToPlan = {
+            [process.env.STRIPE_PRICE_PRO_MONTHLY || '']: 'pro',
+            [process.env.STRIPE_PRICE_BUSINESS_MONTHLY || '']: 'business',
+            [process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || '']: 'enterprise'
+          };
+          const plan = priceToPlan[stripePriceId] || user.subscription.plan || 'free';
+          user.subscription.plan = plan;
+          user.subscription.status = status;
+          user.subscription.stripeSubscriptionId = subscription.id;
+          user.subscription.stripePriceId = stripePriceId;
+          user.subscription.currentPeriodEnd = currentPeriodEnd;
+          user.subscription.trialEnd = trialEnd;
+          await user.save();
+        }
+        break;
+      }
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object;
+        const customerId = subscription.customer;
+        const user = await User.findOne({ 'subscription.stripeCustomerId': customerId });
+        if (user) {
+          user.subscription.status = 'canceled';
+          user.subscription.endDate = new Date();
+          await user.save();
+        }
+        break;
+      }
+      default:
+        break;
+    }
+
+    res.json({ received: true });
+  } catch (error) {
+    console.error('🔥 Webhook error:', error);
+    res.status(400).send('Webhook handler failed');
+  }
+});
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -55,6 +128,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/calendly', require('./routes/calendly'));
+app.use('/api/billing', require('./routes/billing'));
 
 // Handle 404 routes (Express 5 compatible)
 app.use((req, res) => {

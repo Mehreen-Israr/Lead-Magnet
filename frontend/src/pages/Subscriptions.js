@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 import { AnimatedSection, useStaggeredAnimation } from '../hooks/useScrollAnimation';
 import './Subscriptions.css';
 
 const Subscriptions = () => {
+  const { user, updateUser, isLoggedIn } = useAuth();
   const [activeSubscriptions, setActiveSubscriptions] = useState([]);
   const [availablePackages, setAvailablePackages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,6 +126,25 @@ const Subscriptions = () => {
     }, 1000);
   }, []);
 
+  // Handle success/cancel from Stripe and refresh user
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('status');
+    if (status === 'success') {
+      const token = localStorage.getItem('token');
+      const apiBase = process.env.REACT_APP_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:10000';
+      if (token) {
+        axios.get(`${apiBase}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).then((res) => {
+          if (res?.data?.success && res?.data?.user) {
+            updateUser(res.data.user);
+          }
+        }).catch(() => {});
+      }
+    }
+  }, [updateUser]);
+
   const handleCancelSubscription = (subscriptionId) => {
     if (window.confirm('Are you sure you want to cancel this subscription?')) {
       setActiveSubscriptions(prev => 
@@ -140,9 +162,69 @@ const Subscriptions = () => {
     alert('Upgrade functionality would be implemented here');
   };
 
-  const handleSubscribeToPackage = (packageId) => {
-    // In real app, this would navigate to checkout
-    alert('Subscription checkout would be implemented here');
+  // Update the handleSubscribeToPackage function
+  const handleSubscribeToPackage = async (packageId) => {
+    try {
+      // Map package IDs to subscription plans
+      const planMap = {
+        1: 'free',
+        2: 'pro', 
+        3: 'business',
+        4: 'enterprise'
+      };
+      
+      const plan = planMap[packageId];
+      if (!plan) {
+        return alert('Unknown subscription plan');
+      }
+  
+      const token = localStorage.getItem('token');
+      const apiBase = process.env.REACT_APP_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+  
+      const successUrl = `${window.location.origin}/subscriptions?status=success`;
+      const cancelUrl = `${window.location.origin}/subscriptions?status=cancel`;
+  
+      const sessionRes = await axios.post(`${apiBase}/api/billing/create-checkout-session`, {
+        plan,
+        successUrl,
+        cancelUrl
+      }, {
+        headers: { 
+          'Content-Type': 'application/json', 
+          Authorization: token ? `Bearer ${token}` : '' 
+        }
+      });
+  
+      if (sessionRes.data.success) {
+        if (sessionRes.data.url) {
+          // Redirect to Stripe Checkout
+          window.location.href = sessionRes.data.url;
+        } else if (sessionRes.data.redirectUrl) {
+          // Free plan activation
+          window.location.href = sessionRes.data.redirectUrl;
+        }
+      } else {
+        alert(sessionRes.data.message || 'Failed to start subscription');
+      }
+    } catch (error) {
+      console.error('Subscribe error:', error);
+      alert('Failed to start subscription. Please try again.');
+    }
+  };
+
+  const handleManageBilling = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const apiBase = process.env.REACT_APP_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:10000';
+      const res = await axios.post(`${apiBase}/api/billing/create-portal-session`, {
+        returnUrl: `${window.location.origin}/subscriptions`
+      }, { headers: { Authorization: token ? `Bearer ${token}` : '' } });
+      if (res?.data?.url) {
+        window.location.href = res.data.url;
+      }
+    } catch (e) {
+      alert('Unable to open billing portal.');
+    }
   };
 
   if (loading) {
@@ -170,6 +252,25 @@ const Subscriptions = () => {
             <p className="subscriptions-subtitle">
               Manage your active subscriptions and discover new packages to grow your business
             </p>
+            {isLoggedIn && user?.subscription && (
+              <div className="subscription-summary">
+                <span><strong>Plan:</strong> {(user.subscription.plan || 'free').toUpperCase()}</span>
+                <span className={`status-badge ${user.subscription.status || 'inactive'}`}>
+                  {user.subscription.status || 'inactive'}
+                </span>
+                {user.subscription.trialEnd && (
+                  <span><strong>Trial ends:</strong> {new Date(user.subscription.trialEnd).toLocaleDateString()}</span>
+                )}
+                {user.subscription.currentPeriodEnd && (
+                  <span><strong>Renews:</strong> {new Date(user.subscription.currentPeriodEnd).toLocaleDateString()}</span>
+                )}
+                {(user.subscription.status === 'active' || user.subscription.status === 'trialing' || user.subscription.status === 'past_due') && (
+                  <button className="btn-secondary" onClick={handleManageBilling}>
+                    Manage Subscription
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </AnimatedSection>
 

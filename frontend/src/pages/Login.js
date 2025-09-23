@@ -4,6 +4,7 @@ import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import './Login.css';
 import '../animations.css';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const { email, password } = formData;
@@ -48,15 +50,11 @@ const Login = () => {
       });
 
       if (response.data.success) {
-        // Store the JWT token and user data
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        // Use the auth context login method
+        login(response.data.token, response.data.user);
         
-        // Set axios default header for future requests
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-        
-        // Redirect to dashboard or home page
-        navigate('/services');
+        // Redirect to services page
+        navigate('/subscriptions');
       }
     } catch (err) {
       console.error('Login error:', err);
