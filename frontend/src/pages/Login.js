@@ -54,7 +54,7 @@ const Login = () => {
         login(response.data.token, response.data.user);
         
         // Redirect to services page
-        navigate('/services');
+        navigate('/subscriptions');
       }
     } catch (err) {
       console.error('Login error:', err);
