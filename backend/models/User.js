@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
+// Add this to your existing User schema
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -62,17 +63,30 @@ const userSchema = new mongoose.Schema({
   subscription: {
     plan: {
       type: String,
-      enum: ['free', 'basic', 'premium', 'enterprise'],
+      enum: ['free', 'pro', 'business', 'enterprise'],
       default: 'free'
     },
     status: {
       type: String,
-      enum: ['active', 'inactive', 'cancelled'],
+      enum: ['active', 'trialing', 'past_due', 'canceled', 'unpaid'],
       default: 'active'
     },
-    startDate: Date,
-    endDate: Date,
-    stripeCustomerId: String
+    stripeCustomerId: String,
+    stripeSubscriptionId: String,
+    stripePriceId: String,
+    currentPeriodStart: Date,
+    currentPeriodEnd: Date,
+    trialStart: Date,
+    trialEnd: Date,
+    cancelAtPeriodEnd: Boolean,
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now
+    }
   }
 }, {
   timestamps: true
