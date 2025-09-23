@@ -20,7 +20,7 @@ const Subscriptions = () => {
           id: 1,
           name: "Premium Service",
           platform: "Multi-Platform",
-          price: "$1697",
+          price: "$1060",
           period: "/month",
           status: "active",
           nextBilling: "2024-02-15",
@@ -48,12 +48,44 @@ const Subscriptions = () => {
             "Email support"
           ],
           logo: "/instagram.png"
+        },
+        {
+          id: 3,
+          name: "LinkedIn Starter",
+          platform: "LinkedIn",
+          price: "$299",
+          period: "/month",
+          status: "active",
+          nextBilling: "2024-02-18",
+          features: [
+            "1000 leads/month",
+            "Basic analytics",
+            "Email support", 
+            "Secure Payments"
+          ],
+          logo: "/linkedin.png"
+        },
+        {
+          id: 4,
+          name: "X Growth",
+          platform: "Twitter/X",
+          price: "$279",
+          period: "/month",
+          status: "active",
+          nextBilling: "2024-02-22",
+          features: [
+            "Unlimited posts",
+            "Advanced analytics", 
+            "Priority support",
+            "Dedicated dashboard"
+          ],
+          logo: "/twitter.png"
         }
       ]);
 
       setAvailablePackages([
         {
-          id: 3,
+          id: 5,
           name: "X Growth",
           platform: "Twitter/X",
           price: "$359",
@@ -70,7 +102,7 @@ const Subscriptions = () => {
           logo: "/twitter.png"
         },
         {
-          id: 4,
+          id: 6,
           name: "LinkedIn Starter",
           platform: "LinkedIn",
           price: "$299",
@@ -87,7 +119,7 @@ const Subscriptions = () => {
           logo: "/linkedin.png"
         },
         {
-          id: 5,
+          id: 7,
            name: "Instagram Growth",
           platform: "Instagram",
           price: "$359",
@@ -107,11 +139,11 @@ const Subscriptions = () => {
         
         },
         {
-          id: 6,
+          id: 8,
           name: "Premium Service",
           platform: "All Platforms",
-          price: "$1697",
-          originalPrice: "1060",
+          price: "$1060",
+          originalPrice: "1697",
           period: "/month",
           discount: "60% OFF",
           features: [
@@ -174,8 +206,10 @@ const Subscriptions = () => {
       const planMap = {
         1: 'free',
         2: 'pro', 
-        3: 'business',
-        4: 'enterprise'
+        5: 'business',
+        6: 'enterprise',
+        7: 'pro',
+        8: 'premium'
       };
       
       const plan = planMap[packageId];

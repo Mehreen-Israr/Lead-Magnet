@@ -120,7 +120,7 @@
 .subscriptions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 0 rem;
+  gap: 2rem;
   margin-bottom: 12%;
 }
 
@@ -141,28 +141,12 @@
   transition: all 0.3s ease;
   opacity: 1;
   transform: translateY(0);
-  width: 60vh;
-  margin: 0 auto; /* Center horizontally */
-}
-
-/* Add container styles to center cards */
-.subscription-cards-container {
+  position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2rem;
-  width: 100%;
-  padding: 2rem;
+  flex-direction: column;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .subscription-card {
-    width: 90%;
-    max-width: 400px;
-  }
-}
+/* Responsive adjustments - removed since using grid layout */
 .subscription-card.animate-in {
   opacity: 1;
   transform: translateY(0);
@@ -538,10 +522,7 @@
     max-width: 1000px;
   }
   
-  .subscriptions-grid {
-    grid-template-columns: 1fr;
-  }
-  
+  .subscriptions-grid,
   .packages-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
