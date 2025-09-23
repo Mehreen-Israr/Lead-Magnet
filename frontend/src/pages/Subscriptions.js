@@ -85,20 +85,20 @@ const Subscriptions = () => {
         },
         {
           id: 5,
-          name: "Facebook Pro",
-          platform: "Facebook",
-          price: "$449",
-          originalPrice: "$699",
-          period: "/month",
-          discount: "35% OFF",
+           name: "Instagram Growth",
+          platform: "Instagram",
+          price: "$359",
+          period: "/month", 
+          status: "active",
+          nextBilling: "2024-02-20",
           features: [
-            "Advanced targeting",
-            "Campaign optimization",
-            "Detailed analytics",
-            "24/7 Support"
+            "Content scheduling",
+            "Hashtag optimization",
+            "Basic analytics",
+            "Email support"
           ],
-          trialDays: 14,
-          logo: "/logo192.png"
+          logo: "/instagram.png"
+        
         },
         {
           id: 6,
