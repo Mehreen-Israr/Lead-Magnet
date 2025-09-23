@@ -85,8 +85,8 @@ const GrowthPlanSection = () => {
     },
     {
       name: "Premium Service",
-      price: "$1697",
-      originalPrice: "1060",
+      price: "$1060",
+      originalPrice: "1697",
       period: "/month",
       discount: "60% OFF",
       features: [

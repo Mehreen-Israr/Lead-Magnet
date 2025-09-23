@@ -57,7 +57,7 @@ const Subscriptions = () => {
           name: "X Growth",
           platform: "Twitter/X",
           price: "$359",
-          originalPrice: "$599",
+          originalPrice: "599",
           period: "/month",
           discount: "40% OFF",
           features: [
@@ -74,7 +74,7 @@ const Subscriptions = () => {
           name: "LinkedIn Starter",
           platform: "LinkedIn",
           price: "$299",
-          originalPrice: "$499", 
+          originalPrice: "499", 
           period: "/month",
           discount: "40% OFF",
           features: [
@@ -91,7 +91,9 @@ const Subscriptions = () => {
            name: "Instagram Growth",
           platform: "Instagram",
           price: "$359",
+          originalPrice: "599",
           period: "/month", 
+          discount: "40% OFF",
           status: "active",
           nextBilling: "2024-02-20",
           features: [
@@ -100,24 +102,27 @@ const Subscriptions = () => {
             "Basic analytics",
             "Email support"
           ],
+          trialDays: 14,
           logo: "/instagram.png"
         
         },
         {
           id: 6,
-          name: "Enterprise Suite",
+          name: "Premium Service",
           platform: "All Platforms",
-          price: "$2499",
-          originalPrice: "$3999",
+          price: "$1697",
+          originalPrice: "1060",
           period: "/month",
-          discount: "37% OFF",
+          discount: "60% OFF",
           features: [
-            "Unlimited everything",
-            "Custom integrations",
-            "Dedicated manager",
-            "White-label solution"
+            "Support for 5 Channels",
+            "Scalable for business growth",
+            "Access to advanced analytics and reporting",
+            "Priority Support",
+            "Multi-platform compaign Management",
+            "Advanced Automation workflows"
           ],
-          trialDays: 30,
+          trialDays: 14,
           logo: "/premium.png"
         }
       ]);
