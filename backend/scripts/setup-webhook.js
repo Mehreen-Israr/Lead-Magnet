@@ -6,7 +6,7 @@ async function setupWebhook() {
     const response = await axios.post(
       'https://api.calendly.com/webhook_subscriptions',
       {
-        url: 'https://cf82ccda6315.ngrok-free.app/api/calendly/webhook',
+        url: process.env.WEBHOOK_URL || 'https://your-domain.com/api/calendly/webhook',
         events: [
           'invitee.created',
           'invitee.canceled',
