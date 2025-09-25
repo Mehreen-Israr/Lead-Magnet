@@ -121,6 +121,24 @@ app.use(express.urlencoded({ extended: true }));
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/leadmagnet')
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
+// MongoDB Connection - Strict Environment Variable Validation
+if (!process.env.MONGODB_URI) {
+  console.error('❌ FATAL ERROR: MONGODB_URI environment variable is not defined');
+  console.error('Please set MONGODB_URI in your .env file');
+  process.exit(1);
+}
+
+console.log('🔗 Attempting to connect to MongoDB...');
+mongoose.connect(process.env.MONGODB_URI)
+.then(() => {
+  console.log('✅ MongoDB Connected Successfully');
+  console.log(`📍 Connected to: ${process.env.MONGODB_URI.replace(/\/\/.*@/, '//***:***@')}`); // Hide credentials in logs
+})
+.catch(err => {
+  console.error('❌ MongoDB connection error:', err.message);
+  console.error('🔧 Please check your MONGODB_URI environment variable');
+  process.exit(1);
+});
 
 app.get('/', (req, res) => {
   res.json({ message: 'Lead Magnet API is running!' });

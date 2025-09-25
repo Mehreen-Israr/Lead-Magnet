@@ -179,7 +179,6 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
 }
 
 .submit-btn:hover:not(:disabled) {
@@ -221,12 +220,19 @@
   transition: all 0.3s ease;
 }
 
-.contact-info-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.contact-info-card[style*="cursor: pointer"]:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
   border-color: #FFD700;
+  transition: all 0.3s ease;
 }
 
+.contact-info-card[style*="cursor: pointer"]:hover .info-icon,
+.contact-info-card[style*="cursor: pointer"]:hover h3,
+.contact-info-card[style*="cursor: pointer"]:hover .info-details {
+  color: #FFD700;
+  transition: color 0.3s ease;
+}
 .info-icon {
   font-size: 2rem;
   margin-bottom: 0.5rem;

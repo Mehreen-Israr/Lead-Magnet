@@ -1,8 +1,20 @@
 import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import './About.css';
 import '../animations.css';
 
 const About = () => {
+  const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
+  
+  const handleStartFreeTrial = () => {
+    if (isLoggedIn) {
+      navigate('/subscriptions');
+    } else {
+      navigate('/login');
+    }
+  };
   const values = [
     {
       icon: "/about1.png",
@@ -192,8 +204,12 @@ const About = () => {
           <h2>Ready to Join Our Success Story?</h2>
           <p>Let's work together to transform your lead generation and grow your business.</p>
           <div className="cta-buttons">
-            <button className="btn-primaryAbout">Start Free Trial</button>
-            
+            <button 
+              className="btn-primaryAbout"
+              onClick={handleStartFreeTrial}
+            >
+              Start Free Trial
+            </button>
           </div>
         </div>
       </section>

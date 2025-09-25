@@ -128,7 +128,7 @@
 
 .footer-title::after {
   content: '';
-  position: absolute;
+  
   bottom: -8px;
   left: 29%; /* Offset the yellow line slightly to the right */
   width: 30px;

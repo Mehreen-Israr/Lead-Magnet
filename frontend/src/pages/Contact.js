@@ -120,7 +120,8 @@ const Contact = () => {
       icon: "📧",
       title: "Email Us",
       details: "contact@magnetleads.ai",
-      description: "Get in touch for any questions or support needs"
+      description: "Get in touch for any questions or support needs",
+      link: "https://mail.google.com/mail/?view=cm&fs=1&to=contact@magnetleads.ai"
     },
     {
       icon: "📞",
@@ -129,32 +130,14 @@ const Contact = () => {
       description: "Speak directly with our lead generation experts"
     },
     {
-  icon: "📍",
-  title: "Our Location",
-  details: "330 East Charleston Road, Palo Alto, 94306 California",
-  description: "Visit us at our office for a personalized consultation"
-}
-
-  ];
-
-  const faqs = [
-    {
-      question: "How quickly can I start receiving leads?",
-      answer: "Most campaigns are live within 24-48 hours of signup. You'll typically see your first leads within the first week."
-    },
-    {
-      question: "What platforms do you support?",
-      answer: "We currently support LinkedIn, Instagram, and X (Twitter) with plans to expand to additional platforms."
-    },
-    {
-      question: "Can I cancel my subscription anytime?",
-      answer: "Yes, you can cancel your subscription at any time with no cancellation fees or penalties."
-    },
-    {
-      question: "Do you offer custom solutions for enterprise clients?",
-      answer: "Absolutely! We provide custom enterprise solutions with dedicated account management and tailored strategies."
+      icon: "📍",
+      title: "Our Location",
+      details: "330 East Charleston Road, Palo Alto, 94306 California",
+      description: "Visit us at our office for a personalized consultation",
+      link: "https://www.google.com/maps/search/?api=1&query=330+East+Charleston+Road+Palo+Alto+94306+California"
     }
   ];
+
 
   return (
     <div className="contact">
@@ -311,6 +294,8 @@ const Contact = () => {
                     ref={el => observerRefs.current[index] = el}
                     data-index={index}
                     className={`contact-info-card scale-in ${visibleCards.includes(index) ? 'animate' : ''}`}
+                    onClick={() => info.link && window.open(info.link, '_blank')}
+                    style={{ cursor: info.link ? 'pointer' : 'default' }}
                   >
                     <div className="info-icon">{info.icon}</div>
                     <h3>{info.title}</h3>
@@ -368,8 +353,6 @@ const Contact = () => {
           </div>
         </div>
       </section>
-
-      {/* FAQ Section */}
       
     </div>
   );
