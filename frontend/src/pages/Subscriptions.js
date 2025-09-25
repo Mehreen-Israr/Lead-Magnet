@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { AnimatedSection, useStaggeredAnimation } from '../hooks/useScrollAnimation';
 import useEmblaCarousel from 'embla-carousel-react';
+import { API_ENDPOINTS, apiCall, API_BASE_URL } from '../config/api';
 import './Subscriptions.css';
 
 const Subscriptions = () => {
@@ -17,7 +18,7 @@ const Subscriptions = () => {
   // Embla Carousel setup (same as GrowthPlanSection)
   const options = {
     align: 'start',
-    containScroll: 'trimSnaps',
+    containScroll: false, // Allow scrolling to all slides
     dragFree: false,
     loop: false,
     skipSnaps: false,
@@ -26,11 +27,13 @@ const Subscriptions = () => {
     breakpoints: {
       '(max-width: 768px)': { 
         slidesToScroll: 1,
-        align: 'center'
+        align: 'start', // Changed from 'center' to 'start' for better mobile scrolling
+        containScroll: false // Ensure we can reach all slides on mobile
       },
       '(max-width: 992px)': { 
         slidesToScroll: 1,
-        align: 'start'
+        align: 'start',
+        containScroll: false
       }
     }
   };
@@ -40,28 +43,45 @@ const Subscriptions = () => {
   // Debug carousel state
   useEffect(() => {
     if (emblaApi) {
-      console.log('🎠 Embla API initialized');
-      console.log('🎠 Total slides:', emblaApi.slideNodes().length);
-      console.log('🎠 Available packages:', availablePackages.length);
-      console.log('🎠 Can scroll prev:', emblaApi.canScrollPrev());
-      console.log('🎠 Can scroll next:', emblaApi.canScrollNext());
-      console.log('🎠 Current slide index:', emblaApi.selectedScrollSnap());
+      console.log('Carousel API initialized');
+      console.log('Total slides:', emblaApi.slideNodes().length);
+      console.log('Available packages:', availablePackages.length);
+      console.log('Can scroll prev:', emblaApi.canScrollPrev());
+      console.log('Can scroll next:', emblaApi.canScrollNext());
+      console.log('Current slide index:', emblaApi.selectedScrollSnap());
     }
   }, [emblaApi, availablePackages]);
 
   // Reinitialize carousel when packages change
   useEffect(() => {
     if (emblaApi && availablePackages.length > 0) {
-      console.log('🔄 Reinitializing carousel with', availablePackages.length, 'packages');
+      console.log('Reinitializing carousel with', availablePackages.length, 'packages');
       // Add a small delay to ensure DOM is updated
       setTimeout(() => {
         emblaApi.reInit();
-        console.log('🔄 Carousel reinitialized');
-        console.log('🔄 After reinit - Can scroll prev:', emblaApi.canScrollPrev());
-        console.log('🔄 After reinit - Can scroll next:', emblaApi.canScrollNext());
-        console.log('🔄 After reinit - Total slides:', emblaApi.slideNodes().length);
-        // Force scroll to first slide to ensure proper initialization
-        emblaApi.scrollTo(0);
+        console.log('Carousel reinitialized');
+        console.log('After reinit - Can scroll prev:', emblaApi.canScrollPrev());
+        console.log('After reinit - Can scroll next:', emblaApi.canScrollNext());
+        console.log('After reinit - Total slides:', emblaApi.slideNodes().length);
+        
+        // Test if we can scroll to the last slide
+        if (emblaApi.slideNodes().length > 0) {
+          const lastSlideIndex = emblaApi.slideNodes().length - 1;
+          console.log('Last slide index:', lastSlideIndex);
+          console.log('Can scroll to last slide:', emblaApi.canScrollNext() || emblaApi.selectedScrollSnap() === lastSlideIndex);
+          
+          // Test scroll to last slide
+          setTimeout(() => {
+            console.log('Testing scroll to last slide...');
+            emblaApi.scrollTo(lastSlideIndex);
+            setTimeout(() => {
+              console.log('After scroll to last - Current index:', emblaApi.selectedScrollSnap());
+              console.log('After scroll to last - Can scroll next:', emblaApi.canScrollNext());
+              // Return to first slide
+              emblaApi.scrollTo(0);
+            }, 100);
+          }, 300);
+        }
       }, 200); // Increased delay to ensure proper DOM rendering
     }
   }, [emblaApi, availablePackages]);
@@ -106,13 +126,13 @@ const Subscriptions = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem('token');
-        const apiBase = 'http://localhost:5000'; // Force local backend for development
         
         // Fetch available packages
-        const packagesRes = await axios.get(`${apiBase}/api/packages`);
-        if (packagesRes?.data?.success) {
-          console.log('✅ Subscriptions page - Packages fetched from database:', packagesRes.data.packages);
-          const transformedPackages = packagesRes.data.packages.map(pkg => ({
+        console.log('Fetching packages from:', API_ENDPOINTS.PACKAGES);
+        const packagesData = await apiCall(API_ENDPOINTS.PACKAGES);
+        if (packagesData?.success) {
+          console.log('Subscriptions page - Packages fetched from database:', packagesData.packages);
+          const transformedPackages = packagesData.packages.map(pkg => ({
             id: pkg._id,
             name: pkg.name,
             platform: pkg.platform,
@@ -128,7 +148,7 @@ const Subscriptions = () => {
           }));
           setAvailablePackages(transformedPackages);
         } else {
-          console.log('❌ Subscriptions page - API response not successful:', packagesRes.data);
+          console.log('Subscriptions page - API response not successful:', packagesData);
         }
 
         // Check user's subscription status from user context
@@ -136,7 +156,7 @@ const Subscriptions = () => {
           const userSub = user.subscription;
           if (userSub.status === 'active' || userSub.status === 'trialing') {
             // Find the package details for user's subscription
-            const userPackage = packagesRes.data.packages.find(pkg => 
+            const userPackage = packagesData.packages.find(pkg => 
               pkg.stripePriceId === userSub.stripePriceId
             );
             
@@ -160,10 +180,19 @@ const Subscriptions = () => {
         
         setLoading(false);
       } catch (error) {
-        console.error('❌ Error fetching data:', error);
-        console.error('❌ Error details:', error.response?.data);
-        console.error('❌ Error status:', error.response?.status);
+        console.error('Error fetching data:', error);
+        console.error('Error details:', {
+          message: error.message,
+          endpoint: API_ENDPOINTS.PACKAGES,
+          hostname: window.location.hostname,
+          response: error.response?.data,
+          status: error.response?.status
+        });
         setActiveSubscriptions([]);
+        
+        // Show user-friendly error message
+        console.warn('⚠️ Failed to load packages from database. This might be a network issue or the backend is not accessible.');
+        
         // Fallback packages to show UI working
         setAvailablePackages([
           {
@@ -206,7 +235,8 @@ const Subscriptions = () => {
     const status = params.get('status');
     if (status === 'success') {
       const token = localStorage.getItem('token');
-      const apiBase = process.env.REACT_APP_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+      // Use dynamic API configuration
+      const apiBase = API_BASE_URL;
       if (token) {
         axios.get(`${apiBase}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -250,7 +280,8 @@ const Subscriptions = () => {
       }
 
       const token = localStorage.getItem('token');
-      const apiBase = process.env.REACT_APP_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+      // Use dynamic API configuration
+      const apiBase = API_BASE_URL;
 
       const successUrl = `${window.location.origin}/subscriptions?status=success`;
       const cancelUrl = `${window.location.origin}/subscriptions?status=cancel`;
@@ -286,7 +317,8 @@ const Subscriptions = () => {
   const handleManageBilling = async () => {
     try {
       const token = localStorage.getItem('token');
-      const apiBase = process.env.REACT_APP_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+      // Use dynamic API configuration
+      const apiBase = API_BASE_URL;
       const res = await axios.post(`${apiBase}/api/billing/create-portal-session`, {
         returnUrl: `${window.location.origin}/subscriptions`
       }, { headers: { Authorization: token ? `Bearer ${token}` : '' } });
@@ -438,7 +470,13 @@ const Subscriptions = () => {
             ) : (
               <div className="empty-state">
                 <div className="empty-state-content">
-                  <div className="empty-state-icon">📦</div>
+                  <div className="empty-state-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                      <polyline points="3.27,6.96 12,12.01 20.73,6.96"/>
+                      <line x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                  </div>
                   <h3>No Active Subscriptions</h3>
                   <p>Looks like you haven’t subscribed yet!</p>
                   <button 

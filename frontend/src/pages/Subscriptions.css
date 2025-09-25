@@ -268,17 +268,29 @@
 }
 
 .Subscription-section-title::before {
-  content: '📦';
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FFD700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpolyline points='3.27,6.96 12,12.01 20.73,6.96'/%3E%3Cline x1='12' y1='22.08' x2='12' y2='12'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   font-size: 1.8rem;
   opacity: 0.8;
 }
 
 .Subscription-section-title.active::before {
-  content: '✅';
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2300ff00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .Subscription-section-title.available::before {
-  content: '🚀';
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23FFD700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5z'/%3E%3Cpath d='M2 17l10 5 10-5'/%3E%3Cpath d='M2 12l10 5 10-5'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .section-subtitle {
@@ -388,6 +400,7 @@
   .embla__container {
     gap: 20px;
     overflow: visible; /* Prevent clipping on mobile */
+    width: max-content; /* Allow container to expand for all slides */
   }
 }
 
@@ -649,7 +662,7 @@
 /* Legacy grid fallback */
 .packages-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   margin-bottom: 20%;
 }
@@ -1061,7 +1074,7 @@
   
   .subscriptions-grid,
   .packages-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
 }
 
@@ -1088,7 +1101,7 @@
   
   .subscriptions-grid,
   .packages-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
   }
   
@@ -1139,6 +1152,7 @@
     gap: 0; /* No gap on mobile */
     margin-left: 0;
     margin-right: 0;
+    width: max-content; /* Allow container to expand for all slides */
   }
   
   .empty-state {
@@ -1167,6 +1181,11 @@
   .subscription-card,
   .package-card {
     padding: 0.3rem; /* Even more compact padding for small mobile */
+  }
+  
+  .packages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
   }
   
   .subscription-price,
@@ -1199,5 +1218,17 @@
   
   .package-price {
     font-size: 1.4rem; /* Smaller price font for small mobile */
+  }
+}
+
+/* Very small screens - even narrower packages */
+@media (max-width: 360px) {
+  .packages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem;
+  }
+  
+  .package-card {
+    padding: 0.2rem; /* Minimal padding for very small screens */
   }
 }

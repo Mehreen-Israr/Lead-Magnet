@@ -13,7 +13,7 @@ const Services = () => {
     },
     {
       step: "02",
-      title: "AI Targeting",
+      title: "AI Setup & Configuration",
       description: "Our AI algorithms are configured to identify and target your ideal prospects with precision."
     },
     {
@@ -95,7 +95,7 @@ const Services = () => {
               </div>
               <h3 className="service-title">LINKEDIN STARTER</h3>
               <p className="service-description">
-                Professional networking at scale to connect with decision makers and industry leaders on the world's largest professional platform.
+                Professional networking at scale to connect with decision-makers and industry leaders on the world's largest professional platform.
               </p>
             </div>
             

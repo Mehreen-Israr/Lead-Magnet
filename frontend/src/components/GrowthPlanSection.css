@@ -60,7 +60,7 @@
 .pricing-card {
   background: rgba(30, 30, 30, 0.8);
   border-radius: 15px;
-  padding: 0.4rem; /* Ultra compact padding to make cards more narrow */
+  padding: 60px 30px 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   position: relative;
@@ -232,10 +232,10 @@
 }
 
 .plan-name {
-  font-size: 1.1rem; /* Much smaller font size for more compact cards */
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-top: 6px;
-  margin-bottom: 3px;
+  margin-top: 10px;
+  margin-bottom: 5px;
   color: #fff;
   text-align: center;
 }
@@ -268,7 +268,7 @@
 }
 
 .price {
-  font-size: 1.5rem; /* Much smaller font size for more compact cards */
+  font-size: 3rem;
   font-weight: 800;
   color: #FFD700;
 }
@@ -290,30 +290,29 @@
 .plan-features li {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 0.3rem; /* Much reduced margin for more compact cards */
+  margin-bottom: 15px;
   color: #ddd;
   text-align: left;
-  font-size: 0.8rem; /* Much smaller font size for features */
 }
 
 .check-icon {
-  width: 14px; /* Much smaller icon size for more compact cards */
-  height: 14px; /* Much smaller icon size for more compact cards */
-  margin-right: 6px; /* Much reduced margin */
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
   color: #FFD700;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .plan-button {
   width: 100%;
-  padding: 8px; /* Much smaller padding for more compact cards */
+  padding: 15px;
   border: none;
   border-radius: 8px;
   background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   color: #000;
   font-weight: 600;
-  font-size: 0.8rem; /* Much smaller font size for more compact cards */
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -358,82 +357,98 @@
   box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
 }
 
-/* Embla Carousel Custom Styles */
+/* Embla Carousel Custom Styles - Based on Subscriptions page approach */
 .pricing-carousel-container {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start; /* Changed from center to flex-start to align cards to the left */
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 5px; /* Even more minimal padding to maximize space for slides */
-  box-sizing: border-box;
-  overflow: visible; /* Simplified overflow control */
-  max-width: 1800px; /* Even larger max-width to accommodate 3 cards */
+  margin-top: 60px;
 }
 
 .embla {
+  overflow: hidden;
   position: relative;
-  padding: 35px 0 20px 0;
-  width: 100%;
-  margin-top: 40px;
-  overflow-x: visible; /* Changed to visible to prevent cutting off */
-  overflow-y: visible;
 }
-
 
 .embla__container {
   display: flex;
-  margin-top: 20px;
-  gap: 5px; /* Ultra minimal gap between slides */
-  margin-left: 0px; /* Removed negative margin to align first card to the left */
-  margin-right: -5px;
-  overflow: visible; /* Ensure content is visible */
-  width: max-content; /* Ensure container can expand to fit all slides */
+  gap: 2rem;
+  padding: 20px 0;
 }
 
 .embla__slide {
   flex: 0 0 auto;
   min-width: 0;
-  padding: 0 8px; /* Reduced padding to move cards closer together */
-  transition: transform 0.5s ease;
-  height: auto; /* Ensure natural height */
-  overflow: visible; /* Prevent clipping of content */
+  width: 350px; /* Fixed width like Subscriptions page */
 }
 
-/* Responsive slide widths */
-.embla__slide {
-  flex: 0 0 calc(28% - 3px); /* Much narrower for better fit */
-  min-width: 250px; /* Much smaller minimum width */
-  max-width: calc(28% - 3px); /* Prevent slides from being too wide */
-}
-
-/* First slide alignment - reduce left padding */
-.embla__slide:first-child {
-  padding-left: 0px; /* Remove left padding from first slide */
-}
-
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
   .embla__slide {
-    flex: 0 0 calc(33.333% - 20px); /* Still 3 slides */
+    width: 320px;
   }
-}
-
-@media (max-width: 992px) {
-  .embla__slide {
-    flex: 0 0 calc(50% - 20px); /* 2 slides on tablet */
+  
+  .embla-nav-button {
+    display: none;
   }
 }
 
 @media (max-width: 768px) {
+  .growth-plan-section {
+    padding: 80px 0;
+  }
+  
+  .growth-plan-title {
+    font-size: 2.5rem;
+  }
+  
+  .growth-plan-subtitle {
+    font-size: 1.1rem;
+  }
+  
   .embla__slide {
-    flex: 0 0 calc(100% - 20px); /* 1 slide on mobile */
-    overflow: visible; /* Ensure content is accessible */
+    width: 200px; /* Much narrower for mobile */
   }
   
   .embla__container {
-    gap: 20px;
-    overflow: visible; /* Prevent clipping on mobile */
+    gap: 1.5rem;
+    width: max-content; /* Allow container to expand for all slides */
+    min-width: 100%; /* Ensure minimum width */
+  }
+  
+  .pricing-card {
+    padding: 30px 20px;
+  }
+  
+  .plan-price-amount {
+    font-size: 2.5rem;
+  }
+  
+  /* Fix discount badge positioning on mobile */
+  .discount-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    white-space: nowrap;
+    background: #ff4444;
+    color: white;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  
+  /* Ensure popular badge doesn't interfere */
+  .popular-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    background: #FFD700;
+    color: #000;
+    border-radius: 4px;
+    font-weight: 600;
   }
 }
 
@@ -601,43 +616,7 @@
 
 @media (max-width: 768px) {
   .pricing-carousel-container {
-    padding: 0 1px; /* Ultra minimal padding for mobile */
-    max-width: 100%; /* Full width on mobile */
-  }
-  
-  .embla__slide {
-    flex: 0 0 50%; /* Much narrower for mobile */
-    min-width: 50%; /* Ensure proper width */
-    max-width: 50%; /* Prevent overflow */
-    padding: 0 0px; /* No padding */
-  }
-  
-  .embla__container {
-    gap: 0; /* No gap on mobile */
-    margin-left: 0;
-    margin-right: 0;
-  }
-  
-  .pricing-card {
-    padding: 0.3rem; /* Ultra compact padding for mobile */
-  }
-  
-  .plan-name {
-    font-size: 1.2rem; /* Smaller font for mobile */
-  }
-  
-  .price {
-    font-size: 1.8rem; /* Smaller price for mobile */
-  }
-  
-  .plan-features li {
-    font-size: 0.85rem; /* Smaller features for mobile */
-    margin-bottom: 8px; /* Reduced margin for mobile */
-  }
-  
-  .plan-button {
-    padding: 10px; /* Smaller button padding for mobile */
-    font-size: 0.85rem; /* Smaller button font for mobile */
+    padding: 0 50px; /* Adjusted padding for mobile */
   }
   
   .embla-nav-button {
@@ -664,37 +643,26 @@
 }
 
 @media (max-width: 480px) {
-  .pricing-carousel-container {
-    padding: 0 0px; /* No padding for small mobile */
+  .growth-plan-title {
+    font-size: 2rem;
   }
   
   .embla__slide {
-    flex: 0 0 45%; /* Much narrower for small mobile */
-    min-width: 45%;
-    max-width: 45%;
-    padding: 0 0px; /* No padding */
+    width: 180px; /* Even narrower for small mobile */
+  }
+  
+  .embla__container {
+    gap: 1rem;
+    width: max-content; /* Allow container to expand for all slides */
+    min-width: 100%; /* Ensure minimum width */
   }
   
   .pricing-card {
-    padding: 0.25rem; /* Ultra compact padding for small mobile */
+    padding: 25px 15px;
   }
   
-  .plan-name {
-    font-size: 1.1rem; /* Even smaller font for small mobile */
-  }
-  
-  .price {
-    font-size: 1.6rem; /* Even smaller price for small mobile */
-  }
-  
-  .plan-features li {
-    font-size: 0.8rem; /* Even smaller features for small mobile */
-    margin-bottom: 6px; /* Even more reduced margin for small mobile */
-  }
-  
-  .plan-button {
-    padding: 8px; /* Even smaller button padding for small mobile */
-    font-size: 0.8rem; /* Even smaller button font for small mobile */
+  .plan-price-amount {
+    font-size: 2rem;
   }
   
   .embla-nav-button {
@@ -710,41 +678,41 @@
   .embla-nav-next {
     right: 5px;
   }
+  
+  /* Smaller discount badge for small mobile */
+  .discount-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    white-space: nowrap;
+    background: #ff4444;
+    color: white;
+    border-radius: 3px;
+    font-weight: 600;
+  }
 }
 
 /* Additional safety for very small screens */
 @media (max-width: 360px) {
-  .pricing-carousel-container {
-    padding: 0 0px; /* No padding for very small screens */
+  .embla__slide {
+    width: 160px; /* Very narrow for very small screens */
   }
   
-  .embla__slide {
-    flex: 0 0 40%; /* Much narrower for very small screens */
-    min-width: 40%;
-    max-width: 40%;
-    padding: 0 0px; /* No padding */
+  .embla__container {
+    gap: 0.5rem;
+    width: max-content; /* Allow container to expand for all slides */
+    min-width: 100%; /* Ensure minimum width */
   }
   
   .pricing-card {
-    padding: 0.2rem; /* Ultra compact padding for very small screens */
+    padding: 20px 10px;
   }
   
-  .plan-name {
-    font-size: 1rem; /* Ultra small font for very small screens */
-  }
-  
-  .price {
-    font-size: 1.4rem; /* Ultra small price for very small screens */
-  }
-  
-  .plan-features li {
-    font-size: 0.75rem; /* Ultra small features for very small screens */
-    margin-bottom: 4px; /* Ultra reduced margin for very small screens */
-  }
-  
-  .plan-button {
-    padding: 6px; /* Ultra small button padding for very small screens */
-    font-size: 0.75rem; /* Ultra small button font for very small screens */
+  .plan-price-amount {
+    font-size: 1.8rem;
   }
   
   .embla-nav-button {
@@ -759,30 +727,24 @@
   
   .embla-nav-next {
     right: 3px;
+  }
+  
+  /* Smallest discount badge for very small screens */
+  .discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    white-space: nowrap;
+    background: #ff4444;
+    color: white;
+    border-radius: 2px;
+    font-weight: 600;
   }
 }
 
-/* Additional safety for very small screens */
-@media (max-width: 360px) {
-  .pricing-carousel-container {
-    padding: 0 40px;
-    overflow: visible; /* Ensure content accessibility */
-  }
-  
-  .embla-nav-button {
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
-  }
-  
-  .embla-nav-prev {
-    left: 3px;
-  }
-  
-  .embla-nav-next {
-    right: 3px;
-  }
-}
 
 /* Ensure proper card height and spacing */
 .pricing-card.popular {
@@ -794,4 +756,35 @@
 /* Show navigation buttons on all screen sizes */
 .embla-nav-button {
   display: flex !important;
+}
+
+/* Ensure proper scrolling to last slide */
+.embla {
+  overflow: hidden;
+}
+
+.embla__container {
+  will-change: transform;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+.embla {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+  
+  .embla__container {
+    display: flex;
+    will-change: transform;
+    width: max-content; /* Allow container to expand for all slides */
+    min-width: 100%; /* Ensure minimum width */
+  }
+  
+  /* Ensure smooth scrolling on mobile */
+  .embla__slide {
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
 }
