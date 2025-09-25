@@ -227,12 +227,17 @@
   transition: all 0.3s ease;
 }
 
-.contact-info-card[style*="cursor: pointer"]:hover .info-icon,
-.contact-info-card[style*="cursor: pointer"]:hover h3,
-.contact-info-card[style*="cursor: pointer"]:hover .info-details {
+/* keep hover effect for icon */
+.contact-info-card[style*="cursor: pointer"]:hover .info-icon {
   color: #FFD700;
   transition: color 0.3s ease;
 }
+
+.contact-info-card[style*="cursor: pointer"]:hover .info-details {
+  color: #073364;
+  transition: color 0.3s ease;
+}
+
 .info-icon {
   font-size: 2rem;
   margin-bottom: 0.5rem;

@@ -241,6 +241,16 @@
   color: #FFD700;
 }
 
+.contact-link {
+  color: #fff; /* default */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+  color: #FFD700; /* for contrast with yellow hover background */
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .footer-container {
