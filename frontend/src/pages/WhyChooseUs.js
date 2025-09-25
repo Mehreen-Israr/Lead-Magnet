@@ -56,19 +56,19 @@ const WhyChooseUs = () => {
     {
       icon: "/3.png",
       title: "Smart analytics dashboard",
-      description: "Monitor, analyze, and optimize your campaigns with a user-friendly, data-driven dashboard",
+      description: "Monitor, analyze, and optimize your campaigns with a user-friendly, data-driven dashboard built for growth.",
       direction: "right"
     },
     {
       icon: "/4.png",
       title: "Cost-effective subscription plans",
-      description: "Choose flexible plans designed to deliver maximum value without breaking the budget.",
+      description: "Choose flexible plans designed to deliver maximum value without breaking the budget or compromising on quality.",
       direction: "left"
     },
     {
       icon: "/5.png",
       title: "24/7 support",
-      description: "Our dedicated support team is always available to assist you and resolve any issues, anytime.",
+      description: "Our dedicated support team is always available to assist you and resolve any issues, anytime, ensuring a smooth experience.",
       direction: "up"
     },
      {

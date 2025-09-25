@@ -29,12 +29,12 @@ const About = () => {
     {
       icon: "/about2.png",
       title: "Data-Driven Results",
-      description: "Every campaign is backed by comprehensive analytics and real-time performance metrics."
+      description: "Every campaign is backed by comprehensive analytics and real time performance metrics."
     },
     {
       icon: "🤝",
       title: "Partnership Approach",
-      description: "We're not just a service provider - we're your growth partner committed to your success."
+      description: "We're not just a service provider, we're your growth partner committed to your success."
     }
   ];
 
@@ -152,16 +152,16 @@ const About = () => {
             </div>
             <div className="story-stats slide-up">
               <div className="stat-item scale-in animate-delay-1">
-                <span className="stat-number">500+</span>
-                <span className="stat-label">Businesses Served</span>
+                <span className="stat-number">1,000+</span>
+                <span className="stat-label">Verified leads per month</span>
               </div>
               <div className="stat-item scale-in animate-delay-2">
-                <span className="stat-number">1M+</span>
-                <span className="stat-label">Leads Generated</span>
+                <span className="stat-number">14</span>
+                <span className="stat-label">Day free trial</span>
               </div>
               <div className="stat-item scale-in animate-delay-3">
-                <span className="stat-number">95%</span>
-                <span className="stat-label">Client Satisfaction</span>
+                <span className="stat-number">3</span>
+                <span className="stat-label">Platforms supported</span>
               </div>
               <div className="stat-item scale-in animate-delay-4">
                 <span className="stat-number">24/7</span>
