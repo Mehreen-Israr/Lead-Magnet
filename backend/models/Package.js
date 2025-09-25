@@ -1,161 +1,110 @@
 const mongoose = require('mongoose');
 
 const packageSchema = new mongoose.Schema({
-  // Basic package information
   name: {
     type: String,
-    required: true,
-    trim: true
+    required: [true, 'Package name is required'],
+    trim: true,
+    maxlength: [100, 'Package name cannot exceed 100 characters']
   },
   platform: {
     type: String,
-    required: true,
-    enum: ['Instagram', 'LinkedIn', 'Twitter/X', 'Multi-Platform', 'All Platforms']
-  },
-  
-  // Pricing information
-  pricing: {
-    monthly: {
-      price: { type: Number, required: true },
-      originalPrice: { type: Number },
-      stripePriceId: { type: String, required: true }
-    },
-    quarterly: {
-      price: { type: Number },
-      originalPrice: { type: Number },
-      stripePriceId: { type: String }
-    },
-    yearly: {
-      price: { type: Number },
-      originalPrice: { type: Number },
-      stripePriceId: { type: String }
-    }
-  },
-  
-  currency: {
-    type: String,
-    default: 'USD'
-  },
-  
-  // Display information
-  discount: {
-    type: String // e.g., "40% OFF", "60% OFF"
-  },
-  popular: {
-    type: Boolean,
-    default: false
-  },
-  
-  // Trial information
-  trialDays: {
-    type: Number,
-    default: 14
-  },
-  
-  // Features list
-  features: [{
-    type: String,
-    required: true
-  }],
-  
-  // Visual elements
-  logo: {
-    type: String, // Path to logo image
-    required: true
+    required: [true, 'Platform is required'],
+    trim: true,
+    maxlength: [50, 'Platform name cannot exceed 50 characters']
   },
   description: {
     type: String,
-    required: true
+    trim: true,
+    maxlength: [500, 'Description cannot exceed 500 characters']
   },
-  
-  // Stripe integration
-  stripeProductId: {
-    type: String
+  price: {
+    type: Number,
+    required: [true, 'Price is required'],
+    min: [0, 'Price cannot be negative']
   },
-  
-  // Package status and ordering
+  originalPrice: {
+    type: Number,
+    min: [0, 'Original price cannot be negative']
+  },
+  currency: {
+    type: String,
+    default: 'USD',
+    enum: ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
+  },
+  billingPeriod: {
+    type: String,
+    required: [true, 'Billing period is required'],
+    enum: ['monthly', 'yearly', 'one-time'],
+    default: 'monthly'
+  },
+  discount: {
+    type: Number,
+    min: [0, 'Discount cannot be negative'],
+    max: [100, 'Discount cannot exceed 100%']
+  },
+  features: [{
+    type: String,
+    trim: true,
+    maxlength: [200, 'Feature description cannot exceed 200 characters']
+  }],
+  trialDays: {
+    type: Number,
+    default: 14,
+    min: [0, 'Trial days cannot be negative']
+  },
+  logo: {
+    type: String,
+    trim: true
+  },
+  stripePriceId: {
+    type: String,
+    trim: true
+  },
   isActive: {
     type: Boolean,
     default: true
+  },
+  isPopular: {
+    type: Boolean,
+    default: false
   },
   sortOrder: {
     type: Number,
     default: 0
   },
-  
-  // Admin metadata
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  updatedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+  metadata: {
+    type: Map,
+    of: String
   }
 }, {
   timestamps: true
 });
 
-// Indexes for efficient queries
+// Index for efficient queries
+packageSchema.index({ isActive: 1, sortOrder: 1 });
 packageSchema.index({ platform: 1, isActive: 1 });
-packageSchema.index({ popular: -1, sortOrder: 1 });
-packageSchema.index({ 'pricing.monthly.stripePriceId': 1 });
-packageSchema.index({ 'pricing.quarterly.stripePriceId': 1 });
-packageSchema.index({ 'pricing.yearly.stripePriceId': 1 });
 
-// Virtual for formatted price display
-packageSchema.virtual('monthlyFormattedPrice').get(function() {
-  return `$${this.pricing.monthly.price}`;
+// Virtual for formatted price
+packageSchema.virtual('formattedPrice').get(function() {
+  return `$${this.price}`;
 });
 
-// Virtual for discount calculation
-packageSchema.virtual('monthlyDiscountPercentage').get(function() {
-  const monthly = this.pricing.monthly;
-  if (monthly.originalPrice && monthly.originalPrice > monthly.price) {
-    return Math.round(((monthly.originalPrice - monthly.price) / monthly.originalPrice) * 100);
+// Virtual for formatted original price
+packageSchema.virtual('formattedOriginalPrice').get(function() {
+  return this.originalPrice ? `$${this.originalPrice}` : null;
+});
+
+// Virtual for discount percentage
+packageSchema.virtual('discountPercentage').get(function() {
+  if (this.originalPrice && this.originalPrice > this.price) {
+    return Math.round(((this.originalPrice - this.price) / this.originalPrice) * 100);
   }
-  return 0;
+  return this.discount || 0;
 });
 
-// Static method to get active packages
-packageSchema.statics.getActivePackages = function() {
-  return this.find({ isActive: true }).sort({ popular: -1, sortOrder: 1 });
-};
-
-// Static method to get packages by platform
-packageSchema.statics.getByPlatform = function(platform) {
-  return this.find({ platform, isActive: true }).sort({ sortOrder: 1 });
-};
-
-// Static method to find by Stripe Price ID
-packageSchema.statics.findByStripePriceId = function(priceId) {
-  return this.findOne({
-    $or: [
-      { 'pricing.monthly.stripePriceId': priceId },
-      { 'pricing.quarterly.stripePriceId': priceId },
-      { 'pricing.yearly.stripePriceId': priceId }
-    ]
-  });
-};
-
-// Instance method to get pricing for specific billing cycle
-packageSchema.methods.getPricing = function(billingCycle = 'monthly') {
-  return this.pricing[billingCycle] || this.pricing.monthly;
-};
-
-// Instance method to check if package has discount for specific billing cycle
-packageSchema.methods.hasDiscount = function(billingCycle = 'monthly') {
-  const pricing = this.getPricing(billingCycle);
-  return pricing.originalPrice && pricing.originalPrice > pricing.price;
-};
-
-// Instance method to get all available billing cycles
-packageSchema.methods.getAvailableBillingCycles = function() {
-  const cycles = [];
-  if (this.pricing.monthly && this.pricing.monthly.stripePriceId) cycles.push('monthly');
-  if (this.pricing.quarterly && this.pricing.quarterly.stripePriceId) cycles.push('quarterly');
-  if (this.pricing.yearly && this.pricing.yearly.stripePriceId) cycles.push('yearly');
-  return cycles;
-};
+// Ensure virtual fields are serialized
+packageSchema.set('toJSON', { virtuals: true });
+packageSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('Package', packageSchema);

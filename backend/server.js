@@ -152,12 +152,27 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Test endpoint for packages
+app.get('/test-packages', async (req, res) => {
+  try {
+    const Package = require('./models/Package');
+    const packages = await Package.find({ isActive: true });
+    res.json({
+      success: true,
+      count: packages.length,
+      packages: packages.map(p => ({ name: p.name, platform: p.platform, price: p.price }))
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/calendly', require('./routes/calendly'));
 app.use('/api/billing', require('./routes/billing'));
-app.use('/api/packages', require('./routes/packages')); // ADD THIS LINE!
+app.use('/api/packages', require('./routes/packages'));
 
 // 404 handler
 app.use((req, res) => {

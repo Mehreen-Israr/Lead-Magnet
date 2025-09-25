@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Subscriptions Packages</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .package-card { 
+            border: 1px solid #ddd; 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-radius: 8px; 
+            background: #f9f9f9;
+            display: inline-block;
+            width: 300px;
+            margin: 10px;
+            vertical-align: top;
+        }
+        .package-name { font-weight: bold; color: #333; font-size: 18px; }
+        .package-platform { color: #666; margin: 5px 0; }
+        .package-price { color: #007bff; font-size: 20px; font-weight: bold; }
+        .package-features { margin: 10px 0; }
+        .feature { margin: 5px 0; }
+        .discount-badge { 
+            background: #ff4444; 
+            color: white; 
+            padding: 5px 10px; 
+            border-radius: 15px; 
+            font-size: 12px; 
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .trial-info { color: #28a745; font-weight: bold; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test Subscriptions Page Packages</h1>
+    <button onclick="testSubscriptionsPackages()">Test Subscriptions Packages</button>
+    <div id="result"></div>
+
+    <script>
+        async function testSubscriptionsPackages() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                console.log('Testing subscriptions packages API...');
+                const response = await fetch('http://localhost:5000/api/packages');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('API Response:', data);
+                    
+                    if (data.success && data.packages) {
+                        const packages = data.packages;
+                        
+                        // Transform packages exactly like the Subscriptions page does
+                        const transformedPackages = packages.map(pkg => ({
+                            id: pkg._id,
+                            name: pkg.name,
+                            platform: pkg.platform,
+                            price: `$${pkg.price}`,
+                            originalPrice: pkg.originalPrice ? `$${pkg.originalPrice}` : null,
+                            period: `/${pkg.billingPeriod}`,
+                            discount: pkg.discountPercentage > 0 ? `${pkg.discountPercentage}% OFF` : null,
+                            features: pkg.features || [],
+                            trialDays: pkg.trialDays,
+                            logo: pkg.logo || "/logo192.png",
+                            stripePriceId: pkg.stripePriceId
+                        }));
+                        
+                        resultDiv.innerHTML = `
+                            <div class="success">✅ Successfully fetched ${packages.length} packages for Subscriptions page!</div>
+                            <h3>Available Packages (same styling as GrowthPlanSection):</h3>
+                            <div style="display: flex; flex-wrap: wrap;">
+                                ${transformedPackages.map(pkg => `
+                                    <div class="package-card">
+                                        ${pkg.discount ? `<div class="discount-badge">${pkg.discount}</div>` : ''}
+                                        <div class="package-name">${pkg.name}</div>
+                                        <div class="package-platform">${pkg.platform}</div>
+                                        <div class="package-price">${pkg.price}${pkg.period}</div>
+                                        ${pkg.originalPrice ? `<div style="text-decoration: line-through; color: #999;">${pkg.originalPrice}</div>` : ''}
+                                        ${pkg.trialDays ? `<div class="trial-info">${pkg.trialDays}-day free trial</div>` : ''}
+                                        <div class="package-features">
+                                            <strong>Features:</strong>
+                                            ${pkg.features.map(feature => `<div class="feature">✓ ${feature}</div>`).join('')}
+                                        </div>
+                                        <button style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                            Start Free Trial
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<div class="error">❌ API returned success: false</div>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ HTTP Error: ${response.status}</div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

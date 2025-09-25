@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Services Packages</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .package-card { 
+            border: 1px solid #ddd; 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-radius: 8px; 
+            background: #f9f9f9;
+        }
+        .package-name { font-weight: bold; color: #333; }
+        .package-price { color: #007bff; font-size: 18px; }
+        .package-features { margin: 10px 0; }
+        .feature { margin: 5px 0; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test Services Page Packages</h1>
+    <button onclick="testPackages()">Test Package Fetch</button>
+    <div id="result"></div>
+
+    <script>
+        async function testPackages() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                console.log('Testing packages API...');
+                const response = await fetch('http://localhost:5000/api/packages');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('API Response:', data);
+                    
+                    if (data.success && data.packages) {
+                        const packages = data.packages;
+                        
+                        // Transform packages like the frontend does
+                        const transformedPlans = packages.map(pkg => ({
+                            name: pkg.name,
+                            price: `$${pkg.price}`,
+                            originalPrice: pkg.originalPrice ? `$${pkg.originalPrice}` : null,
+                            period: `/${pkg.billingPeriod}`,
+                            discount: pkg.discountPercentage > 0 ? `${pkg.discountPercentage}% OFF` : null,
+                            features: pkg.features || [],
+                            popular: pkg.isPopular || false,
+                            trialDays: pkg.trialDays || 14,
+                            platform: pkg.platform,
+                            logo: pkg.logo
+                        }));
+                        
+                        resultDiv.innerHTML = `
+                            <div class="success">✅ Successfully fetched ${packages.length} packages from database!</div>
+                            <h3>Packages that will appear on Services page:</h3>
+                            ${transformedPlans.map(plan => `
+                                <div class="package-card">
+                                    <div class="package-name">${plan.name}</div>
+                                    <div class="package-price">${plan.price}${plan.period}</div>
+                                    ${plan.originalPrice ? `<div>Original: ${plan.originalPrice}</div>` : ''}
+                                    ${plan.discount ? `<div style="color: red;">${plan.discount}</div>` : ''}
+                                    <div class="package-features">
+                                        <strong>Features:</strong>
+                                        ${plan.features.map(feature => `<div class="feature">• ${feature}</div>`).join('')}
+                                    </div>
+                                    <div>Platform: ${plan.platform}</div>
+                                    <div>Trial: ${plan.trialDays} days</div>
+                                    ${plan.popular ? '<div style="color: gold;">⭐ POPULAR</div>' : ''}
+                                </div>
+                            `).join('')}
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<div class="error">❌ API returned success: false</div>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ HTTP Error: ${response.status}</div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

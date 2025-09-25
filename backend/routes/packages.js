@@ -1,104 +1,183 @@
 const express = require('express');
 const router = express.Router();
 const Package = require('../models/Package');
+const { protect } = require('../middleware/auth');
 
-// GET /api/packages - Get all active packages (public)
+// @desc    Get all active packages
+// @route   GET /api/packages
+// @access  Public
 router.get('/', async (req, res) => {
   try {
-    const { platform, popular, billingCycle } = req.query;
-    let query = { isActive: true };
+    console.log('📦 Packages API called');
+    const packages = await Package.find({ isActive: true })
+      .sort({ sortOrder: 1, createdAt: 1 })
+      .select('-__v');
+
+    console.log(`📦 Found ${packages.length} packages:`, packages.map(p => p.name));
     
-    if (platform) {
-      query.platform = platform;
-    }
-    
-    if (popular === 'true') {
-      query.popular = true;
-    }
-    
-    const packages = await Package.find(query)
-      .sort({ popular: -1, sortOrder: 1 })
-      .select('-createdBy -updatedBy');
-    
-    // Transform packages for frontend consumption
-    const transformedPackages = packages.map(pkg => ({
-      _id: pkg._id,
-      name: pkg.name,
-      platform: pkg.platform.toLowerCase(),
-      pricing: pkg.pricing,
-      discount: pkg.discount ? parseInt(pkg.discount.replace(/\D/g, '')) : 0,
-      isPopular: pkg.popular,
-      trialDays: pkg.trialDays,
-      features: pkg.features,
-      logo: pkg.logo,
-      description: pkg.description,
-      isActive: pkg.isActive,
-      sortOrder: pkg.sortOrder
-    }));
-    
-    // Return as array directly (not wrapped in object)
-    res.json(transformedPackages);
+    res.json({
+      success: true,
+      count: packages.length,
+      packages
+    });
   } catch (error) {
-    console.error('Get packages error:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch packages' });
+    console.error('❌ Get packages error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching packages'
+    });
   }
 });
 
-// GET /api/packages/popular - Get popular packages only
-router.get('/popular', async (req, res) => {
+// @desc    Get single package
+// @route   GET /api/packages/:id
+// @access  Public
+router.get('/:id', async (req, res) => {
   try {
-    const packages = await Package.find({ isActive: true, popular: true })
-      .sort({ sortOrder: 1 })
-      .select('-createdBy -updatedBy');
-    
-    const transformedPackages = packages.map(pkg => ({
-      _id: pkg._id,
-      name: pkg.name,
-      platform: pkg.platform.toLowerCase(),
-      pricing: pkg.pricing,
-      discount: pkg.discount ? parseInt(pkg.discount.replace(/\D/g, '')) : 0,
-      isPopular: pkg.popular,
-      trialDays: pkg.trialDays,
-      features: pkg.features,
-      logo: pkg.logo,
-      description: pkg.description
-    }));
-    
-    res.json(transformedPackages);
+    const package = await Package.findById(req.params.id);
+
+    if (!package) {
+      return res.status(404).json({
+        success: false,
+        message: 'Package not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      package
+    });
   } catch (error) {
-    console.error('Get popular packages error:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch popular packages' });
+    console.error('Get package error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching package'
+    });
   }
 });
 
-// GET /api/packages/platform/:platform - Get packages by platform
-router.get('/platform/:platform', async (req, res) => {
+// @desc    Create package (Admin only)
+// @route   POST /api/packages
+// @access  Private/Admin
+router.post('/', protect, async (req, res) => {
   try {
-    const { platform } = req.params;
-    const packages = await Package.find({ 
-      isActive: true, 
-      platform: { $regex: new RegExp(platform, 'i') }
-    })
-      .sort({ popular: -1, sortOrder: 1 })
-      .select('-createdBy -updatedBy');
-    
-    const transformedPackages = packages.map(pkg => ({
-      _id: pkg._id,
-      name: pkg.name,
-      platform: pkg.platform.toLowerCase(),
-      pricing: pkg.pricing,
-      discount: pkg.discount ? parseInt(pkg.discount.replace(/\D/g, '')) : 0,
-      isPopular: pkg.popular,
-      trialDays: pkg.trialDays,
-      features: pkg.features,
-      logo: pkg.logo,
-      description: pkg.description
-    }));
-    
-    res.json(transformedPackages);
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin privileges required.'
+      });
+    }
+
+    const package = new Package(req.body);
+    await package.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Package created successfully',
+      package
+    });
   } catch (error) {
-    console.error('Get packages by platform error:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch packages by platform' });
+    console.error('Create package error:', error);
+    
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(e => e.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation Error',
+        errors
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Server error while creating package'
+    });
+  }
+});
+
+// @desc    Update package (Admin only)
+// @route   PUT /api/packages/:id
+// @access  Private/Admin
+router.put('/:id', protect, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin privileges required.'
+      });
+    }
+
+    const package = await Package.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!package) {
+      return res.status(404).json({
+        success: false,
+        message: 'Package not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Package updated successfully',
+      package
+    });
+  } catch (error) {
+    console.error('Update package error:', error);
+    
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(e => e.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation Error',
+        errors
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating package'
+    });
+  }
+});
+
+// @desc    Delete package (Admin only)
+// @route   DELETE /api/packages/:id
+// @access  Private/Admin
+router.delete('/:id', protect, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin privileges required.'
+      });
+    }
+
+    const package = await Package.findByIdAndDelete(req.params.id);
+
+    if (!package) {
+      return res.status(404).json({
+        success: false,
+        message: 'Package not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Package deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete package error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while deleting package'
+    });
   }
 });
 

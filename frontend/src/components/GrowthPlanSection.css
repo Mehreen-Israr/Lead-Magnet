@@ -60,7 +60,7 @@
 .pricing-card {
   background: rgba(30, 30, 30, 0.8);
   border-radius: 15px;
-  padding: 60px 30px 40px;
+  padding: 0.4rem; /* Ultra compact padding to make cards more narrow */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   position: relative;
@@ -232,10 +232,10 @@
 }
 
 .plan-name {
-  font-size: 1.8rem;
+  font-size: 1.1rem; /* Much smaller font size for more compact cards */
   font-weight: 700;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  margin-top: 6px;
+  margin-bottom: 3px;
   color: #fff;
   text-align: center;
 }
@@ -268,7 +268,7 @@
 }
 
 .price {
-  font-size: 3rem;
+  font-size: 1.5rem; /* Much smaller font size for more compact cards */
   font-weight: 800;
   color: #FFD700;
 }
@@ -290,29 +290,30 @@
 .plan-features li {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 15px;
+  margin-bottom: 0.3rem; /* Much reduced margin for more compact cards */
   color: #ddd;
   text-align: left;
+  font-size: 0.8rem; /* Much smaller font size for features */
 }
 
 .check-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
+  width: 14px; /* Much smaller icon size for more compact cards */
+  height: 14px; /* Much smaller icon size for more compact cards */
+  margin-right: 6px; /* Much reduced margin */
   color: #FFD700;
   flex-shrink: 0;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 .plan-button {
   width: 100%;
-  padding: 15px;
+  padding: 8px; /* Much smaller padding for more compact cards */
   border: none;
   border-radius: 8px;
   background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   color: #000;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.8rem; /* Much smaller font size for more compact cards */
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -362,12 +363,13 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Changed from center to flex-start to align cards to the left */
   width: 100%;
   margin: 0 auto;
-  padding: 0 80px; /* Increased padding for better arrow visibility */
+  padding: 0 5px; /* Even more minimal padding to maximize space for slides */
   box-sizing: border-box;
   overflow: visible; /* Simplified overflow control */
+  max-width: 1800px; /* Even larger max-width to accommodate 3 cards */
 }
 
 .embla {
@@ -375,7 +377,7 @@
   padding: 35px 0 20px 0;
   width: 100%;
   margin-top: 40px;
-  overflow-x: hidden;
+  overflow-x: visible; /* Changed to visible to prevent cutting off */
   overflow-y: visible;
 }
 
@@ -383,16 +385,17 @@
 .embla__container {
   display: flex;
   margin-top: 20px;
-  gap: 30px;
-  margin-left: -15px;
-  margin-right: -15px;
+  gap: 5px; /* Ultra minimal gap between slides */
+  margin-left: 0px; /* Removed negative margin to align first card to the left */
+  margin-right: -5px;
   overflow: visible; /* Ensure content is visible */
+  width: max-content; /* Ensure container can expand to fit all slides */
 }
 
 .embla__slide {
   flex: 0 0 auto;
   min-width: 0;
-  padding: 0 15px;
+  padding: 0 8px; /* Reduced padding to move cards closer together */
   transition: transform 0.5s ease;
   height: auto; /* Ensure natural height */
   overflow: visible; /* Prevent clipping of content */
@@ -400,7 +403,14 @@
 
 /* Responsive slide widths */
 .embla__slide {
-  flex: 0 0 calc(33.333% - 20px); /* 3 slides on desktop */
+  flex: 0 0 calc(28% - 3px); /* Much narrower for better fit */
+  min-width: 250px; /* Much smaller minimum width */
+  max-width: calc(28% - 3px); /* Prevent slides from being too wide */
+}
+
+/* First slide alignment - reduce left padding */
+.embla__slide:first-child {
+  padding-left: 0px; /* Remove left padding from first slide */
 }
 
 @media (max-width: 1200px) {
@@ -591,7 +601,43 @@
 
 @media (max-width: 768px) {
   .pricing-carousel-container {
-    padding: 0 50px; /* Adjusted padding for mobile */
+    padding: 0 1px; /* Ultra minimal padding for mobile */
+    max-width: 100%; /* Full width on mobile */
+  }
+  
+  .embla__slide {
+    flex: 0 0 50%; /* Much narrower for mobile */
+    min-width: 50%; /* Ensure proper width */
+    max-width: 50%; /* Prevent overflow */
+    padding: 0 0px; /* No padding */
+  }
+  
+  .embla__container {
+    gap: 0; /* No gap on mobile */
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .pricing-card {
+    padding: 0.3rem; /* Ultra compact padding for mobile */
+  }
+  
+  .plan-name {
+    font-size: 1.2rem; /* Smaller font for mobile */
+  }
+  
+  .price {
+    font-size: 1.8rem; /* Smaller price for mobile */
+  }
+  
+  .plan-features li {
+    font-size: 0.85rem; /* Smaller features for mobile */
+    margin-bottom: 8px; /* Reduced margin for mobile */
+  }
+  
+  .plan-button {
+    padding: 10px; /* Smaller button padding for mobile */
+    font-size: 0.85rem; /* Smaller button font for mobile */
   }
   
   .embla-nav-button {
@@ -619,11 +665,36 @@
 
 @media (max-width: 480px) {
   .pricing-carousel-container {
-    padding: 0 35px; /* Reduced padding to allow wider cards */
+    padding: 0 0px; /* No padding for small mobile */
   }
   
   .embla__slide {
-    flex: 0 0 calc(100% - 10px); /* Increased width for better content display */
+    flex: 0 0 45%; /* Much narrower for small mobile */
+    min-width: 45%;
+    max-width: 45%;
+    padding: 0 0px; /* No padding */
+  }
+  
+  .pricing-card {
+    padding: 0.25rem; /* Ultra compact padding for small mobile */
+  }
+  
+  .plan-name {
+    font-size: 1.1rem; /* Even smaller font for small mobile */
+  }
+  
+  .price {
+    font-size: 1.6rem; /* Even smaller price for small mobile */
+  }
+  
+  .plan-features li {
+    font-size: 0.8rem; /* Even smaller features for small mobile */
+    margin-bottom: 6px; /* Even more reduced margin for small mobile */
+  }
+  
+  .plan-button {
+    padding: 8px; /* Even smaller button padding for small mobile */
+    font-size: 0.8rem; /* Even smaller button font for small mobile */
   }
   
   .embla-nav-button {
@@ -644,7 +715,36 @@
 /* Additional safety for very small screens */
 @media (max-width: 360px) {
   .pricing-carousel-container {
-    padding: 0 40px;
+    padding: 0 0px; /* No padding for very small screens */
+  }
+  
+  .embla__slide {
+    flex: 0 0 40%; /* Much narrower for very small screens */
+    min-width: 40%;
+    max-width: 40%;
+    padding: 0 0px; /* No padding */
+  }
+  
+  .pricing-card {
+    padding: 0.2rem; /* Ultra compact padding for very small screens */
+  }
+  
+  .plan-name {
+    font-size: 1rem; /* Ultra small font for very small screens */
+  }
+  
+  .price {
+    font-size: 1.4rem; /* Ultra small price for very small screens */
+  }
+  
+  .plan-features li {
+    font-size: 0.75rem; /* Ultra small features for very small screens */
+    margin-bottom: 4px; /* Ultra reduced margin for very small screens */
+  }
+  
+  .plan-button {
+    padding: 6px; /* Ultra small button padding for very small screens */
+    font-size: 0.75rem; /* Ultra small button font for very small screens */
   }
   
   .embla-nav-button {
