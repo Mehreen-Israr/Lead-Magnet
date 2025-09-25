@@ -44,6 +44,16 @@ const Navbar = () => {
     };
   }, [isProfileDropdownOpen]);
 
+  // Prevent background scroll when mobile menu is open
+  React.useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+    return () => document.body.classList.remove('no-scroll');
+  }, [isMobileMenuOpen]);
+
   const handleLogout = () => {
     logout();
     setIsProfileDropdownOpen(false);

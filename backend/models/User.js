@@ -5,6 +5,13 @@ const crypto = require('crypto');
 
 // Add this to your existing User schema
 const userSchema = new mongoose.Schema({
+
+   role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+  
   firstName: {
     type: String,
     required: [true, 'First name is required'],

@@ -13,154 +13,45 @@ const Subscriptions = () => {
 
   // Mock data for subscriptions - in real app, this would come from API
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setActiveSubscriptions([
-        {
-          id: 1,
-          name: "Premium Service",
-          platform: "Multi-Platform",
-          price: "$1060",
-          period: "/month",
-          status: "active",
-          nextBilling: "2024-02-15",
-          features: [
-            "Support for 5 Channels",
-            "Scalable Business Growth", 
-            "Priority Support",
-            "Multi-Platform Campaign"
-          ],
-          logo: "/instagram.png"
-        },
+    const fetchData = async () => {
+      try {
+        setLoading(true);
         
-        {
-          id: 2,
-          name: "Instagram Growth",
-          platform: "Instagram",
-          price: "$359",
-          period: "/month", 
-          status: "active",
-          nextBilling: "2024-02-20",
-          features: [
-            "Content scheduling",
-            "Hashtag optimization",
-            "Basic analytics",
-            "Email support"
-          ],
-          logo: "/instagram.png"
-        },
-        {
-          id: 3,
-          name: "LinkedIn Starter",
-          platform: "LinkedIn",
-          price: "$299",
-          period: "/month",
-          status: "active",
-          nextBilling: "2024-02-18",
-          features: [
-            "1000 leads/month",
-            "Basic analytics",
-            "Email support", 
-            "Secure Payments"
-          ],
-          logo: "/linkedin.png"
-        },
-        {
-          id: 4,
-          name: "X Growth",
-          platform: "Twitter/X",
-          price: "$279",
-          period: "/month",
-          status: "active",
-          nextBilling: "2024-02-22",
-          features: [
-            "Unlimited posts",
-            "Advanced analytics", 
-            "Priority support",
-            "Dedicated dashboard"
-          ],
-          logo: "/twitter.png"
+        // Fetch active subscriptions from API
+        const subscriptionsResponse = await fetch('/api/billing/subscriptions', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        
+        if (subscriptionsResponse.ok) {
+          const subscriptionsData = await subscriptionsResponse.json();
+          setActiveSubscriptions(subscriptionsData.subscriptions || []);
+        } else {
+          console.error('Failed to fetch subscriptions');
+          setActiveSubscriptions([]);
         }
-      ]);
 
-      setAvailablePackages([
-        {
-          id: 5,
-          name: "X Growth",
-          platform: "Twitter/X",
-          price: "$359",
-          originalPrice: "599",
-          period: "/month",
-          discount: "40% OFF",
-          features: [
-            "Unlimited posts",
-            "Advanced analytics", 
-            "Priority support",
-            "Dedicated dashboard"
-          ],
-          trialDays: 14,
-          logo: "/twitter.png"
-        },
-        {
-          id: 6,
-          name: "LinkedIn Starter",
-          platform: "LinkedIn",
-          price: "$299",
-          originalPrice: "499", 
-          period: "/month",
-          discount: "40% OFF",
-          features: [
-            "1000 leads/month",
-            "Basic analytics",
-            "Email support", 
-            "Secure Payments"
-          ],
-          trialDays: 14,
-          logo: "/linkedin.png"
-        },
-        {
-          id: 7,
-           name: "Instagram Growth",
-          platform: "Instagram",
-          price: "$359",
-          originalPrice: "599",
-          period: "/month", 
-          discount: "40% OFF",
-          status: "active",
-          nextBilling: "2024-02-20",
-          features: [
-            "Content scheduling",
-            "Hashtag optimization",
-            "Basic analytics",
-            "Email support"
-          ],
-          trialDays: 14,
-          logo: "/instagram.png"
-        
-        },
-        {
-          id: 8,
-          name: "Premium Service",
-          platform: "All Platforms",
-          price: "$1060",
-          originalPrice: "1697",
-          period: "/month",
-          discount: "60% OFF",
-          features: [
-            "Support for 5 Channels",
-            "Scalable for business growth",
-            "Access to advanced analytics and reporting",
-            "Priority Support",
-            "Multi-platform compaign Management",
-            "Advanced Automation workflows"
-          ],
-          trialDays: 14,
-          logo: "/premium.png"
+        // Fetch available packages from API
+        const packagesResponse = await fetch('/api/packages');
+        if (packagesResponse.ok) {
+          const packagesData = await packagesResponse.json();
+          setAvailablePackages(packagesData.packages || []);
+        } else {
+          console.error('Failed to fetch packages');
+          // No fallback data - only show packages from database
+          setAvailablePackages([]);
         }
-      ]);
-      
-      setLoading(false);
-    }, 1000);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setActiveSubscriptions([]);
+        setAvailablePackages([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Handle success/cancel from Stripe and refresh user
@@ -291,30 +182,11 @@ const Subscriptions = () => {
             <p className="subscriptions-subtitle">
               Manage your active subscriptions and discover new packages to grow your business
             </p>
-            {isLoggedIn && user?.subscription && (
-              <div className="subscription-summary">
-                <span><strong>Plan:</strong> {(user.subscription.plan || 'free').toUpperCase()}</span>
-                <span className={`status-badge ${user.subscription.status || 'inactive'}`}>
-                  {user.subscription.status || 'inactive'}
-                </span>
-                {user.subscription.trialEnd && (
-                  <span><strong>Trial ends:</strong> {new Date(user.subscription.trialEnd).toLocaleDateString()}</span>
-                )}
-                {user.subscription.currentPeriodEnd && (
-                  <span><strong>Renews:</strong> {new Date(user.subscription.currentPeriodEnd).toLocaleDateString()}</span>
-                )}
-                {(user.subscription.status === 'active' || user.subscription.status === 'trialing' || user.subscription.status === 'past_due') && (
-                  <button className="btn-secondary" onClick={handleManageBilling}>
-                    Manage Subscription
-                  </button>
-                )}
-              </div>
-            )}
           </div>
         </AnimatedSection>
 
         {/* Active Subscriptions Section */}
-        {activeSubscriptions.length > 0 && (
+        {activeSubscriptions.length > 0 ? (
           <AnimatedSection animation="slide-up" delay={200}>
             <section className="active-subscriptions-section">
               <h2 className="Subscription-section-title">Active Subscriptions</h2>
@@ -421,6 +293,17 @@ const Subscriptions = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </section>
+          </AnimatedSection>
+        ) : (
+          <AnimatedSection animation="slide-up" delay={200}>
+            <section className="no-subscriptions-section">
+              <div className="empty-state">
+                <h2 className="Subscription-section-title">Active Subscriptions</h2>
+                <p className="empty-state-message">
+                  You haven't subscribed to any subscription. Check below our subscriptions
+                </p>
               </div>
             </section>
           </AnimatedSection>

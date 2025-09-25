@@ -132,6 +132,57 @@ router.get('/tiers', async (req, res) => {
   }
 });
 
+// Get user's active subscriptions
+router.get('/subscriptions', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Check if user has an active subscription
+    if (!user.subscription || !user.subscription.stripeSubscriptionId || user.subscription.status !== 'active') {
+      return res.json({ success: true, subscriptions: [] });
+    }
+
+    // Fetch subscription details from Stripe
+    const stripeSubscription = await stripe.subscriptions.retrieve(user.subscription.stripeSubscriptionId);
+    
+    // Get the subscription tier info
+    const tierInfo = SUBSCRIPTION_TIERS[user.subscription.plan] || {
+      name: 'Unknown Plan',
+      price: 0,
+      features: []
+    };
+
+    const subscription = {
+      id: stripeSubscription.id,
+      plan: user.subscription.plan,
+      name: tierInfo.name,
+      price: tierInfo.price,
+      status: stripeSubscription.status,
+      currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
+      currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+      nextBilling: new Date(stripeSubscription.current_period_end * 1000),
+      features: tierInfo.features,
+      billingCycle: stripeSubscription.items.data[0]?.price?.recurring?.interval || 'month',
+      cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
+      // Mock usage data - replace with real usage tracking later
+      usage: {
+        leadsGenerated: Math.floor(Math.random() * 1000),
+        emailsSent: Math.floor(Math.random() * 5000),
+        campaignsActive: Math.floor(Math.random() * 10)
+      }
+    };
+
+    res.json({ success: true, subscriptions: [subscription] });
+  } catch (error) {
+    console.error('Get subscriptions error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get subscriptions' });
+  }
+});
+
 // Stripe webhook handler
 router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
   const sig = req.headers['stripe-signature'];

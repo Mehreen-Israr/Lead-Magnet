@@ -67,6 +67,55 @@
   margin: 0 auto;
 }
 
+/* Subscription Summary Styles */
+.subscription-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.subscription-summary span {
+  color: #ddd;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.subscription-summary .status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0.5rem 0;
+}
+
+.subscription-summary .status-badge.active {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.subscription-summary .status-badge.inactive {
+  background: rgba(156, 163, 175, 0.2);
+  color: #9ca3af;
+  border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+.subscription-summary .btn-secondary {
+  margin-top: 1rem;
+  min-width: 180px;
+}
+
 /* Loading Styles */
 .loading-container {
   display: flex;

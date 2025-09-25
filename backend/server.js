@@ -48,100 +48,112 @@ app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), asyn
 
     const User = require('./models/User');
 
+    // Handle the event
     switch (event.type) {
       case 'checkout.session.completed':
-        // Handled on subscription events
-        break;
-      case 'customer.subscription.created':
-      case 'customer.subscription.updated': {
-        const subscription = event.data.object;
-        const customerId = subscription.customer;
-        const stripePriceId = subscription.items?.data?.[0]?.price?.id;
-        const status = subscription.status;
-        const currentPeriodEnd = subscription.current_period_end ? new Date(subscription.current_period_end * 1000) : undefined;
-        const trialEnd = subscription.trial_end ? new Date(subscription.trial_end * 1000) : undefined;
-
-        const user = await User.findOne({ 'subscription.stripeCustomerId': customerId });
-        if (user) {
-          const priceToPlan = {
-            [process.env.STRIPE_PRICE_PRO_MONTHLY || '']: 'pro',
-            [process.env.STRIPE_PRICE_BUSINESS_MONTHLY || '']: 'business',
-            [process.env.STRIPE_PRICE_ENTERPRISE_MONTHLY || '']: 'enterprise'
-          };
-          const plan = priceToPlan[stripePriceId] || user.subscription.plan || 'free';
-          user.subscription.plan = plan;
-          user.subscription.status = status;
-          user.subscription.stripeSubscriptionId = subscription.id;
-          user.subscription.stripePriceId = stripePriceId;
-          user.subscription.currentPeriodEnd = currentPeriodEnd;
-          user.subscription.trialEnd = trialEnd;
-          await user.save();
+        const session = event.data.object;
+        console.log('✅ Checkout session completed:', session.id);
+        
+        // Update user subscription status
+        if (session.customer_email) {
+          try {
+            const user = await User.findOne({ email: session.customer_email });
+            if (user) {
+              user.subscriptionStatus = 'active';
+              user.stripeCustomerId = session.customer;
+              user.subscriptionId = session.subscription;
+              await user.save();
+              console.log('✅ User subscription updated:', user.email);
+            }
+          } catch (error) {
+            console.error('❌ Error updating user subscription:', error);
+          }
         }
         break;
-      }
-      case 'customer.subscription.deleted': {
+        
+      case 'customer.subscription.updated':
         const subscription = event.data.object;
-        const customerId = subscription.customer;
-        const user = await User.findOne({ 'subscription.stripeCustomerId': customerId });
-        if (user) {
-          user.subscription.status = 'canceled';
-          user.subscription.endDate = new Date();
-          await user.save();
+        console.log('📝 Subscription updated:', subscription.id);
+        
+        try {
+          const user = await User.findOne({ subscriptionId: subscription.id });
+          if (user) {
+            user.subscriptionStatus = subscription.status;
+            await user.save();
+            console.log('✅ User subscription status updated:', user.email, subscription.status);
+          }
+        } catch (error) {
+          console.error('❌ Error updating subscription status:', error);
         }
         break;
-      }
+        
+      case 'customer.subscription.deleted':
+        const deletedSubscription = event.data.object;
+        console.log('🗑️ Subscription deleted:', deletedSubscription.id);
+        
+        try {
+          const user = await User.findOne({ subscriptionId: deletedSubscription.id });
+          if (user) {
+            user.subscriptionStatus = 'cancelled';
+            await user.save();
+            console.log('✅ User subscription cancelled:', user.email);
+          }
+        } catch (error) {
+          console.error('❌ Error cancelling subscription:', error);
+        }
+        break;
+        
       default:
-        break;
+        console.log(`Unhandled event type ${event.type}`);
     }
 
     res.json({ received: true });
   } catch (error) {
-    console.error('🔥 Webhook error:', error);
-    res.status(400).send('Webhook handler failed');
+    console.error('❌ Webhook error:', error);
+    res.status(500).json({ error: 'Webhook handler failed' });
   }
 });
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// MongoDB Connection
+// Database connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/leadmagnet')
-.then(() => console.log('✅ MongoDB Connected'))
-.catch(err => console.log('❌ MongoDB connection error:', err));
+  .then(() => console.log('✅ Connected to MongoDB'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// Routes
 app.get('/', (req, res) => {
-  res.json({ message: 'LeadMagnet API is running!' });
+  res.json({ message: 'Lead Magnet API is running!' });
 });
 
-// Health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
+  res.json({ 
+    status: 'OK', 
     timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development'
+    uptime: process.uptime()
   });
 });
 
-// API Routes
+// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/calendly', require('./routes/calendly'));
 app.use('/api/billing', require('./routes/billing'));
+app.use('/api/packages', require('./routes/packages')); // ADD THIS LINE!
 
-// Handle 404 routes (Express 5 compatible)
+// 404 handler
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found'
+  res.status(404).json({ 
+    success: false, 
+    message: 'Route not found',
+    path: req.path
   });
 });
 
-// Error handling middleware
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error('🔥 Error:', err.stack);
-
+  console.error('❌ Global error handler:', err);
+  
   // Mongoose validation error
   if (err.name === 'ValidationError') {
     const errors = Object.values(err.errors).map(e => e.message);
@@ -151,7 +163,7 @@ app.use((err, req, res, next) => {
       errors
     });
   }
-
+  
   // Mongoose duplicate key error
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue)[0];
@@ -160,7 +172,7 @@ app.use((err, req, res, next) => {
       message: `${field} already exists`
     });
   }
-
+  
   // JWT errors
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
@@ -168,52 +180,41 @@ app.use((err, req, res, next) => {
       message: 'Invalid token'
     });
   }
-
+  
   if (err.name === 'TokenExpiredError') {
     return res.status(401).json({
       success: false,
       message: 'Token expired'
     });
   }
-
+  
   // Default error
-  res.status(err.statusCode || 500).json({
+  res.status(err.status || 500).json({
     success: false,
-    message: err.message || 'Internal Server Error'
+    message: err.message || 'Internal Server Error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received. Shutting down gracefully...');
-  mongoose.connection.close().then(() => {
+  console.log('SIGTERM received');
+  mongoose.connection.close(() => {
     console.log('MongoDB connection closed.');
     process.exit(0);
-  }).catch((err) => {
-    console.error('Error closing MongoDB connection:', err);
-    process.exit(1);
   });
 });
 
 process.on('SIGINT', () => {
-  console.log('SIGINT received. Shutting down gracefully...');
-  mongoose.connection.close().then(() => {
+  console.log('SIGINT received');
+  mongoose.connection.close(() => {
     console.log('MongoDB connection closed.');
     process.exit(0);
-  }).catch((err) => {
-    console.error('Error closing MongoDB connection:', err);
-    process.exit(1);
   });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 API Base URL: https://lead-magnet-bb.onrender.com`);
-  console.log(`📋 Available routes:`);
-  console.log(`   GET  /              - API status`);
-  console.log(`   GET  /health        - Health check`);
-  console.log(`   POST /api/auth/*    - Authentication routes`);
-  console.log(`   POST /api/contact   - Contact form submission`);
-  console.log(`   GET  /api/contact   - Get contacts (Admin)`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
 });

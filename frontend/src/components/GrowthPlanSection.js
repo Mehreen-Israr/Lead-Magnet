@@ -7,6 +7,8 @@ import './GrowthPlanSection.css';
 const GrowthPlanSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
+  const [pricingPlans, setPricingPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Embla Carousel setup with responsive options
   const options = {
@@ -30,6 +32,172 @@ const GrowthPlanSection = () => {
   };
 
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
+
+  // Fetch pricing plans from API
+  useEffect(() => {
+    const fetchPricingPlans = async () => {
+      try {
+        const apiBase = process.env.REACT_APP_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:10000';
+        const response = await fetch(`${apiBase}/api/packages/popular`);
+        let packages = await response.json();
+        
+        // If no popular packages, fetch all packages
+        if (!packages || packages.length === 0) {
+          const allResponse = await fetch(`${apiBase}/api/packages`);
+          packages = await allResponse.json();
+        }
+        
+        if (packages && packages.length > 0) {
+          // Transform API data to match existing structure
+          const transformedPlans = packages.map(pkg => ({
+            name: pkg.name,
+            price: `$${pkg.pricing?.monthly?.price || 0}`,
+            originalPrice: pkg.pricing?.monthly?.originalPrice || null,
+            period: "/month",
+            discount: pkg.discount ? `${pkg.discount}% OFF` : null,
+            features: pkg.features || [],
+            popular: pkg.isPopular || false,
+            trialDays: pkg.trialDays || 14
+          }));
+          
+          setPricingPlans(transformedPlans);
+        } else {
+          // Fallback to default plans
+          setPricingPlans([
+            {
+              name: "Instagram Growth",
+              price: "$359",
+              originalPrice: "599",
+              period: "/month",
+              discount: "40% OFF",
+              features: [
+                "Content scheduling",
+                "Hashtag optimization",
+                "Basic analytics",
+                "Email support"
+              ],
+              popular: false,
+              trialDays: 14
+            },
+            {
+              name: "Premium Service",
+              price: "$1060",
+              originalPrice: "1697",
+              period: "/month",
+              discount: "60% OFF",
+              features: [
+                "Support for 5 Channels",
+                "Scalable Business Growth",
+                "Priority Support",
+                "Multi-Platform Campaign"
+              ],
+              popular: true,
+              trialDays: 14
+            },
+            {
+              name: "X Growth",
+              price: "$359",
+              originalPrice: "599",
+              period: "/month",
+              discount: "40% OFF",
+              features: [
+                "Unlimited posts",
+                "Advanced analytics",
+                "Priority support",
+                "Dedicated dashboard"
+              ],
+              popular: false,
+              trialDays: 14
+            },
+            {
+              name: "LinkedIn Starter",
+              price: "$299",
+              originalPrice: "499",
+              period: "/month",
+              discount: "40% OFF",
+              features: [
+                "1000 leads/month",
+                "Basic analytics",
+                "Email support",
+                "Secure Payments"
+              ],
+              popular: false,
+              trialDays: 14
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching pricing plans:', error);
+        // Keep existing fallback data
+        setPricingPlans([
+          {
+            name: "Instagram Growth",
+            price: "$359",
+            originalPrice: "599",
+            period: "/month",
+            discount: "40% OFF",
+            features: [
+              "Content scheduling",
+              "Hashtag optimization",
+              "Basic analytics",
+              "Email support"
+            ],
+            popular: false,
+            trialDays: 14
+          },
+          {
+            name: "Premium Service",
+            price: "$1060",
+            originalPrice: "1697",
+            period: "/month",
+            discount: "60% OFF",
+            features: [
+              "Support for 5 Channels",
+              "Scalable Business Growth",
+              "Priority Support",
+              "Multi-Platform Campaign"
+            ],
+            popular: true,
+            trialDays: 14
+          },
+          {
+            name: "X Growth",
+            price: "$359",
+            originalPrice: "599",
+            period: "/month",
+            discount: "40% OFF",
+            features: [
+              "Unlimited posts",
+              "Advanced analytics",
+              "Priority support",
+              "Dedicated dashboard"
+            ],
+            popular: false,
+            trialDays: 14
+          },
+          {
+            name: "LinkedIn Starter",
+            price: "$299",
+            originalPrice: "499",
+            period: "/month",
+            discount: "40% OFF",
+            features: [
+              "1000 leads/month",
+              "Basic analytics",
+              "Email support",
+              "Secure Payments"
+            ],
+            popular: false,
+            trialDays: 14
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchPricingPlans();
+  }, []);
 
   // Viewport detection
   const detectViewport = useCallback(() => {
@@ -65,71 +233,6 @@ const GrowthPlanSection = () => {
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
-
-  // Define pricing plans
-  const pricingPlans = [
-    {
-      name: "Instagram Growth",
-      price: "$359",
-      originalPrice: "599",
-      period: "/month",
-      discount: "40% OFF",
-      features: [
-        "Content scheduling",
-        "Hashtag optimization",
-        "Basic analytics",
-        "Email support"
-      ],
-      popular: false,
-      trialDays: 14
-    },
-    {
-      name: "Premium Service",
-      price: "$1060",
-      originalPrice: "1697",
-      period: "/month",
-      discount: "60% OFF",
-      features: [
-        "Support for 5 Channels",
-        "Scalable Business Growth",
-        "Priority Support",
-        "Multi-Platform Campaign"
-      ],
-      popular: true,
-      trialDays: 14
-    },
-    {
-      name: "X Growth",
-      price: "$359",
-      originalPrice: "599",
-      period: "/month",
-      discount: "40% OFF",
-      features: [
-        "Unlimited posts",
-        "Advanced analytics",
-        "Priority support",
-        "Dedicated dashboard"
-      ],
-      popular: false,
-      trialDays: 14
-    },
-    {
-      name: "LinkedIn Starter",
-      price: "$299",
-      originalPrice: "499",
-      period: "/month",
-      discount: "40% OFF",
-      features: [
-        "1000 leads/month",
-        "Basic analytics",
-        "Email support",
-        "Secure Payments"
-
-      ],
-      popular: false,
-      trialDays: 14
-    }
-  ];
 
   // Brand logos mapping
   const brandLogos = {
@@ -190,6 +293,26 @@ const GrowthPlanSection = () => {
       />
     )
   };
+
+  const handleGetStarted = () => {
+    // Navigate to subscriptions page
+    window.location.href = '/subscriptions';
+  };
+
+  if (loading) {
+    return (
+      <section className="growth-plan-section">
+        <div className="container">
+          <AnimatedSection animation="fade-in">
+            <h2 className="section-title">Choose Your Growth Plan</h2>
+            <p className="section-subtitle">
+              Loading pricing plans...
+            </p>
+          </AnimatedSection>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="growth-plan-section">
@@ -296,7 +419,12 @@ const GrowthPlanSection = () => {
                         </li>
                       ))}
                     </ul>
-                    <button className="plan-button btn-hover-slide hover-lift">Start Free Trial</button>
+                    <button 
+                      className="plan-button btn-hover-slide hover-lift"
+                      onClick={handleGetStarted}
+                    >
+                      Get Started
+                    </button>
                   </div>
                 </div>
               ))}

@@ -5,6 +5,12 @@ body {
   overflow-x: hidden;
 }
 
+/* Lock body scroll when mobile menu open */
+.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
 /* Prevent any layout shifts that could affect navbar */
 * {
   box-sizing: border-box;
@@ -188,7 +194,7 @@ html {
 
 /* Mobile Menu */
 .mobile-menu {
-  position: absolute;        /* was fixed */
+  position: fixed;        /* fixed so it overlays reliably on phones */
   top: 50px;
   left: 0;
   right: 0;
@@ -330,7 +336,7 @@ button.mobile-link {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: transparent !important; /* no shadow overlay */
+  background: rgba(0,0,0,0.2) !important; /* slight dim for focus */
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
