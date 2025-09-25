@@ -24,10 +24,14 @@ app.use(cors({
   origin: [
     "https://lead-magnet-frontend.onrender.com", // your new Render frontend
     "https://lead-magnet-oc4d.vercel.app", // your Vercel frontend (keep for backup)
-    "http://localhost:3000" // allow local dev frontend
+    "http://localhost:3000", // allow local dev frontend
+    "https://lead-magnet.onrender.com", // alternative Render URL
+    "https://*.onrender.com", // allow any Render subdomain
+    "https://*.vercel.app" // allow any Vercel subdomain
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200 // For legacy browser support
 }));
 
 // Stripe webhook BEFORE body parsers to use raw body
@@ -148,8 +152,18 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
   });
+});
+
+// CORS preflight handler
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
 });
 
 // Test endpoint for packages
