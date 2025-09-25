@@ -31,29 +31,30 @@ async function handleBookingCreated(event) {
   try {
     console.log('📅 Processing new booking...');
     
-    // Extract data from Calendly payload
-    const { event: eventData, invitee } = event.payload;
+    // Extract data from Calendly payload - the structure is different
+    const payload = event.payload;
+    const scheduledEvent = payload.scheduled_event;
     
     // Create booking record
     const booking = new Booking({
-      calendlyEventId: eventData.uuid,
-      calendlyEventUri: eventData.uri,
+      calendlyEventId: scheduledEvent.uri.split('/').pop(), // Extract UUID from URI
+      calendlyEventUri: scheduledEvent.uri,
       meetingType: 'demo', // Default type
-      meetingTitle: eventData.name || 'Meeting',
-      scheduledTime: new Date(eventData.start_time),
-      duration: eventData.event_type?.duration || 30,
-      timezone: invitee.timezone || 'UTC',
+      meetingTitle: scheduledEvent.name || 'Meeting',
+      scheduledTime: new Date(scheduledEvent.start_time),
+      duration: 30, // Default duration
+      timezone: payload.timezone || 'UTC',
       attendee: {
-        name: invitee.name || 'Unknown',
-        email: invitee.email,
-        phone: invitee.questions_and_answers?.find(q => q.question.toLowerCase().includes('phone'))?.answer,
-        company: invitee.questions_and_answers?.find(q => q.question.toLowerCase().includes('company'))?.answer,
-        notes: invitee.questions_and_answers?.find(q => q.question.toLowerCase().includes('notes'))?.answer
+        name: payload.name || 'Unknown',
+        email: payload.email,
+        phone: payload.questions_and_answers?.find(q => q.question.toLowerCase().includes('phone'))?.answer,
+        company: payload.questions_and_answers?.find(q => q.question.toLowerCase().includes('company'))?.answer,
+        notes: payload.questions_and_answers?.find(q => q.question.toLowerCase().includes('notes'))?.answer
       },
       status: 'scheduled',
-      meetingUrl: eventData.location?.join_url,
-      rescheduleUrl: invitee.reschedule_url,
-      cancelUrl: invitee.cancel_url,
+      meetingUrl: scheduledEvent.location?.join_url,
+      rescheduleUrl: payload.reschedule_url,
+      cancelUrl: payload.cancel_url,
       leadSource: 'calendly_webhook'
     });
     
@@ -69,15 +70,16 @@ async function handleBookingCanceled(event) {
   try {
     console.log('❌ Processing booking cancellation...');
     
-    const { event: eventData } = event.payload;
+    const payload = event.payload;
+    const scheduledEvent = payload.scheduled_event;
     
     // Update booking status to cancelled
     await Booking.findOneAndUpdate(
-      { calendlyEventId: eventData.uuid },
+      { calendlyEventId: scheduledEvent.uri.split('/').pop() },
       { status: 'cancelled' }
     );
     
-    console.log('✅ Booking cancelled:', eventData.uuid);
+    console.log('✅ Booking cancelled:', scheduledEvent.uri.split('/').pop());
     
   } catch (error) {
     console.error('❌ Error cancelling booking:', error);
