@@ -173,6 +173,7 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/api/calendly', require('./routes/calendly'));
 app.use('/api/billing', require('./routes/billing'));
 app.use('/api/packages', require('./routes/packages'));
+app.use('/webhook', require('./routes/webhook'));
 
 // 404 handler
 app.use((req, res) => {
