@@ -127,6 +127,7 @@ const Contact = () => {
       icon: "📞",
       title: "Call Us",
       details: "001 262 327 6717",
+      link: "tel:0012623276717",
       description: "Speak directly with our lead generation experts"
     },
     {

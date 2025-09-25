@@ -1,0 +1,382 @@
+
+/* Footer Styles */
+.footer {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  height: 60px;
+}
+
+.footer-wave svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 60px;
+}
+
+.footer-content {
+  padding: 80px 0 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 2fr 0.8fr 1.2fr; /* Reduced quick links column width to shift it left */
+  gap: 30px; /* Slightly reduced gap for better spacing */
+  justify-content: space-between;
+}
+
+.footer-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Center content in the first footer section (company info) */
+.footer-section:first-child {
+  align-items: center;
+  text-align: center;
+  margin-left: -30%;
+}
+
+ .footer-section:nth-child(2){
+  margin-left: -90%;
+ }
+
+/* Logo Section */
+.footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the logo */
+  margin-bottom: 20px;
+}
+
+.footer-logo-img {
+  width: 180px;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.footer-logo-img:hover {
+  transform: scale(1.05);
+}
+
+.footer-description {
+  color: #b0b0b0;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  max-width: 300px;
+  text-align: center; /* Center the text content */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Social Links */
+.social-links {
+  display: flex;
+  gap: 15px;
+  justify-content: center; /* Center the social media logos */
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 50%;
+  color: #FFD700;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  background: #FFD700;
+  color: #1a1a1a;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.social-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Footer Titles */
+.footer-title {
+  color: #FFD700;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.footer-title::after {
+  content: '';
+  
+  bottom: -8px;
+  left: 29%; /* Offset the yellow line slightly to the right */
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  border-radius: 1px;
+}
+
+/* Footer Links */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 12px;
+}
+
+.footer-links a {
+  color: #b0b0b0;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-left: 0;
+}
+
+.footer-links a:hover {
+  color: #FFD700;
+  padding-left: 10px;
+}
+
+.footer-links a::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 1px;
+  background: #FFD700;
+  transition: width 0.3s ease;
+}
+
+.footer-links a:hover::before {
+  width: 6px;
+}
+
+/* Contact Info */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-item {
+  display: grid;
+  grid-template-columns: 20px 1fr; /* icon + text */
+  gap: 12px;
+  color: #b0b0b0;
+}
+
+.contact-icon {
+  width: 20px;
+  height: 20px;
+  color: #FFD700;
+  margin-top: 2px;
+  margin-left:100%;
+  margin-right: -20%;
+}
+
+.contact-item span {
+  line-height: 1.5;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.footer-bottom-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.copyright {
+  color: #888;
+  margin: 0;
+  font-size: 14px;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 30px;
+}
+
+.footer-bottom-links a {
+  color: #888;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.footer-bottom-links a:hover {
+  color: #FFD700;
+}
+
+.contact-link {
+  color: #fff; /* default */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+  color: #FFD700; /* for contrast with yellow hover background */
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+  
+  .footer-content {
+    padding: 60px 0 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  
+  .footer-logo {
+    justify-content: center;
+  }
+  
+  .footer-logo-img {
+    width: 180px;
+    margin-left:70%;
+  }
+  
+  .footer-description {
+    max-width: 100%;
+    margin-left:20%;
+  }
+  
+  .social-links {
+    justify-content: center;
+            margin-left: 15%;
+  }
+  
+  .footer-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .footer-bottom-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-bottom-links {
+    gap: 20px;
+  }
+  
+  /* Hide Quick Links and Contact Info sections on mobile */
+  .footer-section:nth-child(2),
+  .footer-section:nth-child(3) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-content {
+    padding: 50px 0 20px;
+  }
+  
+  .footer-container {
+    padding: 0 15px;
+    gap: 30px;
+  }
+  
+  .footer-logo {
+    justify-content: center;
+  }
+  
+  .footer-logo-img {
+    width: 110px;
+  }
+  
+  .social-links {
+    gap: 10px;
+  }
+  
+  .social-link {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .social-link svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .footer-bottom-links {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .contact-info {
+    gap: 15px;
+  }
+  
+  .contact-item {
+    justify-content: center;
+    text-align: left;
+  }
+}
+
+/* Animation for footer wave */
+@keyframes footer-wave-animation {
+  0%, 100% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(15px);
+  }
+}
+
+.footer-wave svg {
+  animation: footer-wave-animation 8s ease-in-out infinite;
+}
+
+/* Hover effects for sections */
+.footer-section:hover .footer-title {
+  color: #FFA500;
+}
+
+.footer-section:hover .footer-title::after {
+  width: 50px;
+  transition: width 0.3s ease;
+}
