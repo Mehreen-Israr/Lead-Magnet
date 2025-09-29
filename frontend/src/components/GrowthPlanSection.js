@@ -15,12 +15,11 @@ const GrowthPlanSection = () => {
   const [pricingPlans, setPricingPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Swiper configuration for professional carousel - Updated
+  // Simple Swiper configuration
   const swiperConfig = {
     modules: [Navigation, Pagination],
     spaceBetween: 20,
-    slidesPerView: 2, // Show 2 cards on desktop
-    slidesPerGroup: 1, // Move one slide at a time
+    slidesPerView: 2,
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
@@ -29,34 +28,18 @@ const GrowthPlanSection = () => {
       clickable: true,
     },
     loop: false,
-    centeredSlides: false,
-    initialSlide: 0,
-    watchSlidesProgress: true,
-    allowTouchMove: true,
-    touchRatio: 1,
-    touchAngle: 45,
-    grabCursor: true,
-    preventClicks: false,
-    preventClicksPropagation: false,
-    touchStartPreventDefault: false,
-    touchMoveStopPropagation: false,
     breakpoints: {
       1024: {
-        slidesPerView: 2, // Show 2 cards on desktop
+        slidesPerView: 2,
         spaceBetween: 20,
-        slidesPerGroup: 1,
       },
       768: {
-        slidesPerView: 1, // Show 1 card on tablet
+        slidesPerView: 1,
         spaceBetween: 10,
-        slidesPerGroup: 1,
-        allowTouchMove: true, // Ensure touch scrolling works
       },
       480: {
-        slidesPerView: 1, // Show 1 card on mobile
+        slidesPerView: 1,
         spaceBetween: 10,
-        slidesPerGroup: 1,
-        allowTouchMove: true, // Ensure touch scrolling works
       }
     }
   };

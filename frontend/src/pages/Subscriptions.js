@@ -18,12 +18,11 @@ const Subscriptions = () => {
   const [containerRef, visibleItems] = useStaggeredAnimation(6, 150);
   const [showAvailablePackages, setShowAvailablePackages] = useState(false);
 
-  // Swiper configuration (prevent empty space scrolling)
+  // Simple Swiper configuration
   const swiperConfig = {
     modules: [Navigation, Pagination],
-    spaceBetween: 20, // Match GrowthPlanSection spacing
-    slidesPerView: 2, // Show exactly 2 cards on desktop
-    slidesPerGroup: 1, // Move one slide at a time
+    spaceBetween: 20,
+    slidesPerView: 2,
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
@@ -32,34 +31,18 @@ const Subscriptions = () => {
       clickable: true,
     },
     loop: false,
-    centeredSlides: false,
-    initialSlide: 0,
-    watchSlidesProgress: true,
-    allowTouchMove: true,
-    touchRatio: 1,
-    touchAngle: 45,
-    grabCursor: true,
-    preventClicks: false,
-    preventClicksPropagation: false,
-    touchStartPreventDefault: false,
-    touchMoveStopPropagation: false,
     breakpoints: {
       1024: {
-        slidesPerView: 2, // Show exactly 2 cards on desktop
-        spaceBetween: 20, // Match GrowthPlanSection spacing
-        slidesPerGroup: 1,
+        slidesPerView: 2,
+        spaceBetween: 20,
       },
       768: {
-        slidesPerView: 1, // Show 1 card on tablet
+        slidesPerView: 1,
         spaceBetween: 10,
-        slidesPerGroup: 1,
-        allowTouchMove: true, // Ensure touch scrolling works
       },
       480: {
-        slidesPerView: 1, // Show 1 card on mobile
+        slidesPerView: 1,
         spaceBetween: 10,
-        slidesPerGroup: 1,
-        allowTouchMove: true, // Ensure touch scrolling works
       }
     }
   };
