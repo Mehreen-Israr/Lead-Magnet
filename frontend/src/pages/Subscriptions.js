@@ -32,6 +32,8 @@ const Subscriptions = () => {
     },
     loop: false,
     allowTouchMove: true,
+    touchRatio: 1,
+    grabCursor: true,
     breakpoints: {
       1024: {
         slidesPerView: 2,
@@ -41,11 +43,15 @@ const Subscriptions = () => {
         slidesPerView: 1,
         spaceBetween: 10,
         allowTouchMove: true,
+        touchRatio: 1,
+        grabCursor: true,
       },
       480: {
         slidesPerView: 1,
         spaceBetween: 10,
         allowTouchMove: true,
+        touchRatio: 1,
+        grabCursor: true,
       }
     }
   };

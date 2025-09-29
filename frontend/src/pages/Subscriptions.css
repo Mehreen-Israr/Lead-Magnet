@@ -48,72 +48,81 @@
 
 .empty-state-icon {
   font-size: 4rem;
+  margin-bottom: 1.5rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.empty-state-content h3 {
   color: #FFD700;
-  margin-bottom: 1rem;
-  display: block;
-}
-
-.empty-state h3 {
-  color: #fff;
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
   font-weight: 600;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.empty-state p {
-  color: #ccc;
-  margin-bottom: 2rem;
-  font-size: 1rem;
+.empty-state-content p {
+  color: #f8f8f8;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0 0 2rem 0;
+  opacity: 0.9;
 }
 
 .explore-plans-btn {
   background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   color: #000;
   border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
   font-weight: 600;
-  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
 }
 
 .explore-plans-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+  background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
 }
 
-/* Background and Overlay */
 .subscriptions-background {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 50%, #000000 100%);
   z-index: -2;
 }
 
 .subscriptions-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(255, 165, 0, 0.1) 0%, transparent 50%);
+  background-image: radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
   z-index: -1;
 }
 
-/* Content */
 .subscriptions-content {
-  position: relative;
-  z-index: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .subscriptions-header {
@@ -122,110 +131,649 @@
 }
 
 .subscriptions-title {
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: #fff;
+  font-size: 3rem; /* Slightly smaller */
+  font-weight: 700; /* Reduced weight */
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #FFD700 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.subscriptions-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border-radius: 2px;
 }
 
 .subscriptions-subtitle {
-  font-size: 1.2rem;
-  color: #ccc;
+  font-size: 1.3rem;
+  color: #cccccc;
+  font-weight: 400;
+  line-height: 1.6;
   max-width: 600px;
   margin: 0 auto;
-  line-height: 1.6;
+}
+
+/* Subscription Summary Styles */
+.subscription-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.subscription-summary span {
+  color: #ddd;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.subscription-summary .status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0.5rem 0;
+}
+
+.subscription-summary .status-badge.active {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.subscription-summary .status-badge.inactive {
+  background: rgba(156, 163, 175, 0.2);
+  color: #9ca3af;
+  border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+.subscription-summary .btn-secondary {
+  margin-top: 1rem;
+  min-width: 180px;
+}
+
+/* Loading Styles */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  color: #fff;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 215, 0, 0.3);
+  border-top: 3px solid #FFD700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Section Styles */
 .active-subscriptions-section,
 .available-packages-section {
   margin-bottom: 4rem;
+  animation: slideInFromBottom 0.6s ease-out;
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .Subscription-section-title {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 2.2rem; /* Slightly smaller */
+  font-weight: 600; /* Softer weight */
   color: #fff;
-  margin-bottom: 1rem;
+  margin-bottom: 3rem; /* Reduced margin */
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.Subscription-section-title.active {
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.Subscription-section-title::before {
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FFD700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpolyline points='3.27,6.96 12,12.01 20.73,6.96'/%3E%3Cline x1='12' y1='22.08' x2='12' y2='12'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  font-size: 1.8rem;
+  opacity: 0.8;
 }
 
-.Subscription-section-title.available {
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.Subscription-section-title.active::before {
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2300ff00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.Subscription-section-title.available::before {
+  content: '';
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23FFD700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5z'/%3E%3Cpath d='M2 17l10 5 10-5'/%3E%3Cpath d='M2 12l10 5 10-5'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .section-subtitle {
-  text-align: center;
-  color: #ccc;
   font-size: 1.1rem;
-  margin-bottom: 2rem;
+  color: #cccccc;
+  text-align: center;
+  margin-bottom: 1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Subscription Cards */
+.package-counter {
+  font-size: 0.9rem;
+  color: #FFD700;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+/* Grid Layouts */
 .subscriptions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 12%;
 }
 
+/* Swiper Carousel Styles - Mobile Sliding Fix */
+.pricing-swiper {
+  width: 100%;
+  height: auto;
+  padding: 30px 0 20px 0;
+  margin: 0 auto;
+}
+
+.pricing-swiper .swiper-slide {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  height: auto;
+}
+
+/* Mobile responsive - ensure all packages are accessible */
+@media (max-width: 768px) {
+  .pricing-swiper {
+    max-width: 100%;
+    padding: 20px 10px;
+  }
+  
+  .pricing-swiper .swiper-slide {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Swiper Navigation */
+.pricing-swiper .swiper-button-next,
+.pricing-swiper .swiper-button-prev {
+  color: #FFD700;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+}
+
+.pricing-swiper .swiper-button-next:after,
+.pricing-swiper .swiper-button-prev:after {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.pricing-swiper .swiper-button-next:hover,
+.pricing-swiper .swiper-button-prev:hover {
+  background: rgba(255, 215, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.pricing-swiper .swiper-pagination-bullet {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+.pricing-swiper .swiper-pagination-bullet-active {
+  background: #FFD700;
+}
+
+/* Original Embla Carousel Custom Styles - Same as GrowthPlanSection */
+.pricing-carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px; /* Minimal padding to maximize space for slides */
+  box-sizing: border-box;
+  animation: fadeInScale 0.8s ease-out 0.2s both;
+  max-width: 1600px; /* Further increased max-width to accommodate 3 cards */
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.embla {
+  position: relative;
+  padding: 35px 0 20px 0;
+  width: 100%;
+  margin-top: 40px;
+  overflow-x: visible; /* Changed to visible to prevent cutting off */
+  overflow-y: visible;
+}
+
+.embla__container {
+  display: flex;
+  margin-top: 20px;
+  gap: 10px; /* Minimal gap between slides */
+  margin-left: -10px;
+  margin-right: -10px;
+  overflow: visible; /* Ensure content is visible */
+  width: max-content; /* Ensure container can expand to fit all slides */
+}
+
+.embla__slide {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: 0 15px;
+  transition: transform 0.5s ease;
+  height: auto; /* Ensure natural height */
+  overflow: visible; /* Prevent clipping of content */
+}
+
+/* Responsive slide widths */
+.embla__slide {
+  flex: 0 0 calc(30% - 5px); /* Reduced width for better proportions */
+  min-width: 280px; /* Reduced minimum width for better card display */
+  max-width: calc(30% - 5px); /* Prevent slides from being too wide */
+}
+
+@media (max-width: 1200px) {
+  .embla__slide {
+    flex: 0 0 calc(33.333% - 20px); /* Still 3 slides */
+  }
+}
+
+@media (max-width: 992px) {
+  .embla__slide {
+    flex: 0 0 calc(50% - 20px); /* 2 slides on tablet */
+  }
+}
+
+@media (max-width: 768px) {
+  .embla__slide {
+    flex: 0 0 calc(100% - 20px); /* 1 slide on mobile */
+    overflow: visible; /* Ensure content is accessible */
+  }
+  
+  .embla__container {
+    gap: 20px;
+    overflow: visible; /* Prevent clipping on mobile */
+    width: max-content; /* Allow container to expand for all slides */
+  }
+}
+
+/* Navigation Buttons Styling - Same as GrowthPlanSection */
+.embla-nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px; /* Slightly smaller to reduce overlap */
+  height: 45px; /* Slightly smaller to reduce overlap */
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #000;
+  font-size: 18px; /* Slightly smaller font */
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000; /* Increased z-index to ensure visibility */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 6px 20px rgba(255, 215, 0, 0.4),
+    0 3px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  animation: pulse 3s ease-in-out infinite;
+  /* Ensure buttons don't get cut off */
+  min-width: 50px;
+  min-height: 50px;
+  flex-shrink: 0;
+}
+
+.embla-nav-button:hover {
+  background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 
+    0 6px 20px rgba(255, 215, 0, 0.4),
+    0 3px 12px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.embla-nav-button:active {
+  transform: translateY(-50%) scale(0.95);
+  box-shadow: 
+    0 2px 8px rgba(255, 215, 0, 0.2),
+    0 1px 4px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.embla-nav-button:focus {
+  outline: none;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3), 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+
+.embla-nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation: none;
+  background: linear-gradient(135deg, #ccc 0%, #999 100%);
+}
+
+.embla-nav-button:disabled:hover {
+  transform: translateY(-50%);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.embla-nav-prev {
+  left: 5px; /* Moved further inside to avoid overlap */
+}
+
+.embla-nav-next {
+  right: 5px; /* Moved further inside to avoid overlap */
+}
+
+/* Responsive navigation button positioning */
+@media (max-width: 1200px) {
+  .pricing-carousel-container {
+    padding: 0 70px; /* Adjusted padding for medium screens */
+  }
+  
+  .embla-nav-prev {
+    left: 8px;
+  }
+  
+  .embla-nav-next {
+    right: 8px;
+  }
+}
+
+@media (max-width: 992px) {
+  .pricing-carousel-container {
+    padding: 0 60px; /* Adjusted padding for tablets */
+  }
+  
+  .embla-nav-prev {
+    left: 5px;
+  }
+  
+  .embla-nav-next {
+    right: 5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pricing-carousel-container {
+    padding: 0 50px; /* Adjusted padding for mobile */
+  }
+  
+  .embla-nav-button {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .embla-nav-prev {
+    left: 5px;
+  }
+  
+  .embla-nav-next {
+    right: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing-carousel-container {
+    padding: 0 0px; /* No padding for small mobile */
+  }
+  
+  .embla__slide {
+    flex: 0 0 50%; /* Even narrower for small mobile */
+    min-width: 50%;
+    max-width: 50%;
+    padding: 0 0px; /* No padding */
+  }
+  
+  .embla-nav-button {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+  
+  .embla-nav-prev {
+    left: 5px;
+  }
+  
+  .embla-nav-next {
+    right: 5px;
+  }
+}
+
+/* Additional safety for very small screens */
+@media (max-width: 360px) {
+  .pricing-carousel-container {
+    padding: 0 0px; /* No padding for very small screens */
+  }
+  
+  .embla__slide {
+    flex: 0 0 45%; /* Even narrower for very small screens */
+    min-width: 45%;
+    max-width: 45%;
+    padding: 0 0px; /* No padding */
+  }
+  
+  .package-card {
+    padding: 0.25rem; /* Even more compact padding for very small screens */
+  }
+  
+  .package-name {
+    font-size: 0.75rem; /* Ultra small font for very small screens */
+  }
+  
+  .package-price {
+    font-size: 0.9rem; /* Ultra small price font for very small screens */
+  }
+  
+  .package-features li {
+    font-size: 0.65rem; /* Ultra small feature text for very small screens */
+    margin-bottom: 0.1rem; /* Ultra reduced margin for very small screens */
+  }
+  
+  .embla-nav-button {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+  
+  .embla-nav-prev {
+    left: 3px;
+  }
+  
+  .embla-nav-next {
+    right: 3px;
+  }
+}
+
+/* Show navigation buttons on all screen sizes */
+.embla-nav-button {
+  display: flex !important;
+}
+
+/* Add missing animations from GrowthPlanSection */
+@keyframes pulse {
+  0% { 
+    box-shadow: 
+      0 4px 15px rgba(255, 215, 0, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 6px 20px rgba(255, 215, 0, 0.5),
+      0 3px 12px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  100% { 
+    box-shadow: 
+      0 4px 15px rgba(255, 215, 0, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Slide indicators */
+.slide-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2rem;
+}
+
+.slide-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slide-indicator:hover {
+  background: rgba(255, 215, 0, 0.5);
+  transform: scale(1.2);
+}
+
+.slide-indicator.active {
+  background: #FFD700;
+  transform: scale(1.3);
+}
+
+/* Legacy grid fallback */
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 20%;
+}
+
+/* Subscription Card Styles */
 .subscription-card {
   background: rgba(30, 30, 30, 0.8);
-  border-radius: 15px;
-  padding: 2rem;
+  border-radius: 12px;
+  padding: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
   position: relative;
-  overflow: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive adjustments - removed since using grid layout */
+.subscription-card.animate-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .subscription-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
   border-color: rgba(255, 215, 0, 0.3);
 }
 
 .subscription-card.cancelled {
-  opacity: 0.7;
-  border-color: rgba(255, 0, 0, 0.3);
+  opacity: 0.6;
+  border-color: rgba(255, 107, 107, 0.3);
 }
 
 .subscription-header {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.subscription-logo {
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 215, 0, 0.1);
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .subscription-logo img {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
+  border-radius: 6px;
 }
 
 .subscription-info {
@@ -233,95 +781,92 @@
 }
 
 .subscription-name {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #fff;
   margin-bottom: 0.25rem;
 }
 
 .subscription-platform {
-  color: #ccc;
-  font-size: 1rem;
+  color: #888;
+  font-size: 0.85rem;
   margin-bottom: 0.5rem;
 }
 
 .subscription-price {
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: #FFD700;
 }
 
 .subscription-price .period {
-  font-size: 1rem;
-  color: #ccc;
-  font-weight: 400;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-left: 0.25rem;
 }
 
 .subscription-status {
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .subscription-status.active {
-  background: rgba(0, 255, 0, 0.2);
-  color: #00ff00;
-  border: 1px solid rgba(0, 255, 0, 0.3);
-}
-
-.subscription-status.trialing {
-  background: rgba(255, 215, 0, 0.2);
-  color: #FFD700;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .subscription-status.cancelled {
-  background: rgba(255, 0, 0, 0.2);
-  color: #ff4444;
-  border: 1px solid rgba(255, 0, 0, 0.3);
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 /* Subscription Details */
 .subscription-details {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .billing-info {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
 }
 
 .billing-info p {
-  color: #ccc;
-  font-size: 0.9rem;
+  margin: 0;
+  color: #ddd;
 }
 
-.billing-info strong {
-  color: #fff;
-}
-
+/* Usage Statistics */
 .usage-stats {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .usage-stats h4 {
   color: #fff;
   font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .usage-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .usage-label {
-  color: #ccc;
+  min-width: 80px;
   font-size: 0.9rem;
-  min-width: 100px;
+  color: #ccc;
+  font-weight: 500;
 }
 
 .usage-bar {
@@ -334,289 +879,419 @@
 
 .usage-progress {
   height: 100%;
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border-radius: 4px;
   transition: width 0.3s ease;
 }
 
 .usage-text {
-  color: #fff;
-  font-size: 0.9rem;
-  min-width: 80px;
+  min-width: 100px;
+  font-size: 0.85rem;
+  color: #aaa;
   text-align: right;
 }
 
-.subscription-features {
-  margin-bottom: 1.5rem;
-}
-
+/* Features List */
 .subscription-features h4 {
   color: #fff;
   font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
-
-.subscription-features ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.subscription-features li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  color: #ccc;
-  font-size: 0.9rem;
-}
-
-.check-icon {
-  width: 16px;
-  height: 16px;
-  color: #FFD700;
-  flex-shrink: 0;
-}
-
-/* Subscription Actions */
-.subscription-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  text-align: center;
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.btn-danger {
-  background: rgba(255, 0, 0, 0.2);
-  color: #ff4444;
-  border: 1px solid rgba(255, 0, 0, 0.3);
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  text-align: center;
-}
-
-.btn-danger:hover {
-  background: rgba(255, 0, 0, 0.3);
-  border-color: rgba(255, 0, 0, 0.4);
-}
-
-.cancelled-notice {
-  background: rgba(255, 0, 0, 0.1);
-  border: 1px solid rgba(255, 0, 0, 0.2);
-  border-radius: 10px;
-  padding: 1rem;
-  text-align: center;
-}
-
-.cancelled-notice p {
-  color: #ff4444;
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-/* Package Cards */
-.packages-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  margin-bottom: 12%;
-}
-
-.package-card {
-  background: rgba(30, 30, 30, 0.8);
-  border-radius: 15px;
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: visible;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.package-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 215, 0, 0.3);
-}
-
-.package-card.popular {
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  background: linear-gradient(135deg, rgba(40, 40, 40, 0.9) 0%, rgba(30, 30, 30, 0.9) 100%);
-}
-
-/* Package Header */
-.package-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.package-logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 215, 0, 0.1);
-  margin: 0 auto 1rem;
-}
-
-.package-logo img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-
-.package-name {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.25rem;
-}
-
-.package-platform {
-  color: #ccc;
-  font-size: 1rem;
-}
-
-/* Package Pricing */
-.package-pricing {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.sub-original-price {
-  color: #999;
-  text-decoration: line-through;
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
-}
-
-.package-price {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #FFD700;
-  margin-bottom: 0.5rem;
-}
-
-.package-price .period {
-  font-size: 1rem;
-  color: #ccc;
-  font-weight: 400;
-}
-
-.free-trial {
-  color: #FFD700;
-  font-size: 0.9rem;
+  margin-bottom: 1rem;
   font-weight: 600;
 }
 
-/* Package Features */
-.package-features {
-  flex: 1;
-  margin-bottom: 1.5rem;
-}
-
+.subscription-features ul,
 .package-features ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+.subscription-features li,
 .package-features li {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-  color: #ccc;
-  font-size: 1rem;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem; /* Further reduced margin */
+  color: #ddd;
+  font-size: 0.85rem; /* Further reduced font size */
 }
 
-.package-features .check-icon {
-  width: 18px;
-  height: 18px;
+.check-icon {
+  width: 16px;
+  height: 16px;
   color: #FFD700;
+  margin-top: 2px;
   flex-shrink: 0;
 }
 
-/* Package Actions */
+/* Action Buttons */
+.subscription-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-secondary,
+.btn-danger,
 .package-subscribe-btn {
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-  color: #000;
+  padding: 0.75rem 1.5rem;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 25px;
-  font-weight: 700;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
-  display: block;
+  display: inline-block;
   text-align: center;
+}
+
+.btn-secondary {
+  background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  color: #FFD700;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+  border-color: #FFD700;
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background: linear-gradient(45deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(45deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2));
+  border-color: #ef4444;
+  transform: translateY(-2px);
+}
+
+.cancelled-notice {
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  color: #ef4444;
+}
+
+.cancelled-notice p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Package Card Styles */
+.package-card {
+  background: rgba(30, 30, 30, 0.8);
+  border-radius: 12px;
+  padding: 0.6rem; /* Further reduced padding to make cards more compact */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.package-card.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.package-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.5);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.discount-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #ff4d4d;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  z-index: 10;
+}
+
+.package-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.package-logo img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.package-name {
+  font-size: 1rem; /* Further reduced font size */
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.package-platform {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.package-pricing {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sub-original-price {
+  font-size: 1rem;
+  color: #aaa;
+  text-decoration: line-through;
+  margin-bottom: 0.4rem;
+  position: relative;
+}
+
+.sub-original-price::after {
+  content: '';
+  position: absolute;
+  left: 40%;
+  top: 50%;
+  width: 20%;
+  height: 1.5px;
+  background-color: #ff3366;
+  transform: rotate(-5deg);
+}
+
+.package-price {
+  font-size: 1.4rem; /* Further reduced font size */
+  font-weight: 800;
+  color: #FFD700;
+  margin-bottom: 0.4rem;
+}
+
+.package-price .period {
+  font-size: 1rem;
+  color: #aaa;
+  margin-left: 0.25rem;
+}
+
+.free-trial {
+  color: #ffc107;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.package-features {
+  flex: 1;
+  margin-bottom: 2rem;
+}
+
+.package-subscribe-btn {
   width: 100%;
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  color: #000;
+  font-weight: 700;
+  padding: 0.8rem; /* Reduced padding */
+  margin-top: auto;
 }
 
 .package-subscribe-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+  background: linear-gradient(45deg, #FFA500, #FFD700);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(255, 215, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Badges */
-.discount-badge {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #ff4444;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+/* Responsive Design */
+@media (min-width: 1400px) {
+  .pricing-carousel-container {
+    max-width: 1600px; /* Reduced max-width for better proportions */
+    padding: 0 20px; /* Better padding for wide screens */
+  }
+  
+  .embla__slide {
+    flex: 0 0 calc(30% - 3px); /* Reduced width for better proportions */
+    min-width: 320px; /* Reduced minimum width for better proportions */
+  }
 }
 
-.popular-badge {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #FFD700;
-  color: #000;
-  padding: 10px 25px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  white-space: nowrap;
-  z-index: 100;
-  text-align: center;
-  border-radius: 20px;
-  width: 140px;
+@media (max-width: 1200px) {
+  .subscriptions-content {
+    max-width: 1000px;
+  }
+  
+  .subscriptions-grid,
+  .packages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .subscriptions-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 80px;
+  }
+  
+  .subscriptions-title {
+    font-size: 2.5rem;
+  }
+  
+  .subscriptions-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .Subscription-section-title {
+    font-size: 1.8rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .subscriptions-grid,
+  .packages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .subscription-card,
+  .package-card {
+    padding: 0.4rem; /* Even more compact padding for mobile */
+  }
+  
+  .subscription-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .subscription-info {
+    text-align: center;
+  }
+  
+  .subscription-actions {
+    flex-direction: column;
+  }
+  
+  .usage-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .usage-label,
+  .usage-text {
+    text-align: left;
+  }
+  
+  .pricing-carousel-container {
+    padding: 0 1px; /* Ultra minimal padding for mobile */
+    max-width: 100%; /* Full width on mobile */
+  }
+  
+  .embla__slide {
+    flex: 0 0 55%; /* Even narrower for mobile */
+    min-width: 55%; /* Ensure proper width */
+    max-width: 55%; /* Prevent overflow */
+    padding: 0 1px; /* Ultra minimal padding */
+  }
+  
+  .embla__container {
+    gap: 0; /* No gap on mobile */
+    margin-left: 0;
+    margin-right: 0;
+    width: max-content; /* Allow container to expand for all slides */
+  }
+  
+  .empty-state {
+    padding: 2rem 1rem;
+  }
+  
+  .empty-state-icon {
+    font-size: 3rem;
+  }
+  
+  .empty-state-content h3 {
+    font-size: 1.5rem;
+  }
+  
+  .explore-plans-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .subscriptions-title {
+    font-size: 2rem;
+  }
+  
+  .subscription-card,
+  .package-card {
+    padding: 0.3rem; /* Even more compact padding for small mobile */
+  }
+  
+  .packages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+  
+  .subscription-price,
+  .package-price {
+    font-size: 1rem; /* Ultra small font size for mobile */
+  }
+  
+  .btn-secondary,
+  .btn-danger,
+  .package-subscribe-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .pricing-carousel-container {
+    padding: 0 10px; /* Even more minimal padding for small mobile */
+  }
+  
+  .embla__slide {
+    padding: 0 5px; /* Minimal padding for small mobile */
+  }
+  
+  .package-card {
+    padding: 0.8rem; /* Reduced padding for small mobile */
+  }
+  
+  .package-name {
+    font-size: 1rem; /* Smaller font for small mobile */
+  }
+  
+  .package-price {
+    font-size: 1.4rem; /* Smaller price font for small mobile */
+  }
+}
+
+/* Very small screens - even narrower packages */
+@media (max-width: 360px) {
+  .packages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem;
+  }
+  
+  .package-card {
+    padding: 0.2rem; /* Minimal padding for very small screens */
+  }
 }
 
 /* Swiper Carousel Custom Styles */
@@ -630,7 +1305,9 @@
   width: 100%;
   height: auto;
   padding: 30px 0 20px 0; /* Extra top padding for badges */
+  max-width: 720px; /* Constrain to fit exactly 2 cards (350px + 20px + 350px) */
   margin: 0 auto;
+  overflow: hidden; /* Prevent empty space scrolling */
 }
 
 .pricing-swiper .swiper-slide {
@@ -741,14 +1418,9 @@
 
 /* Mobile responsive styles for one complete card */
 @media (max-width: 768px) {
-  .pricing-carousel-container {
-    overflow: hidden; /* Keep hidden for clean look */
-  }
-  
   .pricing-swiper {
     max-width: 100%; /* Full width on mobile */
     padding: 20px 10px; /* Reduced padding on mobile */
-    overflow: hidden; /* Keep hidden for clean look */
   }
   
   .pricing-swiper .swiper-slide {
@@ -761,52 +1433,5 @@
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .subscriptions-container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  .subscriptions-title {
-    font-size: 2.5rem;
-  }
-  
-  .subscriptions-subtitle {
-    font-size: 1.1rem;
-  }
-  
-  .Subscription-section-title {
-    font-size: 2rem;
-  }
-  
-  .subscription-card {
-    margin-bottom: 1.5rem;
-  }
-  
-  .package-card {
-    margin-bottom: 1.5rem;
-  }
-  
-  .subscription-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .subscription-info {
-    width: 100%;
-  }
-  
-  .subscription-actions {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .subscription-actions button {
-    width: 100%;
   }
 }
