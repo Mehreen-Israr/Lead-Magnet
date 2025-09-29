@@ -31,6 +31,8 @@ const GrowthPlanSection = () => {
     allowTouchMove: true,
     touchRatio: 1,
     grabCursor: true,
+    freeMode: true,
+    freeModeMomentum: true,
     breakpoints: {
       1024: {
         slidesPerView: 2,
