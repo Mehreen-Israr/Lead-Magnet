@@ -361,6 +361,7 @@
 .pricing-carousel-container {
   position: relative;
   margin-top: 60px;
+  overflow: hidden; /* Hide partial cards */
 }
 
 .embla {
@@ -382,9 +383,9 @@
 
 @media (max-width: 1024px) {
   .embla__slide {
-    width: 280px !important; /* Narrower for tablets */
-    flex: 0 0 280px !important;
-    min-width: 280px !important;
+    width: 100% !important; /* ONE FULL CARD on tablets */
+    flex: 0 0 100% !important;
+    min-width: 100% !important;
   }
   
   .embla-nav-button {
@@ -406,15 +407,16 @@
   }
   
   .embla__slide {
-    width: 260px !important; /* Much narrower for mobile */
-    flex: 0 0 260px !important;
-    min-width: 260px !important;
+    width: 100% !important; /* ONE FULL CARD on mobile */
+    flex: 0 0 100% !important;
+    min-width: 100% !important;
   }
   
   .embla__container {
     gap: 0;
-    width: 100%; /* Full width container */
-    min-width: 100%;
+    width: 100% !important; /* Full width container */
+    min-width: 100% !important;
+    overflow: hidden; /* Hide partial cards */
   }
   
   .pricing-card {
@@ -652,15 +654,16 @@
   }
   
   .embla__slide {
-    width: 240px !important; /* Much narrower for small mobile */
-    flex: 0 0 240px !important;
-    min-width: 240px !important;
+    width: 100% !important; /* ONE FULL CARD on small mobile */
+    flex: 0 0 100% !important;
+    min-width: 100% !important;
   }
   
   .embla__container {
     gap: 0;
-    width: 100%; /* Full width container */
-    min-width: 100%;
+    width: 100% !important; /* Full width container */
+    min-width: 100% !important;
+    overflow: hidden; /* Hide partial cards */
   }
   
   .pricing-card {
@@ -704,15 +707,16 @@
 /* Additional safety for very small screens */
 @media (max-width: 360px) {
   .embla__slide {
-    width: 220px !important; /* Much narrower for very small screens */
-    flex: 0 0 220px !important;
-    min-width: 220px !important;
+    width: 100% !important; /* ONE FULL CARD on very small screens */
+    flex: 0 0 100% !important;
+    min-width: 100% !important;
   }
   
   .embla__container {
     gap: 0;
-    width: 100%; /* Full width container */
-    min-width: 100%;
+    width: 100% !important; /* Full width container */
+    min-width: 100% !important;
+    overflow: hidden; /* Hide partial cards */
   }
   
   .pricing-card {
