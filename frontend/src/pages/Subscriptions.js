@@ -2,7 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { AnimatedSection, useStaggeredAnimation } from '../hooks/useScrollAnimation';
-import useEmblaCarousel from 'embla-carousel-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import { API_ENDPOINTS, apiCall, API_BASE_URL } from '../config/api';
 import './Subscriptions.css';
 
@@ -12,113 +16,48 @@ const Subscriptions = () => {
   const [availablePackages, setAvailablePackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [containerRef, visibleItems] = useStaggeredAnimation(6, 150);
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [showAvailablePackages, setShowAvailablePackages] = useState(false);
 
-  // Embla Carousel setup (same as GrowthPlanSection)
-  const options = {
-    align: 'start',
-    containScroll: false, // Allow scrolling to all slides
-    dragFree: false,
+  // Swiper configuration (prevent empty space scrolling)
+  const swiperConfig = {
+    modules: [Navigation, Pagination],
+    spaceBetween: 20, // Match GrowthPlanSection spacing
+    slidesPerView: 2, // Show exactly 2 cards on desktop
+    slidesPerGroup: 1, // Move one slide at a time
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    pagination: {
+      clickable: true,
+    },
     loop: false,
-    skipSnaps: false,
-    startIndex: 0,
-    slidesToScroll: 1,
+    centeredSlides: false,
+    initialSlide: 0,
+    watchSlidesProgress: true,
+    allowTouchMove: true,
+    preventClicks: false,
+    preventClicksPropagation: false,
+    touchStartPreventDefault: false,
+    touchMoveStopPropagation: false,
     breakpoints: {
-      '(max-width: 768px)': { 
-        slidesToScroll: 1,
-        align: 'start', // Changed from 'center' to 'start' for better mobile scrolling
-        containScroll: false // Ensure we can reach all slides on mobile
+      1024: {
+        slidesPerView: 2, // Show exactly 2 cards on desktop
+        spaceBetween: 20, // Match GrowthPlanSection spacing
+        slidesPerGroup: 1,
       },
-      '(max-width: 992px)': { 
-        slidesToScroll: 1,
-        align: 'start',
-        containScroll: false
+      768: {
+        slidesPerView: 1, // Show 1 card on tablet
+        spaceBetween: 0,
+        slidesPerGroup: 1,
+      },
+      480: {
+        slidesPerView: 1, // Show 1 card on mobile
+        spaceBetween: 0,
+        slidesPerGroup: 1,
       }
     }
   };
-
-  const [emblaRef, emblaApi] = useEmblaCarousel(options);
-
-  // Debug carousel state
-  useEffect(() => {
-    if (emblaApi) {
-      console.log('Carousel API initialized');
-      console.log('Total slides:', emblaApi.slideNodes().length);
-      console.log('Available packages:', availablePackages.length);
-      console.log('Can scroll prev:', emblaApi.canScrollPrev());
-      console.log('Can scroll next:', emblaApi.canScrollNext());
-      console.log('Current slide index:', emblaApi.selectedScrollSnap());
-    }
-  }, [emblaApi, availablePackages]);
-
-  // Reinitialize carousel when packages change
-  useEffect(() => {
-    if (emblaApi && availablePackages.length > 0) {
-      console.log('Reinitializing carousel with', availablePackages.length, 'packages');
-      // Add a small delay to ensure DOM is updated
-      setTimeout(() => {
-        emblaApi.reInit();
-        console.log('Carousel reinitialized');
-        console.log('After reinit - Can scroll prev:', emblaApi.canScrollPrev());
-        console.log('After reinit - Can scroll next:', emblaApi.canScrollNext());
-        console.log('After reinit - Total slides:', emblaApi.slideNodes().length);
-        
-        // Test if we can scroll to the last slide
-        if (emblaApi.slideNodes().length > 0) {
-          const lastSlideIndex = emblaApi.slideNodes().length - 1;
-          console.log('Last slide index:', lastSlideIndex);
-          console.log('Can scroll to last slide:', emblaApi.canScrollNext() || emblaApi.selectedScrollSnap() === lastSlideIndex);
-          
-          // Test scroll to last slide
-          setTimeout(() => {
-            console.log('Testing scroll to last slide...');
-            emblaApi.scrollTo(lastSlideIndex);
-            setTimeout(() => {
-              console.log('After scroll to last - Current index:', emblaApi.selectedScrollSnap());
-              console.log('After scroll to last - Can scroll next:', emblaApi.canScrollNext());
-              // Return to first slide
-              emblaApi.scrollTo(0);
-            }, 100);
-          }, 300);
-        }
-      }, 200); // Increased delay to ensure proper DOM rendering
-    }
-  }, [emblaApi, availablePackages]);
-
-  // Track slide changes
-  useEffect(() => {
-    if (emblaApi) {
-      const onSelect = () => {
-        setSelectedIndex(emblaApi.selectedScrollSnap());
-        console.log('📍 Current slide index:', emblaApi.selectedScrollSnap());
-      };
-      
-      emblaApi.on('select', onSelect);
-      onSelect(); // Set initial index
-      
-      return () => emblaApi.off('select', onSelect);
-    }
-  }, [emblaApi]);
-
-  // Navigation functions (same as GrowthPlanSection)
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) {
-      console.log('⬅️ Scrolling to previous slide');
-      console.log('⬅️ Current slide index before:', emblaApi.selectedScrollSnap());
-      emblaApi.scrollPrev();
-      console.log('⬅️ Current slide index after:', emblaApi.selectedScrollSnap());
-    }
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) {
-      console.log('➡️ Scrolling to next slide');
-      console.log('➡️ Current slide index before:', emblaApi.selectedScrollSnap());
-      emblaApi.scrollNext();
-      console.log('➡️ Current slide index after:', emblaApi.selectedScrollSnap());
-    }
-  }, [emblaApi]);
 
   // Fetch user subscriptions and available packages from API
   useEffect(() => {
@@ -507,92 +446,63 @@ const Subscriptions = () => {
             <p className="section-subtitle">Expand your reach with additional platforms and features</p>
             
             <div className="pricing-carousel-container">
-              {/* Custom Navigation Buttons */}
-              <button 
-                className="embla-nav-button embla-nav-prev" 
-                onClick={scrollPrev}
-                aria-label="Previous slide"
-              >
-                ‹
-              </button>
-              <button 
-                className="embla-nav-button embla-nav-next" 
-                onClick={scrollNext}
-                aria-label="Next slide"
-              >
-                ›
-              </button>
-              
-              {/* Embla Carousel */}
-              <div className="embla" ref={emblaRef}>
-                <div className="embla__container">
-                  {availablePackages.map((pkg, index) => (
-                    <div key={pkg.id} className="embla__slide">
-                      <div className={`package-card ${pkg.popular ? 'popular' : ''}`}>
-                        {pkg.discount && <div className="discount-badge">{pkg.discount}</div>}
-                        {pkg.popular && <div className="popular-badge">Most Popular</div>}
-                        
-                        <div className="package-header">
-                          <div className="package-logo">
-                            <img 
-                              src={process.env.PUBLIC_URL + pkg.logo} 
-                              alt={`${pkg.platform} Logo`}
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                              }}
-                            />
-                          </div>
-                          <h3 className="package-name">{pkg.name}</h3>
-                          <p className="package-platform">{pkg.platform}</p>
+              {/* Swiper Carousel */}
+              <Swiper {...swiperConfig} className="pricing-swiper">
+                {availablePackages.map((pkg, index) => (
+                  <SwiperSlide key={pkg.id}>
+                    <div className={`package-card ${pkg.popular ? 'popular' : ''}`}>
+                      {pkg.discount && <div className="discount-badge">{pkg.discount}</div>}
+                      {pkg.popular && <div className="popular-badge">Most Popular</div>}
+                      
+                      <div className="package-header">
+                        <div className="package-logo">
+                          <img 
+                            src={process.env.PUBLIC_URL + pkg.logo} 
+                            alt={`${pkg.platform} Logo`}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
                         </div>
-
-                        <div className="package-pricing">
-                          {pkg.originalPrice && (
-                            <div className="sub-original-price">${pkg.originalPrice}</div>
-                          )}
-                          <div className="package-price">
-                            {pkg.price}<span className="period">{pkg.period}</span>
-                          </div>
-                          {pkg.trialDays && (
-                            <div className="free-trial">{pkg.trialDays}-day free trial</div>
-                          )}
-                        </div>
-
-                        <div className="package-features">
-                          <ul>
-                            {pkg.features.map((feature, idx) => (
-                              <li key={idx}>
-                                <svg className="check-icon" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                                {feature}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <button 
-                          className="package-subscribe-btn"
-                          onClick={() => handleSubscribeToPackage(pkg.id)}
-                        >
-                          Start Free Trial
-                        </button>
+                        <h3 className="package-name">{pkg.name}</h3>
+                        <p className="package-platform">{pkg.platform}</p>
                       </div>
+
+                      <div className="package-pricing">
+                        {pkg.originalPrice && (
+                          <div className="sub-original-price">${pkg.originalPrice}</div>
+                        )}
+                        <div className="package-price">
+                          {pkg.price}<span className="period">{pkg.period}</span>
+                        </div>
+                        {pkg.trialDays && (
+                          <div className="free-trial">{pkg.trialDays}-day free trial</div>
+                        )}
+                      </div>
+
+                      <div className="package-features">
+                        <ul>
+                          {pkg.features.map((feature, idx) => (
+                            <li key={idx}>
+                              <svg className="check-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <button 
+                        className="package-subscribe-btn"
+                        onClick={() => handleSubscribeToPackage(pkg.id)}
+                      >
+                        Start Free Trial
+                      </button>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            {/* Slide indicators */}
-            <div className="slide-indicators">
-              {availablePackages.map((_, index) => (
-                <button
-                  key={index}
-                  className={`slide-indicator ${index === selectedIndex ? 'active' : ''}`}
-                  onClick={() => emblaApi?.scrollTo(index)}
-                />
-              ))}
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
             
             </section>

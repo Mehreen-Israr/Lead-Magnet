@@ -70,8 +70,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: auto; /* Changed from 100% to auto for natural height */
-  min-height: fit-content; /* Ensure content fits naturally */
+  width: 100%;
+  min-width: 350px; /* Ensure minimum width */
+  max-width: 350px; /* Ensure maximum width */
+  height: 100%; /* Make all cards same height */
+  min-height: 500px; /* Minimum height for consistency */
 }
 
 .pricing-card:hover {
@@ -87,15 +90,17 @@
 
 .popular-badge {
   position: absolute;
-  top: -15px;
+  top: -20px;
   left: 50%;
   transform: translateX(-50%);
   background: #FFD700;
   color: #000;
-  padding: 8px 20px;
+  padding: 10px 25px;
   font-size: 0.9rem;
   font-weight: 700;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  z-index: 15;
   z-index: 100;
   text-align: center;
   border-radius: 20px;
@@ -357,39 +362,79 @@
   box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
 }
 
-/* Embla Carousel Custom Styles - Based on Subscriptions page approach */
+/* Swiper Carousel Custom Styles */
 .pricing-carousel-container {
   position: relative;
   margin-top: 60px;
   overflow: hidden; /* Hide partial cards */
 }
 
-.embla {
-  overflow: hidden;
-  position: relative;
+.pricing-swiper {
+  width: 100%;
+  height: auto;
+  padding: 30px 0 20px 0; /* Extra top padding for badges */
+  max-width: 800px; /* Limit width to fit only 2 cards */
+  margin: 0 auto;
 }
 
-.embla__container {
+.pricing-swiper .swiper-slide {
+  width: 350px; /* Fixed width for all cards */
+  min-width: 350px; /* Ensure minimum width */
+  max-width: 350px; /* Ensure maximum width */
   display: flex;
-  gap: 2rem;
-  padding: 20px 0;
+  justify-content: center;
+  align-items: stretch;
+  height: auto;
 }
 
-.embla__slide {
-  flex: 0 0 auto;
-  min-width: 0;
-  width: 350px; /* Fixed width like Subscriptions page */
+/* Swiper Navigation Styles */
+.pricing-swiper .swiper-button-next,
+.pricing-swiper .swiper-button-prev {
+  color: #FFD700;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
 }
 
-@media (max-width: 1024px) {
-  .embla__slide {
-    width: 100% !important; /* ONE FULL CARD on tablets */
-    flex: 0 0 100% !important;
-    min-width: 100% !important;
+.pricing-swiper .swiper-button-next:after,
+.pricing-swiper .swiper-button-prev:after {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.pricing-swiper .swiper-button-next:hover,
+.pricing-swiper .swiper-button-prev:hover {
+  background: rgba(255, 215, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.pricing-swiper .swiper-pagination-bullet {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+.pricing-swiper .swiper-pagination-bullet-active {
+  background: #FFD700;
+}
+
+/* Mobile responsive styles for one complete card */
+@media (max-width: 768px) {
+  .pricing-swiper {
+    max-width: 100%; /* Full width on mobile */
+    padding: 20px 10px; /* Reduced padding on mobile */
   }
   
-  .embla-nav-button {
-    display: none;
+  .pricing-swiper .swiper-slide {
+    width: 100% !important; /* Full width on mobile */
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .pricing-card {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
   }
 }
 
@@ -445,15 +490,16 @@
   /* Ensure popular badge doesn't interfere */
   .popular-badge {
     position: absolute;
-    top: -10px;
+    top: -15px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10;
+    z-index: 15;
     font-size: 0.8rem;
-    padding: 6px 12px;
+    padding: 8px 16px;
     background: #FFD700;
     color: #000;
     border-radius: 4px;
+    white-space: nowrap;
     font-weight: 600;
   }
 }

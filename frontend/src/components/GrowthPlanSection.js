@@ -1,7 +1,11 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { AnimatedSection } from '../hooks/useScrollAnimation';
-import useEmblaCarousel from 'embla-carousel-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import { API_ENDPOINTS, apiCall } from '../config/api';
 import './GrowthPlanSection.css';
 
@@ -11,30 +15,44 @@ const GrowthPlanSection = () => {
   const [pricingPlans, setPricingPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Embla Carousel setup with responsive options
-  const options = {
-    align: 'start',
-    containScroll: false, // Allow scrolling to all slides
-    dragFree: false,
+  // Swiper configuration for professional carousel - Updated
+  const swiperConfig = {
+    modules: [Navigation, Pagination],
+    spaceBetween: 20,
+    slidesPerView: 2, // Show 2 cards on desktop
+    slidesPerGroup: 1, // Move one slide at a time
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    pagination: {
+      clickable: true,
+    },
     loop: false,
-    skipSnaps: false,
-    startIndex: 0,
-    slidesToScroll: 1,
+    centeredSlides: false,
+    initialSlide: 0,
+    watchSlidesProgress: true,
+    allowTouchMove: true,
     breakpoints: {
-      '(max-width: 768px)': { 
-        slidesToScroll: 1,
-        align: 'start', // Changed from 'center' to 'start' for better mobile scrolling
-        containScroll: false // Ensure we can reach all slides on mobile
+      1024: {
+        slidesPerView: 2, // Show 2 cards on desktop
+        spaceBetween: 20,
+        slidesPerGroup: 1,
       },
-      '(max-width: 992px)': { 
-        slidesToScroll: 1,
-        align: 'start',
-        containScroll: false
+      768: {
+        slidesPerView: 1, // Show 1 card on tablet
+        spaceBetween: 0,
+        slidesPerGroup: 1,
+      },
+      480: {
+        slidesPerView: 1, // Show 1 card on mobile
+        spaceBetween: 0,
+        slidesPerGroup: 1,
       }
     }
   };
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(options);
+  // No need for manual scroll control with Swiper
 
   // Fetch packages from database
   useEffect(() => {
@@ -69,42 +87,7 @@ const GrowthPlanSection = () => {
     fetchPackages();
   }, []);
 
-  // Reinitialize carousel when packages are loaded
-  useEffect(() => {
-    if (emblaApi && pricingPlans.length > 0) {
-      console.log('Reinitializing carousel with', pricingPlans.length, 'packages');
-      emblaApi.reInit();
-      
-      
-      // Debug: Log carousel state
-      setTimeout(() => {
-        console.log('Carousel state:', {
-          slideNodes: emblaApi.slideNodes(),
-          selectedIndex: emblaApi.selectedScrollSnap(),
-          canScrollPrev: emblaApi.canScrollPrev(),
-          canScrollNext: emblaApi.canScrollNext(),
-          totalSlides: emblaApi.slideNodes().length
-        });
-        
-        // Ensure we can scroll to the last slide
-        if (emblaApi.slideNodes().length > 0) {
-          const lastSlideIndex = emblaApi.slideNodes().length - 1;
-          console.log('Last slide index:', lastSlideIndex);
-          console.log('Can scroll to last slide:', emblaApi.canScrollNext() || emblaApi.selectedScrollSnap() === lastSlideIndex);
-          
-          // Force scroll to last slide to test if it's reachable
-          setTimeout(() => {
-            console.log('Testing scroll to last slide...');
-            emblaApi.scrollTo(lastSlideIndex);
-            setTimeout(() => {
-              console.log('After scroll to last - Current index:', emblaApi.selectedScrollSnap());
-              console.log('After scroll to last - Can scroll next:', emblaApi.canScrollNext());
-            }, 100);
-          }, 200);
-        }
-      }, 100);
-    }
-  }, [emblaApi, pricingPlans]);
+  // Swiper handles initialization automatically
 
 
   // Viewport detection
@@ -117,39 +100,7 @@ const GrowthPlanSection = () => {
     setIsTablet(newIsTablet);
   }, []);
 
-  // Handle resize events
-  useEffect(() => {
-    detectViewport();
-    
-    const handleResize = () => {
-      detectViewport();
-      // Embla handles resize automatically, no manual intervention needed
-      if (emblaApi) {
-        emblaApi.reInit();
-        // Force reinitialize after resize to ensure proper sliding
-        setTimeout(() => {
-          console.log('After resize - Can scroll next:', emblaApi.canScrollNext());
-          console.log('After resize - Total slides:', emblaApi.slideNodes().length);
-        }, 100);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [detectViewport, emblaApi]);
-
-  // Navigation functions - simple fix to prevent sliding when no more cards
-  const scrollPrev = useCallback(() => {
-    if (emblaApi && emblaApi.canScrollPrev()) {
-      emblaApi.scrollPrev();
-    }
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi && emblaApi.canScrollNext()) {
-      emblaApi.scrollNext();
-    }
-  }, [emblaApi]);
+  // Swiper handles navigation automatically
 
   // Helper function to get brand logo based on package name
   const getBrandLogo = (packageName) => {
@@ -252,101 +203,85 @@ const GrowthPlanSection = () => {
         
         <div className="pricing-carousel-container">
           {/* Custom Navigation Buttons */}
-          <button 
-            className="embla-nav-button embla-nav-prev" 
-            onClick={scrollPrev}
-            aria-label="Previous slide"
-          >
-            ‹
-          </button>
-          <button 
-            className="embla-nav-button embla-nav-next" 
-            onClick={scrollNext}
-            aria-label="Next slide"
-          >
-            ›
-          </button>
           
-          {/* Embla Carousel */}
-          <div className="embla" ref={emblaRef}>
-            <div className="embla__container">
-              {pricingPlans.map((plan, index) => (
-                <div key={index} className="embla__slide">
-                  <div
-                    className={`pricing-card card-hover hover-lift ${
-                      plan.isPopular ? 'popular hover-glow' : ''
-                    }`}
-                  >
-                    {plan.isPopular && <div className="popular-badge">Most Popular</div>}
-                    
-                    {/* Discount label */}
-                    {plan.discount && <div className="discount-badge">{plan.discount}% OFF</div>}
-                    
-                    <div className="plan-header">
-                      {/* Brand logo */}
-                      <div className="logo-container">
-                        {getBrandLogo(plan.name)}
-                      </div>
-                      <h3 className="plan-name">{plan.name}</h3>
-                      <div className="platform-name">
-                        {plan.name.toLowerCase().includes('premium') || plan.name.toLowerCase().includes('multi') ? (
-                          <div className="platform-logos">
-                            <img 
-                              src={process.env.PUBLIC_URL + "/instagram.png"} 
-                              alt="Instagram" 
-                              className="platform-logo-icon"
-                            />
-                            <img 
-                              src={process.env.PUBLIC_URL + "/twitter.png"} 
-                              alt="Twitter" 
-                              className="platform-logo-icon"
-                            />
-                            <img 
-                              src={process.env.PUBLIC_URL + "/linkedin.png"} 
-                              alt="LinkedIn" 
-                              className="platform-logo-icon"
-                            />
-                            <img 
-                              src={process.env.PUBLIC_URL + "/logo192.png"} 
-                              alt="Facebook" 
-                              className="platform-logo-icon"
-                            />
-                          </div>
-                        ) : (
-                          plan.name.split(' ')[0]
-                        )}
-                      </div>
+          {/* Swiper Carousel */}
+          <Swiper {...swiperConfig} className="pricing-swiper">
+            {pricingPlans.map((plan, index) => (
+              <SwiperSlide key={index}>
+                <div
+                  className={`pricing-card card-hover hover-lift ${
+                    plan.isPopular ? 'popular hover-glow' : ''
+                  }`}
+                >
+                  {plan.isPopular && <div className="popular-badge">Most Popular</div>}
+                  
+                  {/* Discount label */}
+                  {plan.discount && <div className="discount-badge">{plan.discount}% OFF</div>}
+                  
+                  <div className="plan-header">
+                    {/* Brand logo */}
+                    <div className="logo-container">
+                      {getBrandLogo(plan.name)}
                     </div>
-                    
-                    <div className="plan-price">
-                      {plan.originalPrice && (
-                        <div className="original-price">${plan.originalPrice}</div>
-                      )}
-                      <div className="price">
-                        ${plan.price}
-                        <span className="period">/{plan.billingPeriod}</span>
-                      </div>
-                      {plan.trialDays && (
-                        <div className="free-trial">{plan.trialDays}-day free trial</div>
+                    <h3 className="plan-name">{plan.name}</h3>
+                    <div className="platform-name">
+                      {plan.name.toLowerCase().includes('premium') || plan.name.toLowerCase().includes('multi') ? (
+                        <div className="platform-logos">
+                          <img 
+                            src={process.env.PUBLIC_URL + "/instagram.png"} 
+                            alt="Instagram" 
+                            className="platform-logo-icon"
+                          />
+                          <img 
+                            src={process.env.PUBLIC_URL + "/twitter.png"} 
+                            alt="Twitter" 
+                            className="platform-logo-icon"
+                          />
+                          <img 
+                            src={process.env.PUBLIC_URL + "/linkedin.png"} 
+                            alt="LinkedIn" 
+                            className="platform-logo-icon"
+                          />
+                          <img 
+                            src={process.env.PUBLIC_URL + "/logo192.png"} 
+                            alt="Facebook" 
+                            className="platform-logo-icon"
+                          />
+                        </div>
+                      ) : (
+                        plan.name.split(' ')[0]
                       )}
                     </div>
-                    
-                    <ul className="plan-features">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx}>
-                          <svg className="check-icon" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                    <button className="plan-button btn-hover-slide hover-lift">Start Free Trial</button>
                   </div>
+                  
+                  <div className="plan-price">
+                    {plan.originalPrice && (
+                      <div className="original-price">${plan.originalPrice}</div>
+                    )}
+                    <div className="price">
+                      ${plan.price}
+                      <span className="period">/{plan.billingPeriod}</span>
+                    </div>
+                    {plan.trialDays && (
+                      <div className="free-trial">{plan.trialDays}-day free trial</div>
+                    )}
+                  </div>
+                  
+                  <ul className="plan-features">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx}>
+                        <svg className="check-icon" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <button className="plan-button btn-hover-slide hover-lift">Start Free Trial</button>
                 </div>
-              ))}
-            </div>
-          </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
       </div>
     </section>

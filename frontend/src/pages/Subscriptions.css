@@ -1232,3 +1232,145 @@
     padding: 0.2rem; /* Minimal padding for very small screens */
   }
 }
+
+/* Swiper Carousel Custom Styles */
+.pricing-carousel-container {
+  position: relative;
+  margin-top: 60px;
+  overflow: hidden; /* Hide partial cards */
+}
+
+.pricing-swiper {
+  width: 100%;
+  height: auto;
+  padding: 30px 0 20px 0; /* Extra top padding for badges */
+  max-width: 720px; /* Constrain to fit exactly 2 cards (350px + 20px + 350px) */
+  margin: 0 auto;
+  overflow: hidden; /* Prevent empty space scrolling */
+}
+
+.pricing-swiper .swiper-slide {
+  width: 350px; /* Match GrowthPlanSection width */
+  min-width: 350px; /* Ensure minimum width */
+  max-width: 350px; /* Ensure maximum width */
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  height: auto;
+}
+
+/* Match GrowthPlanSection card styling exactly */
+.package-card {
+  background: rgba(30, 30, 30, 0.8);
+  border-radius: 15px;
+  padding: 60px 30px 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 350px;
+  max-width: 350px;
+  height: 100%;
+  min-height: 500px;
+}
+
+.package-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.package-card.popular {
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, rgba(40, 40, 40, 0.9) 0%, rgba(30, 30, 30, 0.9) 100%);
+}
+
+/* Popular Badge - Match GrowthPlanSection exactly */
+.popular-badge {
+  position: absolute;
+  top: -20px; /* Moved higher */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FFD700;
+  color: #000;
+  padding: 10px 25px; /* Increased padding */
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  white-space: nowrap; /* Prevent text wrapping */
+  z-index: 100; /* Ensure it's on top */
+  text-align: center;
+  border-radius: 20px;
+  width: 140px;
+}
+
+/* Discount Badge - Match GrowthPlanSection exactly */
+.discount-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #ff4444;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+}
+
+/* Swiper Navigation Styles */
+.pricing-swiper .swiper-button-next,
+.pricing-swiper .swiper-button-prev {
+  color: #FFD700;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+}
+
+.pricing-swiper .swiper-button-next:after,
+.pricing-swiper .swiper-button-prev:after {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.pricing-swiper .swiper-button-next:hover,
+.pricing-swiper .swiper-button-prev:hover {
+  background: rgba(255, 215, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.pricing-swiper .swiper-pagination-bullet {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+.pricing-swiper .swiper-pagination-bullet-active {
+  background: #FFD700;
+}
+
+/* Mobile responsive styles for one complete card */
+@media (max-width: 768px) {
+  .pricing-swiper {
+    max-width: 100%; /* Full width on mobile */
+    padding: 20px 10px; /* Reduced padding on mobile */
+  }
+  
+  .pricing-swiper .swiper-slide {
+    width: 100% !important; /* Full width on mobile */
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  .package-card {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+}
