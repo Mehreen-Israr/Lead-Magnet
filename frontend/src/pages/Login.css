@@ -71,7 +71,6 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmer 2s infinite;
 }
 
 .login-subtitle {
