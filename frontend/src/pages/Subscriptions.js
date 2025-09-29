@@ -18,7 +18,7 @@ const Subscriptions = () => {
   const [containerRef, visibleItems] = useStaggeredAnimation(6, 150);
   const [showAvailablePackages, setShowAvailablePackages] = useState(false);
 
-  // Simple Swiper configuration
+  // Swiper configuration with proper mobile scrolling
   const swiperConfig = {
     modules: [Navigation, Pagination],
     spaceBetween: 20,
@@ -31,6 +31,9 @@ const Subscriptions = () => {
       clickable: true,
     },
     loop: false,
+    allowTouchMove: true,
+    touchRatio: 1,
+    grabCursor: true,
     breakpoints: {
       1024: {
         slidesPerView: 2,
@@ -39,10 +42,12 @@ const Subscriptions = () => {
       768: {
         slidesPerView: 1,
         spaceBetween: 10,
+        allowTouchMove: true,
       },
       480: {
         slidesPerView: 1,
         spaceBetween: 10,
+        allowTouchMove: true,
       }
     }
   };

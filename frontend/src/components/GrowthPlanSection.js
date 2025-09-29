@@ -15,7 +15,7 @@ const GrowthPlanSection = () => {
   const [pricingPlans, setPricingPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Simple Swiper configuration
+  // Swiper configuration with proper mobile scrolling
   const swiperConfig = {
     modules: [Navigation, Pagination],
     spaceBetween: 20,
@@ -28,6 +28,9 @@ const GrowthPlanSection = () => {
       clickable: true,
     },
     loop: false,
+    allowTouchMove: true,
+    touchRatio: 1,
+    grabCursor: true,
     breakpoints: {
       1024: {
         slidesPerView: 2,
@@ -36,10 +39,12 @@ const GrowthPlanSection = () => {
       768: {
         slidesPerView: 1,
         spaceBetween: 10,
+        allowTouchMove: true,
       },
       480: {
         slidesPerView: 1,
         spaceBetween: 10,
+        allowTouchMove: true,
       }
     }
   };

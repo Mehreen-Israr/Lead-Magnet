@@ -420,9 +420,14 @@
 
 /* Mobile responsive styles for one complete card */
 @media (max-width: 768px) {
+  .pricing-carousel-container {
+    overflow: hidden; /* Keep hidden for clean look */
+  }
+  
   .pricing-swiper {
     max-width: 100%; /* Full width on mobile */
     padding: 20px 10px; /* Reduced padding on mobile */
+    overflow: hidden; /* Keep hidden for clean look */
   }
   
   .pricing-swiper .swiper-slide {
