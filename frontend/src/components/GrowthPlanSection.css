@@ -366,7 +366,7 @@
 .pricing-carousel-container {
   position: relative;
   margin-top: 60px;
-  overflow: hidden; /* Hide partial cards */
+  overflow: visible; /* Allow touch scrolling */
 }
 
 .pricing-swiper {
@@ -375,6 +375,7 @@
   padding: 30px 0 20px 0; /* Extra top padding for badges */
   max-width: 800px; /* Limit width to fit only 2 cards */
   margin: 0 auto;
+  overflow: visible; /* Allow touch scrolling */
 }
 
 .pricing-swiper .swiper-slide {
@@ -420,15 +421,23 @@
 
 /* Mobile responsive styles for one complete card */
 @media (max-width: 768px) {
+  .pricing-carousel-container {
+    overflow: visible !important; /* Ensure touch scrolling works */
+    touch-action: pan-x; /* Allow horizontal touch scrolling */
+  }
+  
   .pricing-swiper {
     max-width: 100%; /* Full width on mobile */
     padding: 20px 10px; /* Reduced padding on mobile */
+    overflow: visible !important; /* Allow touch scrolling */
+    touch-action: pan-x; /* Allow horizontal touch scrolling */
   }
   
   .pricing-swiper .swiper-slide {
     width: 100% !important; /* Full width on mobile */
     min-width: 100% !important;
     max-width: 100% !important;
+    touch-action: pan-x; /* Allow horizontal touch scrolling */
   }
   
   .pricing-card {
