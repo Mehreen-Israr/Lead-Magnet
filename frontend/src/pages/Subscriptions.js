@@ -36,6 +36,9 @@ const Subscriptions = () => {
     initialSlide: 0,
     watchSlidesProgress: true,
     allowTouchMove: true,
+    touchRatio: 1,
+    touchAngle: 45,
+    grabCursor: true,
     preventClicks: false,
     preventClicksPropagation: false,
     touchStartPreventDefault: false,
@@ -48,13 +51,15 @@ const Subscriptions = () => {
       },
       768: {
         slidesPerView: 1, // Show 1 card on tablet
-        spaceBetween: 0,
+        spaceBetween: 10,
         slidesPerGroup: 1,
+        allowTouchMove: true, // Ensure touch scrolling works
       },
       480: {
         slidesPerView: 1, // Show 1 card on mobile
-        spaceBetween: 0,
+        spaceBetween: 10,
         slidesPerGroup: 1,
+        allowTouchMove: true, // Ensure touch scrolling works
       }
     }
   };
