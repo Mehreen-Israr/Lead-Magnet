@@ -17,12 +17,13 @@ const Subscriptions = () => {
   const [loading, setLoading] = useState(true);
   const [containerRef, visibleItems] = useStaggeredAnimation(6, 150);
   const [showAvailablePackages, setShowAvailablePackages] = useState(false);
+  const [swiperRef, setSwiperRef] = useState(null);
 
   // Swiper configuration - show all packages on mobile
   const swiperConfig = {
     modules: [Navigation, Pagination],
     spaceBetween: 20,
-    slidesPerView: 2,
+    slidesPerView: 1, // Mobile-first approach
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
@@ -34,6 +35,8 @@ const Subscriptions = () => {
     allowTouchMove: true,
     touchRatio: 1,
     grabCursor: true,
+    freeMode: true,
+    freeModeMomentum: true,
     breakpoints: {
       1024: {
         slidesPerView: 2,
@@ -83,6 +86,13 @@ const Subscriptions = () => {
             popular: pkg.isPopular || false
           }));
           setAvailablePackages(transformedPackages);
+          
+          // Update Swiper after packages are loaded
+          setTimeout(() => {
+            if (swiperRef) {
+              swiperRef.update();
+            }
+          }, 100);
         } else {
           console.log('Subscriptions page - API response not successful:', packagesData);
         }
@@ -444,7 +454,7 @@ const Subscriptions = () => {
             
             <div className="pricing-carousel-container">
               {/* Swiper Carousel */}
-              <Swiper {...swiperConfig} className="pricing-swiper">
+              <Swiper {...swiperConfig} className="pricing-swiper" onSwiper={setSwiperRef}>
                 {availablePackages.map((pkg, index) => (
                   <SwiperSlide key={pkg.id}>
                     <div className={`package-card ${pkg.popular ? 'popular' : ''}`}>

@@ -14,12 +14,13 @@ const GrowthPlanSection = () => {
   const [isTablet, setIsTablet] = useState(false);
   const [pricingPlans, setPricingPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [swiperRef, setSwiperRef] = useState(null);
 
   // Swiper configuration - show all packages on mobile
   const swiperConfig = {
     modules: [Navigation, Pagination],
     spaceBetween: 20,
-    slidesPerView: 2,
+    slidesPerView: 1, // Mobile-first approach
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
@@ -69,6 +70,13 @@ const GrowthPlanSection = () => {
         
         const packages = data.packages || [];
         setPricingPlans(packages);
+        
+        // Update Swiper after packages are loaded
+        setTimeout(() => {
+          if (swiperRef) {
+            swiperRef.update();
+          }
+        }, 100);
       } catch (error) {
         console.error('Error fetching packages:', error);
         console.error('Error details:', {
@@ -208,7 +216,7 @@ const GrowthPlanSection = () => {
           {/* Custom Navigation Buttons */}
           
           {/* Swiper Carousel */}
-          <Swiper {...swiperConfig} className="pricing-swiper">
+          <Swiper {...swiperConfig} className="pricing-swiper" onSwiper={setSwiperRef}>
             {pricingPlans.map((plan, index) => (
               <SwiperSlide key={index}>
                 <div
