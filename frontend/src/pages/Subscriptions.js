@@ -19,6 +19,7 @@ const Subscriptions = () => {
   const [containerRef, visibleItems] = useStaggeredAnimation(6, 150);
   const [showAvailablePackages, setShowAvailablePackages] = useState(false);
   const [swiperRef, setSwiperRef] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Swiper configuration - show all packages on mobile
   const swiperConfig = {
@@ -180,6 +181,7 @@ const Subscriptions = () => {
     const params = new URLSearchParams(window.location.search);
     const status = params.get('status');
     if (status === 'success') {
+      setLoading(true); // Show loading state to prevent flash
       const token = localStorage.getItem('token');
       // Use dynamic API configuration
       const apiBase = API_BASE_URL;
@@ -189,9 +191,28 @@ const Subscriptions = () => {
         }).then((res) => {
           if (res?.data?.success && res?.data?.user) {
             updateUser(res.data.user);
+            // Show success message briefly
+            setShowSuccessMessage(true);
+            setTimeout(() => {
+              setShowSuccessMessage(false);
+            }, 3000);
+            // Small delay to ensure smooth transition
+            setTimeout(() => {
+              setLoading(false);
+            }, 500);
+          } else {
+            setLoading(false);
           }
-        }).catch(() => {});
+        }).catch(() => {
+          setLoading(false);
+        });
+      } else {
+        setLoading(false);
       }
+      
+      // Clean up URL parameters to prevent re-triggering
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
   }, [updateUser]);
 
@@ -332,6 +353,18 @@ const Subscriptions = () => {
               Manage your active subscriptions and discover new packages to grow your business
             </p>
           </div>
+
+          {/* Success Message */}
+          {showSuccessMessage && (
+            <div className="success-message">
+              <div className="success-content">
+                <svg className="success-icon" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>Payment successful! Your subscription is now active.</span>
+              </div>
+            </div>
+          )}
         </AnimatedSection>
 
         {/* Active Subscriptions Section */}

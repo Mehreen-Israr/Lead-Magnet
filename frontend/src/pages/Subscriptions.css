@@ -317,6 +317,56 @@
 .active-subscriptions-section,
 .available-packages-section {
   margin-bottom: 4rem;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Smooth transitions for subscription content */
+.subscriptions-content {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.subscriptions-content.loading {
+  opacity: 0.7;
+}
+
+/* Success Message Styles */
+.success-message {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+  animation: slideDown 0.5s ease-out;
+}
+
+.success-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: #22c55e;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+}
+
+.success-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .Subscription-section-title {

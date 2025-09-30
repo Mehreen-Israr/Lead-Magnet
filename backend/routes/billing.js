@@ -218,7 +218,7 @@ router.get('/subscriptions', protect, async (req, res) => {
 });
 
 // Stripe webhook handler with raw body parsing
-router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+const webhookHandler = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
 
@@ -295,7 +295,7 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
     console.error('Webhook handler error:', error);
     res.status(500).json({error: 'Webhook handler failed'});
   }
-});
+};
 
 // Helper functions for webhook handling
 async function handleSubscriptionUpdate(subscription) {
@@ -364,6 +364,6 @@ async function handlePaymentFailed(invoice) {
   console.log('Payment failed for invoice:', invoice.id);
 }
 
-module.exports = router;
+module.exports = { router, webhookHandler };
 
 

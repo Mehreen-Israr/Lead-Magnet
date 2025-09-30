@@ -34,7 +34,9 @@ app.use(cors({
   optionsSuccessStatus: 200 // For legacy browser support
 }));
 
-// Note: Stripe webhook handler moved to routes/billing.js to avoid conflicts
+// Stripe webhook route - MUST be before express.json() middleware
+const { webhookHandler } = require('./routes/billing');
+app.use('/api/billing/webhook', express.raw({type: 'application/json'}), webhookHandler);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -107,7 +109,7 @@ app.get('/test-packages', async (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/calendly', require('./routes/calendly'));
-app.use('/api/billing', require('./routes/billing'));
+app.use('/api/billing', require('./routes/billing').router);
 app.use('/api/packages', require('./routes/packages'));
 app.use('/webhook', require('./routes/webhook'));
 
