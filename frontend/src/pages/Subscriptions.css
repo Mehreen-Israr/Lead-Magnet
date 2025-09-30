@@ -900,10 +900,11 @@
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
-  padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+  padding: 0.75rem 1rem 0.75rem 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  margin-top: 0.5rem; /* Add top margin to accommodate popular badge */
+  margin-top: 0.75rem; /* Increased top margin to accommodate popular badge */
+  min-height: 80px; /* Ensure enough space for badge */
 }
 
 .package-logo {
@@ -938,7 +939,9 @@
   color: #fff;
   margin: 0 0 0.25rem 0;
   line-height: 1.2;
-  padding-right: 1rem; /* Add padding to prevent overlap with popular badge */
+  padding-right: 1.5rem; /* Increased padding to prevent overlap with popular badge */
+  max-width: calc(100% - 80px); /* Ensure text doesn't extend under badge */
+  word-wrap: break-word;
 }
 
 .package-platform {
@@ -965,18 +968,21 @@
 
 .popular-badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -10px;
+  right: -10px;
   background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   color: #1a1a1a;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  border-radius: 15px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
-  z-index: 10;
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.4);
+  z-index: 20;
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: center;
 }
 
 /* Recommended Package Features */
@@ -1120,25 +1126,128 @@
   margin-left: 0.25rem;
 }
 
+/* Subscription Status Badges */
 .subscription-status {
-  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+/* Trial Badge */
+.trial-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #1a1a1a;
+  padding: 0.4rem 0.8rem;
   border-radius: 20px;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+  border: 2px solid rgba(255, 215, 0, 0.5);
 }
 
-.subscription-status.active {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+.trial-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  animation: pulse 2s infinite;
 }
 
-.subscription-status.cancelled {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+.trial-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.trial-text {
+  font-weight: 700;
+}
+
+/* Active Badge */
+.active-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+  border: 2px solid rgba(76, 175, 80, 0.5);
+}
+
+.active-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.active-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.active-text {
+  font-weight: 700;
+}
+
+/* Cancelled Badge */
+.cancelled-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 3px 10px rgba(244, 67, 54, 0.3);
+  border: 2px solid rgba(244, 67, 54, 0.5);
+}
+
+.cancelled-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.cancelled-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cancelled-text {
+  font-weight: 700;
+}
+
+/* Pulse animation for trial badge */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Subscription Details */
