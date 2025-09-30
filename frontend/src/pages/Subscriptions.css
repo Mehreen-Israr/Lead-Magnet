@@ -428,9 +428,12 @@
 /* Grid Layouts */
 .subscriptions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 2rem;
-  margin-bottom: 12%;
+  margin-bottom: 3rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Recommended Packages Grid */
@@ -855,17 +858,20 @@
 
 /* Subscription Card Styles */
 .subscription-card {
-  background: rgba(30, 30, 30, 0.8);
-  border-radius: 12px;
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: rgba(30, 30, 30, 0.9);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  backdrop-filter: blur(15px);
   transition: all 0.3s ease;
   opacity: 1;
   transform: translateY(0);
   position: relative;
   display: flex;
   flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* Recommended Package Card Styles */
@@ -894,9 +900,10 @@
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem 0.75rem 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
+  margin-top: 0.5rem; /* Add top margin to accommodate popular badge */
 }
 
 .package-logo {
@@ -931,6 +938,7 @@
   color: #fff;
   margin: 0 0 0.25rem 0;
   line-height: 1.2;
+  padding-right: 1rem; /* Add padding to prevent overlap with popular badge */
 }
 
 .package-platform {
@@ -968,6 +976,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  z-index: 10;
 }
 
 /* Recommended Package Features */
@@ -1461,6 +1470,12 @@
   
   .recommended-packages-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  /* Multiple subscriptions layout */
+  .subscriptions-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    max-width: 1000px;
   }
 }
 

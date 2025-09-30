@@ -112,16 +112,43 @@ router.post('/create-checkout-session', protect, async (req, res) => {
         trial_period_days: 14,
         metadata: {
           userId: String(req.user._id),
-          plan: plan
+          plan: plan,
+          userEmail: req.user.email,
+          source: 'leadmagnet_website'
         }
       },
       payment_method_types: ['card'],
       success_url: successUrl || `${process.env.FRONTEND_URL}/subscriptions?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${process.env.FRONTEND_URL}/subscriptions?status=cancel`,
-      billing_address_collection: 'auto',
+      billing_address_collection: 'required',
       customer_update: {
         address: 'auto',
         name: 'auto'
+      },
+      // Professional customization
+      custom_fields: [
+        {
+          key: 'company',
+          label: {
+            type: 'custom',
+            custom: 'Company Name (Optional)'
+          },
+          type: 'text',
+          optional: true
+        }
+      ],
+      // Enhanced metadata for better tracking
+      metadata: {
+        userId: String(req.user._id),
+        userEmail: req.user.email,
+        plan: plan,
+        source: 'leadmagnet_website',
+        timestamp: new Date().toISOString()
+      },
+      // Professional appearance
+      locale: 'auto',
+      automatic_tax: {
+        enabled: true
       }
     });
 
@@ -217,6 +244,72 @@ router.get('/subscriptions', protect, async (req, res) => {
   }
 });
 
+// Cancel subscription endpoint
+router.post('/cancel-subscription', protect, async (req, res) => {
+  try {
+    const { subscriptionId } = req.body;
+    
+    if (!subscriptionId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Subscription ID is required' 
+      });
+    }
+
+    console.log('🚫 Cancelling subscription:', subscriptionId);
+
+    // Cancel the subscription in Stripe
+    const subscription = await stripe.subscriptions.update(subscriptionId, {
+      cancel_at_period_end: true
+    });
+
+    console.log('✅ Subscription cancelled in Stripe:', subscription.id);
+
+    // Update user subscription in database
+    const user = await User.findOne({
+      'subscription.stripeSubscriptionId': subscriptionId
+    });
+
+    if (user) {
+      user.subscription = {
+        ...user.subscription,
+        status: 'canceled',
+        cancelAtPeriodEnd: true,
+        updatedAt: new Date()
+      };
+      
+      await user.save();
+      console.log('✅ User subscription updated in database:', user.email);
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Subscription cancelled successfully',
+      subscription: {
+        id: subscription.id,
+        status: subscription.status,
+        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+        currentPeriodEnd: new Date(subscription.current_period_end * 1000)
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Cancel subscription error:', error);
+    
+    let errorMessage = 'Failed to cancel subscription';
+    if (error.type === 'StripeInvalidRequestError') {
+      errorMessage = 'Invalid subscription ID';
+    } else if (error.type === 'StripeAuthenticationError') {
+      errorMessage = 'Stripe authentication failed';
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: errorMessage 
+    });
+  }
+});
+
 // Stripe webhook handler with raw body parsing
 const webhookHandler = async (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -280,6 +373,9 @@ const webhookHandler = async (req, res) => {
         await handleSubscriptionUpdate(event.data.object);
         break;
       case 'customer.subscription.deleted':
+        await handleSubscriptionCanceled(event.data.object);
+        break;
+      case 'customer.subscription.canceled':
         await handleSubscriptionCanceled(event.data.object);
         break;
       case 'invoice.payment_succeeded':
@@ -347,10 +443,16 @@ async function handleSubscriptionCanceled(subscription) {
   });
   
   if (user) {
-    user.subscription.status = 'canceled';
-    user.subscription.plan = 'free';
-    user.subscription.updatedAt = new Date();
+    user.subscription = {
+      ...user.subscription,
+      status: 'canceled',
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      canceledAt: new Date(subscription.canceled_at * 1000),
+      updatedAt: new Date()
+    };
+    
     await user.save();
+    console.log(`✅ Subscription cancelled for user: ${user.email}`);
   }
 }
 

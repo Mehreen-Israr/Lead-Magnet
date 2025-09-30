@@ -227,15 +227,53 @@ const Subscriptions = () => {
     }
   }, [activeSubscriptions, availablePackages]);
 
-  const handleCancelSubscription = (subscriptionId) => {
-    if (window.confirm('Are you sure you want to cancel this subscription?')) {
-      setActiveSubscriptions(prev => 
-        prev.map(sub => 
-          sub.id === subscriptionId 
-            ? { ...sub, status: 'cancelled' }
-            : sub
-        )
-      );
+  const handleCancelSubscription = async (subscriptionId) => {
+    if (window.confirm('Are you sure you want to cancel this subscription? This action cannot be undone.')) {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        const apiBase = API_BASE_URL;
+
+        console.log('🚫 Cancelling subscription:', subscriptionId);
+
+        const response = await axios.post(`${apiBase}/api/billing/cancel-subscription`, {
+          subscriptionId: subscriptionId
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.data.success) {
+          // Update local state
+          setActiveSubscriptions(prev => 
+            prev.map(sub => 
+              sub.id === subscriptionId 
+                ? { ...sub, status: 'cancelled' }
+                : sub
+            )
+          );
+          
+          // Refresh user data to get updated subscription
+          const userResponse = await axios.get(`${apiBase}/api/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          
+          if (userResponse.data.success) {
+            updateUser(userResponse.data.user);
+          }
+          
+          alert('Subscription cancelled successfully. You will retain access until the end of your billing period.');
+        } else {
+          alert('Failed to cancel subscription. Please try again or contact support.');
+        }
+      } catch (error) {
+        console.error('❌ Cancel subscription error:', error);
+        alert('Failed to cancel subscription. Please try again or contact support.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
