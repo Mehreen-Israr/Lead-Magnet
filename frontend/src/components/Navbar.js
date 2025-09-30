@@ -65,6 +65,11 @@ const Navbar = () => {
     navigate('/subscriptions');
   };
 
+  const handleProfileClick = () => {
+    setIsProfileDropdownOpen(false);
+    navigate('/profile');
+  };
+
   return (
     <>
       {/* Scroll Progress Bar */}
@@ -115,6 +120,12 @@ const Navbar = () => {
                     <div className="profile-dropdown">
                       <button 
                         className="dropdown-item" 
+                        onClick={handleProfileClick}
+                      >
+                        My Profile
+                      </button>
+                      <button 
+                        className="dropdown-item" 
                         onClick={handleSubscriptionsClick}
                       >
                         See Subscribed Packages
@@ -161,6 +172,15 @@ const Navbar = () => {
             </Link>
             {isLoggedIn ? (
               <>
+                <button 
+                  className="mobile-link" 
+                  onClick={() => {
+                    handleProfileClick();
+                    closeMobileMenu();
+                  }}
+                >
+                  My Profile
+                </button>
                 <button 
                   className="mobile-link" 
                   onClick={() => {

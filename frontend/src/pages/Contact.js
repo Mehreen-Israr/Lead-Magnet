@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { InlineWidget } from 'react-calendly';
+import { InlineWidget, PopupWidget } from 'react-calendly';
 import './Contact.css';
 import '../animations.css';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
@@ -332,19 +332,11 @@ const Contact = () => {
                         height: '700px',
                         width: '100%'
                       }}
-                      prefill={{
-                        name: formData.name,
-                        email: formData.email
+                      onLoad={() => {
+                        console.log('✅ Calendly widget loaded successfully');
                       }}
-                      utm={{
-                        utmCampaign: 'contact-page',
-                        utmSource: 'website',
-                        utmMedium: 'inline-widget'
-                      }}
-                      onEventScheduled={(e) => {
-                        console.log('Event scheduled:', e.data.payload);
-                        // Optional: Show success message or redirect
-                        setShowCalendly(false);
+                      onError={(error) => {
+                        console.error('❌ Calendly widget error:', error);
                       }}
                     />
                   </div>

@@ -35,12 +35,11 @@ const Subscriptions = () => {
     allowTouchMove: true,
     touchRatio: 1,
     grabCursor: true,
-    freeMode: true,
-    freeModeMomentum: true,
     breakpoints: {
       1024: {
         slidesPerView: 2,
-        spaceBetween: 20,
+        spaceBetween: 40,
+        slidesPerGroup: 1,
       },
       768: {
         slidesPerView: 1,
@@ -232,6 +231,13 @@ const Subscriptions = () => {
       const successUrl = `${window.location.origin}/subscriptions?status=success`;
       const cancelUrl = `${window.location.origin}/subscriptions?status=cancel`;
 
+      console.log('🚀 Creating checkout session with:', {
+        priceId: selectedPackage.stripePriceId,
+        successUrl,
+        cancelUrl,
+        apiBase
+      });
+
       const sessionRes = await axios.post(`${apiBase}/api/billing/create-checkout-session`, {
         priceId: selectedPackage.stripePriceId,
         successUrl,
@@ -242,6 +248,8 @@ const Subscriptions = () => {
           Authorization: token ? `Bearer ${token}` : '' 
         }
       });
+
+      console.log('✅ Session response:', sessionRes.data);
   
       if (sessionRes.data.success) {
         if (sessionRes.data.url) {
@@ -255,8 +263,18 @@ const Subscriptions = () => {
         alert(sessionRes.data.message || 'Failed to start subscription');
       }
     } catch (error) {
-      console.error('Subscribe error:', error);
-      alert('Failed to start subscription. Please try again.');
+      console.error('❌ Subscribe error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      
+      let errorMessage = 'Failed to start subscription. Please try again.';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(errorMessage);
     }
   };
 
@@ -305,8 +323,7 @@ const Subscriptions = () => {
         </AnimatedSection>
 
         {/* Active Subscriptions Section */}
-        <AnimatedSection animation="slide-up" delay={200}>
-          <section className="active-subscriptions-section">
+        <section className="active-subscriptions-section">
             <h2 className="Subscription-section-title active">Active Subscriptions</h2>
             {activeSubscriptions.length > 0 ? (
               <div className="subscriptions-grid" ref={containerRef}>
@@ -417,19 +434,48 @@ const Subscriptions = () => {
               <div className="empty-state">
                 <div className="empty-state-content">
                   <div className="empty-state-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                       <polyline points="3.27,6.96 12,12.01 20.73,6.96"/>
                       <line x1="12" y1="22.08" x2="12" y2="12"/>
                     </svg>
                   </div>
                   <h3>No Active Subscriptions</h3>
-                  <p>Looks like you haven’t subscribed yet!</p>
+                  <p>Start your journey to business growth with our powerful packages</p>
+                  <div className="empty-state-features">
+                    <div className="feature-item">
+                      <span className="feature-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                      </span>
+                      <span>14-day free trial</span>
+                    </div>
+                    <div className="feature-item">
+                      <span className="feature-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                          <line x1="8" y1="21" x2="16" y2="21"/>
+                          <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                      </span>
+                      <span>Professional support</span>
+                    </div>
+                    <div className="feature-item">
+                      <span className="feature-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M18 20V10"/>
+                          <path d="M12 20V4"/>
+                          <path d="M6 20v-6"/>
+                        </svg>
+                      </span>
+                      <span>Proven results</span>
+                    </div>
+                  </div>
                   <button 
                     className="explore-plans-btn"
                     onClick={() => {
                       setShowAvailablePackages(true);
-                      // Scroll to packages section after a short delay to allow for animation
                       setTimeout(() => {
                         document.querySelector('.available-packages-section')?.scrollIntoView({ 
                           behavior: 'smooth' 
@@ -443,7 +489,6 @@ const Subscriptions = () => {
               </div>
             )}
           </section>
-        </AnimatedSection>
 
         {/* Available Packages Section - Using Carousel like GrowthPlanSection */}
         {showAvailablePackages && (

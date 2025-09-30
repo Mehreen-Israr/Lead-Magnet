@@ -70,8 +70,12 @@ const userSchema = new mongoose.Schema({
   subscription: {
     plan: {
       type: String,
-      enum: ['free', 'pro', 'business', 'enterprise'],
+      enum: ['free', 'pro', 'business', 'enterprise', 'instagram_growth', 'linkedin_starter', 'x_growth', 'premium_service'],
       default: 'free'
+    },
+    packageName: {
+      type: String,
+      default: 'Free Plan'
     },
     status: {
       type: String,

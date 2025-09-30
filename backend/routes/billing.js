@@ -35,15 +35,25 @@ const SUBSCRIPTION_TIERS = {
 // Create Checkout Session for subscription with 14-day trial
 router.post('/create-checkout-session', protect, async (req, res) => {
   try {
-    const { plan, successUrl, cancelUrl } = req.body;
+    const { plan, priceId, successUrl, cancelUrl } = req.body;
     
-    if (!plan || !SUBSCRIPTION_TIERS[plan]) {
-      return res.status(400).json({ success: false, message: 'Invalid subscription plan' });
+    console.log('🔍 Billing request:', { plan, priceId, successUrl, cancelUrl });
+    
+    let tierConfig;
+    
+    // Handle direct priceId (new approach)
+    if (priceId) {
+      tierConfig = { priceId };
+    } 
+    // Handle plan-based approach (legacy)
+    else if (plan && SUBSCRIPTION_TIERS[plan]) {
+      tierConfig = SUBSCRIPTION_TIERS[plan];
+    } else {
+      return res.status(400).json({ success: false, message: 'Invalid subscription plan or priceId' });
     }
-
-    const tierConfig = SUBSCRIPTION_TIERS[plan];
     
-    if (plan === 'free') {
+    // Skip free plan check for priceId approach
+    if (plan === 'free' && !priceId) {
       // Handle free tier - just update user subscription
       req.user.subscription = {
         ...req.user.subscription,
@@ -64,6 +74,18 @@ router.post('/create-checkout-session', protect, async (req, res) => {
 
     // Ensure Stripe customer exists for user
     let customerId = req.user.subscription?.stripeCustomerId;
+    
+    // Check if existing customer ID is valid
+    if (customerId) {
+      try {
+        await stripe.customers.retrieve(customerId);
+        console.log('✅ Existing customer ID is valid:', customerId);
+      } catch (error) {
+        console.log('⚠️  Existing customer ID is invalid, creating new one');
+        customerId = null;
+      }
+    }
+    
     if (!customerId) {
       const customer = await stripe.customers.create({
         email: req.user.email,
@@ -75,29 +97,25 @@ router.post('/create-checkout-session', protect, async (req, res) => {
       req.user.subscription = req.user.subscription || {};
       req.user.subscription.stripeCustomerId = customerId;
       await req.user.save();
+      console.log('✅ Created new customer:', customerId);
     }
 
+    const priceToUse = priceId || tierConfig.priceId;
+    console.log('💰 Using price ID:', priceToUse);
+    
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customerId,
-      line_items: [{ price: tierConfig.priceId, quantity: 1 }],
+      line_items: [{ price: priceToUse, quantity: 1 }],
       allow_promotion_codes: true,
       subscription_data: {
         trial_period_days: 14,
-        payment_settings: {
-          save_default_payment_method: 'on_subscription'
-        },
         metadata: {
           userId: String(req.user._id),
           plan: plan
         }
       },
       payment_method_types: ['card'],
-      payment_method_options: {
-        card: {
-          setup_future_usage: 'off_session'
-        }
-      },
       success_url: successUrl || `${process.env.FRONTEND_URL}/subscriptions?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${process.env.FRONTEND_URL}/subscriptions?status=cancel`,
       billing_address_collection: 'auto',
@@ -109,8 +127,23 @@ router.post('/create-checkout-session', protect, async (req, res) => {
 
     res.json({ success: true, url: session.url, sessionId: session.id });
   } catch (error) {
-    console.error('Create checkout session error:', error);
-    res.status(500).json({ success: false, message: 'Failed to create checkout session' });
+    console.error('❌ Create checkout session error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      type: error.type,
+      code: error.code,
+      priceId: req.body.priceId || 'unknown',
+      plan: req.body.plan || 'unknown'
+    });
+    
+    let errorMessage = 'Failed to create checkout session';
+    if (error.type === 'StripeInvalidRequestError') {
+      errorMessage = 'Invalid price ID or Stripe configuration error';
+    } else if (error.type === 'StripeAuthenticationError') {
+      errorMessage = 'Stripe authentication failed';
+    }
+    
+    res.status(500).json({ success: false, message: errorMessage });
   }
 });
 
@@ -159,6 +192,7 @@ router.get('/subscriptions', protect, async (req, res) => {
     const subscription = {
       id: stripeSubscription.id,
       plan: user.subscription.plan,
+      packageName: user.subscription.packageName || tierInfo.name, // Use stored package name
       name: tierInfo.name,
       price: tierInfo.price,
       status: stripeSubscription.status,
@@ -183,7 +217,7 @@ router.get('/subscriptions', protect, async (req, res) => {
   }
 });
 
-// Stripe webhook handler
+// Stripe webhook handler with raw body parsing
 router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
@@ -197,6 +231,29 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
 
   try {
     switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        console.log('✅ Checkout session completed:', session.id);
+        
+        // Update user subscription status using new schema
+        if (session.customer_email) {
+          try {
+            const user = await User.findOne({ email: session.customer_email });
+            if (user) {
+              user.subscription = user.subscription || {};
+              user.subscription.status = 'active';
+              user.subscription.stripeCustomerId = session.customer;
+              user.subscription.stripeSubscriptionId = session.subscription;
+              user.subscription.updatedAt = new Date();
+              await user.save();
+              console.log('✅ User subscription updated:', user.email);
+            }
+          } catch (error) {
+            console.error('❌ Error updating user subscription:', error);
+          }
+        }
+        break;
+        
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
         await handleSubscriptionUpdate(event.data.object);
@@ -227,13 +284,29 @@ async function handleSubscriptionUpdate(subscription) {
   
   if (user) {
     const plan = subscription.metadata?.plan || 'pro';
+    const stripePriceId = subscription.items.data[0]?.price?.id;
+    
+    // Get package name from database using Stripe Price ID
+    let packageName = plan; // fallback to plan name
+    if (stripePriceId) {
+      try {
+        const Package = require('../models/Package');
+        const packageData = await Package.findOne({ stripePriceId: stripePriceId });
+        if (packageData) {
+          packageName = packageData.name;
+        }
+      } catch (error) {
+        console.error('Error fetching package name:', error);
+      }
+    }
     
     user.subscription = {
       ...user.subscription,
       plan: plan,
+      packageName: packageName, // Store the actual package name
       status: subscription.status,
       stripeSubscriptionId: subscription.id,
-      stripePriceId: subscription.items.data[0]?.price?.id,
+      stripePriceId: stripePriceId,
       currentPeriodStart: new Date(subscription.current_period_start * 1000),
       currentPeriodEnd: new Date(subscription.current_period_end * 1000),
       trialStart: subscription.trial_start ? new Date(subscription.trial_start * 1000) : null,
@@ -243,6 +316,7 @@ async function handleSubscriptionUpdate(subscription) {
     };
     
     await user.save();
+    console.log(`✅ Updated user subscription: ${packageName} (${plan})`);
   }
 }
 

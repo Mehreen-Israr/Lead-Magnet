@@ -403,4 +403,92 @@ router.post('/logout', protect, (req, res) => {
   });
 });
 
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+router.put('/profile', protect, [
+  body('firstName').trim().notEmpty().withMessage('First name is required'),
+  body('lastName').trim().notEmpty().withMessage('Last name is required'),
+  body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email'),
+  body('phone').optional().trim(),
+  body('company').optional().trim(),
+  body('website').optional().custom((value) => {
+    if (value && value.trim() !== '') {
+      // Only validate URL if value is provided and not empty
+      const urlPattern = /^https?:\/\/.+/;
+      if (!urlPattern.test(value)) {
+        throw new Error('Please enter a valid website URL (must start with http:// or https://)');
+      }
+    }
+    return true;
+  }),
+  body('bio').optional().trim()
+], async (req, res) => {
+  try {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log('❌ Profile validation errors:', errors.array());
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const { firstName, lastName, email, phone, company, website, bio } = req.body;
+
+    // Check if email is already taken by another user
+    if (email !== req.user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email is already taken by another user'
+        });
+      }
+    }
+
+    // Update user profile
+    const updateData = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      profile: {
+        phone: phone || req.user.profile?.phone,
+        company: company || req.user.profile?.company,
+        website: website || req.user.profile?.website,
+        bio: bio || req.user.profile?.bio
+      }
+    };
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      user
+    });
+
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during profile update'
+    });
+  }
+});
+
 module.exports = router;

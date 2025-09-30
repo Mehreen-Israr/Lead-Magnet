@@ -534,7 +534,7 @@ input:disabled, textarea:disabled, select:disabled {
   position: relative;
   margin-top: 1rem;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   background: white;
 }
