@@ -20,6 +20,9 @@ const Subscriptions = () => {
   const [showAvailablePackages, setShowAvailablePackages] = useState(false);
   const [swiperRef, setSwiperRef] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] = useState(null);
+  const [billingCycles, setBillingCycles] = useState([]);
 
   // Swiper configuration - show all packages on mobile
   const swiperConfig = {
@@ -277,10 +280,83 @@ const Subscriptions = () => {
     }
   };
 
-  const handleUpgradeSubscription = (subscriptionId) => {
-    // In real app, this would navigate to upgrade flow
-    alert('Upgrade functionality would be implemented here');
+  const handleUpgradeSubscription = (subscription) => {
+    setSelectedSubscription(subscription);
+    setShowUpgradeModal(true);
+    
+    // Define billing cycles with discounts
+    const cycles = [
+      {
+        id: 'monthly',
+        name: 'Monthly',
+        period: 'month',
+        discount: 0,
+        price: subscription.price,
+        description: 'Pay monthly, cancel anytime'
+      },
+      {
+        id: 'quarterly',
+        name: 'Quarterly',
+        period: 'quarter',
+        discount: 10,
+        price: Math.round(subscription.price * 3 * 0.9), // 10% discount
+        description: 'Save 10% with quarterly billing'
+      },
+      {
+        id: 'yearly',
+        name: 'Yearly',
+        period: 'year',
+        discount: 20,
+        price: Math.round(subscription.price * 12 * 0.8), // 20% discount
+        description: 'Save 20% with yearly billing'
+      }
+    ];
+    
+    setBillingCycles(cycles);
   };
+
+  const handleBillingCycleChange = async (newCycle) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const apiBase = API_BASE_URL;
+
+      console.log('🔄 Upgrading subscription billing cycle:', newCycle);
+
+      const response = await axios.post(`${apiBase}/api/billing/change-billing-cycle`, {
+        subscriptionId: selectedSubscription.id,
+        newBillingCycle: newCycle.id
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.data.success) {
+        // Refresh user data to get updated subscription
+        const userResponse = await axios.get(`${apiBase}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (userResponse.data.success) {
+          updateUser(userResponse.data.user);
+          setActiveSubscriptions(userResponse.data.user.subscription || []);
+        }
+        
+        setShowUpgradeModal(false);
+        alert(`Billing cycle updated to ${newCycle.name} successfully!`);
+      } else {
+        alert('Failed to update billing cycle. Please try again or contact support.');
+      }
+    } catch (error) {
+      console.error('❌ Change billing cycle error:', error);
+      alert('Failed to update billing cycle. Please try again or contact support.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   // Update the handleSubscribeToPackage function
   const handleSubscribeToPackage = async (packageId) => {
@@ -521,7 +597,7 @@ const Subscriptions = () => {
                         <>
                           <button 
                             className="btn-secondary"
-                            onClick={() => handleUpgradeSubscription(subscription.id)}
+                            onClick={() => handleUpgradeSubscription(subscription)}
                           >
                             Upgrade Plan
                           </button>
@@ -730,6 +806,54 @@ const Subscriptions = () => {
           </AnimatedSection>
         )}
       </div>
+
+      {/* Upgrade Plan Modal */}
+      {showUpgradeModal && (
+        <div className="modal-overlay" onClick={() => setShowUpgradeModal(false)}>
+          <div className="upgrade-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Upgrade Billing Plan</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowUpgradeModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="modal-content">
+              <div className="current-plan-info">
+                <h4>Current Plan: {selectedSubscription?.name}</h4>
+                <p>Choose your preferred billing cycle:</p>
+              </div>
+              
+              <div className="billing-cycles">
+                {billingCycles.map((cycle) => (
+                  <div key={cycle.id} className="billing-cycle-option">
+                    <div className="cycle-header">
+                      <h5>{cycle.name}</h5>
+                      {cycle.discount > 0 && (
+                        <span className="discount-badge">Save {cycle.discount}%</span>
+                      )}
+                    </div>
+                    <div className="cycle-price">
+                      <span className="price">${cycle.price}</span>
+                      <span className="period">/{cycle.period}</span>
+                    </div>
+                    <p className="cycle-description">{cycle.description}</p>
+                    <button 
+                      className="select-cycle-btn"
+                      onClick={() => handleBillingCycleChange(cycle)}
+                    >
+                      Select {cycle.name}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

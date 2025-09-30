@@ -466,6 +466,101 @@ async function handlePaymentFailed(invoice) {
   console.log('Payment failed for invoice:', invoice.id);
 }
 
+// Change billing cycle endpoint
+router.post('/change-billing-cycle', protect, async (req, res) => {
+  try {
+    const { subscriptionId, newBillingCycle } = req.body;
+    
+    if (!subscriptionId || !newBillingCycle) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Subscription ID and new billing cycle are required' 
+      });
+    }
+
+    console.log('🔄 Changing billing cycle:', { subscriptionId, newBillingCycle });
+
+    // Find the user with this subscription
+    const user = await User.findOne({
+      'subscription.stripeSubscriptionId': subscriptionId
+    });
+
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Subscription not found' 
+      });
+    }
+
+    // Get the current subscription from Stripe
+    const currentSubscription = await stripe.subscriptions.retrieve(subscriptionId);
+    
+    // Map billing cycles to Stripe price IDs
+    const billingCycleMap = {
+      'monthly': process.env.STRIPE_PRICE_X_MONTHLY || 'price_x_monthly',
+      'quarterly': process.env.STRIPE_PRICE_X_QUARTERLY || 'price_x_quarterly', 
+      'yearly': process.env.STRIPE_PRICE_X_YEARLY || 'price_x_yearly'
+    };
+
+    const newPriceId = billingCycleMap[newBillingCycle];
+    
+    if (!newPriceId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid billing cycle' 
+      });
+    }
+
+    // Update the subscription in Stripe
+    const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
+      items: [{
+        id: currentSubscription.items.data[0].id,
+        price: newPriceId,
+      }],
+      proration_behavior: 'create_prorations'
+    });
+
+    console.log('✅ Billing cycle updated in Stripe:', updatedSubscription.id);
+
+    // Update user subscription in database
+    user.subscription = {
+      ...user.subscription,
+      stripePriceId: newPriceId,
+      billingCycle: newBillingCycle,
+      updatedAt: new Date()
+    };
+    
+    await user.save();
+    console.log('✅ User subscription updated in database:', user.email);
+
+    res.json({ 
+      success: true, 
+      message: 'Billing cycle updated successfully',
+      subscription: {
+        id: updatedSubscription.id,
+        status: updatedSubscription.status,
+        currentPeriodEnd: new Date(updatedSubscription.current_period_end * 1000),
+        billingCycle: newBillingCycle
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Change billing cycle error:', error);
+    
+    let errorMessage = 'Failed to update billing cycle';
+    if (error.type === 'StripeInvalidRequestError') {
+      errorMessage = 'Invalid subscription or billing cycle';
+    } else if (error.type === 'StripeAuthenticationError') {
+      errorMessage = 'Stripe authentication failed';
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: errorMessage 
+    });
+  }
+});
+
 module.exports = { router, webhookHandler };
 
 
