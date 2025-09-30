@@ -233,7 +233,7 @@ const GrowthPlanSection = () => {
                     <div className="logo-container">
                       {getBrandLogo(plan.name)}
                     </div>
-                    <h3 className="plan-name">{plan.name}</h3>
+                    <h2 className="plan-name">{plan.name}</h2>
                     <div className="platform-name">
                       {plan.name.toLowerCase().includes('premium') || plan.name.toLowerCase().includes('multi') ? (
                         <div className="platform-logos">

@@ -882,10 +882,11 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-  position: relative;
+  position: relative !important;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: visible !important;
 }
 
 .recommended-package-card:hover {
@@ -900,11 +901,19 @@
   align-items: flex-start;
   gap: 0.75rem;
   margin-bottom: 1rem;
-  padding: 0.75rem 1rem 0.75rem 0.75rem;
+  padding: 0.75rem 1.5rem 0.75rem 0.75rem; /* Increased right padding for badge space */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  margin-top: 0.5rem; /* Reduced top margin since badge is now inside */
-  min-height: 70px; /* Reduced height since badge is positioned inside */
+  margin-top: 1rem; /* Increased top margin to accommodate badge outside */
+  min-height: 80px; /* Increased height for better spacing */
+  overflow: visible;
+}
+
+/* Allow natural text wrapping in package cards */
+.recommended-package-card * {
+  word-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: auto !important;
 }
 
 .package-logo {
@@ -931,22 +940,30 @@
 .package-info {
   flex: 1;
   min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow: visible;
 }
 
-.package-name {
+.package-name,
+.package-name h3,
+h3.package-name {
   font-size: 1.1rem;
   font-weight: 600;
   color: #fff;
   margin: 0 0 0.25rem 0;
   line-height: 1.3;
-  padding-right: 1.5rem; /* Increased padding to prevent overlap with popular badge */
+  padding-right: 1.2rem; /* Increased padding to prevent overlap with badge */
   max-width: calc(100% - 80px); /* Ensure text doesn't extend under badge */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  display: block !important;
+  word-break: normal !important;
+  hyphens: auto !important;
+  text-wrap: normal !important;
 }
 
 .package-platform {
@@ -954,6 +971,11 @@
   color: #ccc;
   margin: 0 0 0.5rem 0;
   line-height: 1.2;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
 }
 
 .package-price {
@@ -971,22 +993,23 @@
   font-weight: 500;
 }
 
-.popular-badge {
+/* Professional popular badge - centered at top */
+.recommended-packages-section .popular-badge {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FFD700;
   color: #1a1a1a;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  padding: 0.3rem 0.6rem;
-  border-radius: 15px;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.4);
-  z-index: 20;
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+  z-index: 10;
   white-space: nowrap;
-  min-width: 60px;
   text-align: center;
 }
 
@@ -1441,14 +1464,25 @@
   .package-name {
     font-size: 1rem;
     padding-right: 1rem;
-    max-width: calc(100% - 60px);
+    max-width: calc(100% - 70px);
   }
   
   .popular-badge {
-    top: 6px;
-    right: 6px;
-    font-size: 0.6rem;
+    top: -6px;
+    right: -6px;
+    font-size: 0.55rem;
     padding: 0.25rem 0.5rem;
+    min-width: 50px;
+  }
+  
+  /* Mobile specific rule for recommended packages section */
+  .recommended-packages-section .recommended-package-card .popular-badge {
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    padding: 0.4rem 1rem;
+    border-radius: 18px;
   }
 }
 
@@ -1690,6 +1724,11 @@
 .package-platform {
   color: #888;
   font-size: 0.9rem;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
 }
 
 .package-pricing {
@@ -2089,5 +2128,12 @@
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
+  }
+  
+  /* Make active subscription card wider on mobile */
+  .subscription-card {
+    max-width: 95% !important;
+    width: 95% !important;
+    margin: 0 auto !important;
   }
 }

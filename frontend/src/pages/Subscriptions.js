@@ -156,7 +156,8 @@ const Subscriptions = () => {
             features: ['Content scheduling', 'Hashtag optimization', 'Basic analytics', 'Email support'],
             trialDays: 14,
             logo: '/instagram.png',
-            stripePriceId: 'price_instagram_monthly'
+            stripePriceId: 'price_instagram_monthly',
+            popular: false
           },
           {
             id: 'fallback-2', 
@@ -169,7 +170,22 @@ const Subscriptions = () => {
             features: ['1000 leads/month', 'Basic analytics', 'Email support', 'Secure Payments'],
             trialDays: 14,
             logo: '/linkedin.png',
-            stripePriceId: 'price_linkedin_monthly'
+            stripePriceId: 'price_linkedin_monthly',
+            popular: false
+          },
+          {
+            id: 'fallback-3',
+            name: 'Premium Service',
+            platform: 'All Platforms',
+            price: '$1060',
+            originalPrice: '$1500',
+            period: '/monthly',
+            discount: '30% OFF',
+            features: ['Support for 5 Channels', 'Scalable Business Growth', 'Priority Support', 'Multi-Platform Campaign'],
+            trialDays: 14,
+            logo: '/premium.png',
+            stripePriceId: 'price_premium_monthly',
+            popular: true
           }
         ]);
         setLoading(false);
@@ -703,7 +719,7 @@ const Subscriptions = () => {
                       </div>
                     </div>
                     {pkg.popular && (
-                      <div className="popular-badge">Popular</div>
+                      <div className="popular-badge">Most Popular</div>
                     )}
                   </div>
 
