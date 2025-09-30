@@ -383,6 +383,17 @@
   margin-bottom: 12%;
 }
 
+/* Recommended Packages Grid */
+.recommended-packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Swiper Carousel Styles - Mobile Sliding Fix */
 .pricing-swiper {
   width: 100%;
@@ -807,6 +818,172 @@
   flex-direction: column;
 }
 
+/* Recommended Package Card Styles */
+.recommended-package-card {
+  background: rgba(40, 40, 40, 0.8);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.recommended-package-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+/* Recommended Package Header */
+.package-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.package-logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.package-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.package-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.package-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.package-platform {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.package-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #FFD700;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.package-price .period {
+  font-size: 0.9rem;
+  color: #ccc;
+  font-weight: 500;
+}
+
+.popular-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #1a1a1a;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+/* Recommended Package Features */
+.package-features {
+  margin-bottom: 1.5rem;
+}
+
+.package-features h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.package-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.package-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #ddd;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.package-features .check-icon {
+  width: 16px;
+  height: 16px;
+  color: #FFD700;
+  flex-shrink: 0;
+}
+
+/* Recommended Package Actions */
+.package-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.package-actions .btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #1a1a1a;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.package-actions .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
 /* Responsive adjustments - removed since using grid layout */
 .subscription-card.animate-in {
   opacity: 1;
@@ -826,18 +1003,33 @@
 
 .subscription-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.subscription-logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
 .subscription-logo img {
-  width: 40px;
-  height: 40px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   border-radius: 6px;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .subscription-info {
@@ -1095,12 +1287,27 @@
   margin-bottom: 1.5rem;
 }
 
-.package-logo img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
+.package-logo {
+  width: 70px;
+  height: 70px;
   border-radius: 8px;
-  margin-bottom: 1rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  margin: 0 auto 1rem auto;
+}
+
+.package-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .package-name {
@@ -1201,6 +1408,10 @@
   .packages-grid {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
+  
+  .recommended-packages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -1228,6 +1439,11 @@
   .packages-grid {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
+  }
+  
+  .recommended-packages-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
   }
   
   .subscription-card,

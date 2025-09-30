@@ -14,6 +14,7 @@ const Subscriptions = () => {
   const { user, updateUser, isLoggedIn } = useAuth();
   const [activeSubscriptions, setActiveSubscriptions] = useState([]);
   const [availablePackages, setAvailablePackages] = useState([]);
+  const [recommendedPackages, setRecommendedPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [containerRef, visibleItems] = useStaggeredAnimation(6, 150);
   const [showAvailablePackages, setShowAvailablePackages] = useState(false);
@@ -193,6 +194,17 @@ const Subscriptions = () => {
       }
     }
   }, [updateUser]);
+
+  // Filter recommended packages when active subscriptions change
+  useEffect(() => {
+    if (availablePackages.length > 0) {
+      const subscribedPackageNames = activeSubscriptions.map(sub => sub.name);
+      const recommended = availablePackages.filter(pkg => 
+        !subscribedPackageNames.includes(pkg.name)
+      );
+      setRecommendedPackages(recommended);
+    }
+  }, [activeSubscriptions, availablePackages]);
 
   const handleCancelSubscription = (subscriptionId) => {
     if (window.confirm('Are you sure you want to cancel this subscription?')) {
@@ -489,6 +501,63 @@ const Subscriptions = () => {
               </div>
             )}
           </section>
+
+        {/* Packages You Might Like Section */}
+        {activeSubscriptions.length > 0 && recommendedPackages.length > 0 && (
+          <section className="recommended-packages-section">
+            <h2 className="Subscription-section-title recommended">Packages You Might Like</h2>
+            <div className="recommended-packages-grid">
+              {recommendedPackages.slice(0, 3).map((pkg, index) => (
+                <div key={pkg.id} className="recommended-package-card">
+                  <div className="package-header">
+                    <div className="package-logo">
+                      <img 
+                        src={process.env.PUBLIC_URL + pkg.logo} 
+                        alt={`${pkg.platform} Logo`}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                    <div className="package-info">
+                      <h3 className="package-name">{pkg.name}</h3>
+                      <p className="package-platform">{pkg.platform}</p>
+                      <div className="package-price">
+                        {pkg.price}<span className="period">{pkg.period}</span>
+                      </div>
+                    </div>
+                    {pkg.popular && (
+                      <div className="popular-badge">Popular</div>
+                    )}
+                  </div>
+
+                  <div className="package-features">
+                    <h4>Features Included</h4>
+                    <ul>
+                      {pkg.features.slice(0, 4).map((feature, idx) => (
+                        <li key={idx}>
+                          <svg className="check-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="package-actions">
+                    <button 
+                      className="btn-primary"
+                      onClick={() => handleSubscribeToPackage(pkg.id)}
+                    >
+                      Subscribe Now
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Available Packages Section - Using Carousel like GrowthPlanSection */}
         {showAvailablePackages && (
