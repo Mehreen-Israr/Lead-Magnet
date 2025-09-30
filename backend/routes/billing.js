@@ -222,10 +222,20 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
   const sig = req.headers['stripe-signature'];
   let event;
 
+  console.log('🔔 Stripe webhook received');
+  console.log('Headers:', req.headers);
+  console.log('Body length:', req.body?.length);
+
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    console.error('❌ STRIPE_WEBHOOK_SECRET not configured');
+    return res.status(500).send('Webhook secret not configured');
+  }
+
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    console.log('✅ Webhook signature verified, event type:', event.type);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
+    console.error('❌ Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -247,6 +257,17 @@ router.post('/webhook', express.raw({type: 'application/json'}), async (req, res
               user.subscription.updatedAt = new Date();
               await user.save();
               console.log('✅ User subscription updated:', user.email);
+              
+              // Also fetch and update the full subscription details
+              if (session.subscription) {
+                try {
+                  const stripeSubscription = await stripe.subscriptions.retrieve(session.subscription);
+                  await handleSubscriptionUpdate(stripeSubscription);
+                  console.log('✅ Full subscription details updated for:', user.email);
+                } catch (error) {
+                  console.error('❌ Error fetching full subscription details:', error);
+                }
+              }
             }
           } catch (error) {
             console.error('❌ Error updating user subscription:', error);
