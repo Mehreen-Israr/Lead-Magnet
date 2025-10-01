@@ -374,71 +374,19 @@ const Subscriptions = () => {
   };
 
 
-  // Update the handleSubscribeToPackage function
-  const handleSubscribeToPackage = async (packageId) => {
-    try {
-      // Find the package by ID
-      const selectedPackage = availablePackages.find(pkg => pkg.id === packageId);
-      if (!selectedPackage) {
-        return alert('Package not found');
-      }
-
-      if (!selectedPackage.stripePriceId) {
-        return alert('Package pricing not configured.');
-      }
-
-      const token = localStorage.getItem('token');
-      // Use dynamic API configuration
-      const apiBase = API_BASE_URL;
-
-      const successUrl = `${window.location.origin}/subscriptions?status=success`;
-      const cancelUrl = `${window.location.origin}/subscriptions?status=cancel`;
-
-      console.log('🚀 Creating checkout session with:', {
-        priceId: selectedPackage.stripePriceId,
-        successUrl,
-        cancelUrl,
-        apiBase
-      });
-
-      const sessionRes = await axios.post(`${apiBase}/api/billing/create-checkout-session`, {
-        priceId: selectedPackage.stripePriceId,
-        successUrl,
-        cancelUrl
-      }, {
-        headers: { 
-          'Content-Type': 'application/json', 
-          Authorization: token ? `Bearer ${token}` : '' 
-        }
-      });
-
-      console.log('✅ Session response:', sessionRes.data);
-  
-      if (sessionRes.data.success) {
-        if (sessionRes.data.url) {
-          // Redirect to Stripe Checkout
-          window.location.href = sessionRes.data.url;
-        } else if (sessionRes.data.redirectUrl) {
-          // Free plan activation
-          window.location.href = sessionRes.data.redirectUrl;
-        }
-      } else {
-        alert(sessionRes.data.message || 'Failed to start subscription');
-      }
-    } catch (error) {
-      console.error('❌ Subscribe error:', error);
-      console.error('Error response:', error.response?.data);
-      console.error('Error status:', error.response?.status);
-      
-      let errorMessage = 'Failed to start subscription. Please try again.';
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
-      alert(errorMessage);
+  // Navigate to pricing plans page
+  const handleSubscribeToPackage = (packageId) => {
+    console.log('🔍 Navigating to pricing page for package ID:', packageId);
+    console.log('🔍 Package ID type:', typeof packageId);
+    
+    if (!packageId || packageId === 'undefined') {
+      console.error('❌ Invalid package ID:', packageId);
+      alert('Invalid package ID. Please try again.');
+      return;
     }
+    
+    // Navigate to pricing plans page
+    window.location.href = `/pricing/${packageId}`;
   };
 
   const handleManageBilling = async () => {
@@ -463,7 +411,6 @@ const Subscriptions = () => {
         <div className="subscriptions-background"></div>
         <div className="subscriptions-overlay"></div>
         <div className="loading-container">
-          <div className="loading-spinner"></div>
           <p>Loading your subscriptions...</p>
         </div>
       </div>
@@ -610,20 +557,12 @@ const Subscriptions = () => {
 
                     <div className="subscription-actions">
                       {(subscription.status === 'active' || subscription.status === 'trialing') && (
-                        <>
-                          <button 
-                            className="btn-secondary"
-                            onClick={() => handleUpgradeSubscription(subscription)}
-                          >
-                            Upgrade Plan
-                          </button>
-                          <button 
-                            className="btn-danger"
-                            onClick={() => handleCancelSubscription(subscription.id)}
-                          >
-                            Cancel Subscription
-                          </button>
-                        </>
+                        <button 
+                          className="btn-danger"
+                          onClick={() => handleCancelSubscription(subscription.id)}
+                        >
+                          Cancel Subscription
+                        </button>
                       )}
                       {subscription.status === 'cancelled' && (
                         <div className="cancelled-notice">

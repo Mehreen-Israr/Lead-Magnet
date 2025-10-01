@@ -76,6 +76,66 @@ const packageSchema = new mongoose.Schema({
   metadata: {
     type: Map,
     of: String
+  },
+  pricing: {
+    currency: {
+      type: String,
+      default: 'USD'
+    },
+    amount: {
+      type: Number,
+      default: 0
+    },
+    discount: {
+      type: String,
+      default: ''
+    },
+    popular: {
+      type: Boolean,
+      default: false
+    },
+    trialDays: {
+      type: Number,
+      default: 0
+    },
+    monthly: {
+      amount: {
+        type: Number,
+        required: true
+      },
+      discount: {
+        type: String,
+        default: ''
+      }
+    },
+    quarterly: {
+      amount: {
+        type: Number,
+        required: true
+      },
+      discount: {
+        type: String,
+        default: ''
+      },
+      autoCalculated: {
+        type: Boolean,
+        default: false
+      }
+    },
+    yearly: {
+      amount: {
+        type: Number,
+        required: true
+      },
+      discount: {
+        type: String,
+        default: ''
+      },
+      autoCalculated: {
+        type: Boolean,
+        default: false
+      }
+    }
   }
 }, {
   timestamps: true

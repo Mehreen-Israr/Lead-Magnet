@@ -298,20 +298,6 @@
   color: #fff;
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 3px solid rgba(255, 215, 0, 0.3);
-  border-top: 3px solid #FFD700;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
 /* Section Styles */
 .active-subscriptions-section,
@@ -898,7 +884,7 @@
 /* Recommended Package Header */
 .package-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
   padding: 0.75rem 1.5rem 0.75rem 0.75rem; /* Increased right padding for badge space */
@@ -914,6 +900,27 @@
   word-wrap: normal !important;
   word-break: normal !important;
   hyphens: auto !important;
+}
+
+/* Prevent hyphenation for the word "service" */
+.package-name {
+  hyphens: none !important;
+}
+
+/* Fix service text wrapping issue on web view only */
+@media (min-width: 769px) {
+  .package-name {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  /* Fix platform text positioning on web view */
+  .package-platform {
+    margin-top: 0.5rem !important;
+    display: block !important;
+    clear: both !important;
+  }
 }
 
 .package-logo {
@@ -945,18 +952,20 @@
   flex-direction: column;
   justify-content: center;
   overflow: visible;
+  align-items: flex-start;
+  gap: 0.25rem;
 }
 
 .package-name,
 .package-name h3,
 h3.package-name {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   margin: 0 0 0.25rem 0;
-  line-height: 1.3;
+  line-height: 1.2;
   padding-right: 1.2rem; /* Increased padding to prevent overlap with badge */
-  max-width: calc(100% - 80px); /* Ensure text doesn't extend under badge */
+  max-width: calc(100% - 60px); /* Ensure text doesn't extend under badge */
   white-space: normal !important;
   overflow: visible !important;
   text-overflow: unset !important;
@@ -964,18 +973,16 @@ h3.package-name {
   word-break: normal !important;
   hyphens: auto !important;
   text-wrap: normal !important;
+  width: 100%;
 }
 
 .package-platform {
   font-size: 0.9rem;
-  color: #ccc;
+  color: #FFD700;
   margin: 0 0 0.5rem 0;
-  line-height: 1.2;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  word-break: keep-all !important;
-  hyphens: none !important;
+  line-height: 2.5;
+  display: block;
+  clear: both;
 }
 
 .package-price {
@@ -1587,8 +1594,8 @@ h3.package-name {
 /* Action Buttons */
 .subscription-actions {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1.5rem;
 }
 
 .btn-secondary,

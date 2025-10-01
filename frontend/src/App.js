@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Subscriptions from './pages/Subscriptions';
 import Profile from './pages/Profile';
+import PricingPlans from './pages/PricingPlans';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/subscriptions" element={<Subscriptions />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/pricing/:packageId" element={<PricingPlans />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
           </Routes>

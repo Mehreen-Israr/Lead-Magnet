@@ -193,7 +193,6 @@ const GrowthPlanSection = () => {
       <section className="growth-plan-section">
         <div className="container">
           <div className="loading-container">
-            <div className="loading-spinner"></div>
             <p>Loading packages...</p>
           </div>
         </div>

@@ -35,9 +35,124 @@ const SUBSCRIPTION_TIERS = {
 // Create Checkout Session for subscription with 14-day trial
 router.post('/create-checkout-session', protect, async (req, res) => {
   try {
-    const { plan, priceId, successUrl, cancelUrl } = req.body;
+    const { plan, priceId, packageId, billingPeriod, successUrl, cancelUrl } = req.body;
     
-    console.log('🔍 Billing request:', { plan, priceId, successUrl, cancelUrl });
+    console.log('🔍 Billing request:', { plan, priceId, packageId, billingPeriod, successUrl, cancelUrl });
+    
+    // Handle new package-based checkout
+    if (packageId && billingPeriod) {
+      console.log('🛒 Creating checkout session for package:', packageId, 'billing:', billingPeriod);
+      
+      // Fetch package details
+      const Package = require('../models/Package');
+      const packageData = await Package.findById(packageId);
+      
+      if (!packageData) {
+        return res.status(404).json({ 
+          success: false, 
+          message: 'Package not found' 
+        });
+      }
+      
+      // Get the appropriate price ID based on billing period
+      let selectedPriceId;
+      switch (billingPeriod) {
+        case 'monthly':
+          selectedPriceId = packageData.stripePriceId; // Use the main price ID for monthly
+          break;
+        case 'quarterly':
+          // For now, use the monthly price ID and let Stripe handle the billing
+          selectedPriceId = packageData.stripePriceId;
+          break;
+        case 'yearly':
+          // For now, use the monthly price ID and let Stripe handle the billing
+          selectedPriceId = packageData.stripePriceId;
+          break;
+        default:
+          selectedPriceId = packageData.stripePriceId;
+      }
+      
+      console.log('📦 Selected Price ID:', selectedPriceId);
+      
+      // Create or get Stripe customer
+      let customerId = req.user.stripeCustomerId;
+      
+      if (!customerId || !customerId.startsWith('cus_')) {
+        console.log('👤 Creating new Stripe customer for:', req.user.email);
+        
+        const customer = await stripe.customers.create({
+          email: req.user.email,
+          name: `${req.user.firstName} ${req.user.lastName}`,
+          metadata: {
+            userId: req.user._id.toString()
+          }
+        });
+        
+        customerId = customer.id;
+        
+        // Update user with new customer ID
+        req.user.stripeCustomerId = customerId;
+        await req.user.save();
+        
+        console.log('✅ Created Stripe customer:', customerId);
+      } else {
+        console.log('👤 Using existing Stripe customer:', customerId);
+      }
+      
+      // Create checkout session
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        payment_method_types: ['card'],
+        line_items: [{
+          price: selectedPriceId,
+          quantity: 1,
+        }],
+        mode: 'subscription',
+        success_url: successUrl || `${process.env.FRONTEND_URL}/subscriptions?status=success`,
+        cancel_url: cancelUrl || `${process.env.FRONTEND_URL}/subscriptions?status=cancel`,
+        metadata: {
+          userId: req.user._id.toString(),
+          packageId: packageId,
+          billingPeriod: billingPeriod,
+          packageName: packageData.name
+        },
+        subscription_data: {
+          metadata: {
+            userId: req.user._id.toString(),
+            packageId: packageId,
+            billingPeriod: billingPeriod,
+            packageName: packageData.name
+          }
+        },
+        custom_fields: [
+          {
+            key: 'company',
+            label: {
+              type: 'custom',
+              custom: 'Company (Optional)'
+            },
+            type: 'text',
+            optional: true
+          }
+        ],
+        locale: 'auto',
+        billing_address_collection: 'required',
+        customer_update: {
+          address: 'auto',
+          name: 'auto'
+        }
+      });
+      
+      console.log('✅ Checkout session created:', session.id);
+      
+      res.json({ 
+        success: true, 
+        sessionId: session.id,
+        url: session.url 
+      });
+      
+      return;
+    }
     
     let tierConfig;
     
