@@ -44,6 +44,7 @@ const PricingPlans = () => {
   };
 
   const handlePlanSelection = async (billingPeriod) => {
+    console.log('🖱️ Button clicked for billing period:', billingPeriod);
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
@@ -81,9 +82,12 @@ const PricingPlans = () => {
       });
 
       console.log('📥 Response received:', response.data);
+      console.log('📥 Response status:', response.status);
+      console.log('📥 Response headers:', response.headers);
 
       if (response.data.success) {
         console.log('✅ Checkout session created successfully');
+        console.log('🔗 Redirecting to URL:', response.data.url);
         // Redirect to Stripe checkout
         window.location.href = response.data.url;
       } else {

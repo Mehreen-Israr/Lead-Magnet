@@ -144,6 +144,7 @@ router.post('/create-checkout-session', protect, async (req, res) => {
       });
       
       console.log('✅ Checkout session created:', session.id);
+      console.log('🔗 Checkout URL:', session.url);
       
       res.json({ 
         success: true, 
@@ -217,7 +218,7 @@ router.post('/create-checkout-session', protect, async (req, res) => {
 
     const priceToUse = priceId || tierConfig.priceId;
     console.log('💰 Using price ID:', priceToUse);
-    
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customerId,
