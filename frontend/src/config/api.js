@@ -7,7 +7,7 @@ const getApiBaseUrl = () => {
   
   if (isProduction) {
     // Production URL - your actual backend URL
-    return 'https://leadmagnet-backend.onrender.com';
+    return 'https://2uepc2kf3f.execute-api.eu-west-2.amazonaws.com/prod';
   }
   
   // Development - use localhost
