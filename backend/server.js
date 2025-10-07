@@ -58,8 +58,23 @@ const { webhookHandler } = require('./routes/billing');
 app.use('/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 
 /* ------------------------------ Body Parsers ------------------------------ */
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+// Enhanced JSON parsing for Lambda
+app.use(express.json({ 
+  limit: '10mb',
+  type: 'application/json'
+}));
+app.use(express.urlencoded({ 
+  extended: true,
+  limit: '10mb'
+}));
+
+// Additional middleware for Lambda compatibility
+app.use((req, res, next) => {
+  console.log('Request received:', req.method, req.url);
+  console.log('Request body:', req.body);
+  console.log('Request headers:', req.headers);
+  next();
+});
 
 /* ---------------------------- Mongo Connection ---------------------------- */
 if (!process.env.MONGODB_URI) {

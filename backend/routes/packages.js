@@ -9,8 +9,19 @@ const { protect } = require('../middleware/auth');
 // @access  Public
 router.get('/', async (req, res) => {
   try {
+    console.log('Packages request received');
+    console.log('Database connection state:', mongoose.connection.readyState);
+    
+    // Check database connection
+    if (mongoose.connection.readyState !== 1) {
+      console.log('Database not connected, attempting to reconnect...');
+      await mongoose.connect(process.env.MONGODB_URI);
+    }
+    
     const packages = await Package.find({ isActive: true })
       .sort({ sortOrder: 1, createdAt: 1 });
+    
+    console.log(`Found ${packages.length} packages`);
     
     res.json({
       success: true,
@@ -20,7 +31,8 @@ router.get('/', async (req, res) => {
     console.error('Error fetching packages:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch packages'
+      message: 'Failed to fetch packages',
+      error: error.message
     });
   }
 });

@@ -28,24 +28,31 @@ router.post('/test', (req, res) => {
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
-router.post('/register', [
-  body('firstName').trim().notEmpty().withMessage('First name is required'),
-  body('lastName').trim().notEmpty().withMessage('Last name is required'),
-  body('email').isEmail().normalizeEmail().withMessage('Please enter a valid email'),
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
-], async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+    const { firstName, lastName, email, password, phone } = req.body;
+    
+    // Manual validation
+    if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
-        errors: errors.array()
+        message: 'All fields are required'
       });
     }
-
-    const { firstName, lastName, email, password, phone } = req.body;
+    
+    if (!email.includes('@')) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid email'
+      });
+    }
+    
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters'
+      });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -133,30 +140,34 @@ router.post('/register', [
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
-router.post('/login', [
-  body('email').isEmail().withMessage('Please enter a valid email'),
-  body('password').notEmpty().withMessage('Password is required')
-], async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
-    console.log('Login request body:', req.body);
-    console.log('Login request headers:', req.headers);
-    console.log('Request method:', req.method);
-    console.log('Request URL:', req.url);
+    console.log('=== LOGIN REQUEST DEBUG ===');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    console.log('Request headers:', JSON.stringify(req.headers, null, 2));
     console.log('Body type:', typeof req.body);
     console.log('Body keys:', Object.keys(req.body || {}));
+    console.log('Email value:', req.body?.email);
+    console.log('Password value:', req.body?.password);
+    console.log('=== END DEBUG ===');
     
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.log('Validation errors:', errors.array());
+    const { email, password } = req.body;
+    
+    // Manual validation
+    if (!email || !password) {
+      console.log('Validation failed - missing fields');
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
-        errors: errors.array()
+        message: 'Email and password are required'
       });
     }
-
-    const { email, password } = req.body;
+    
+    if (!email.includes('@')) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid email'
+      });
+    }
 
     // Check if user exists and get password
     const user = await User.findOne({ email }).select('+password');

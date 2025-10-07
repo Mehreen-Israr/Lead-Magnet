@@ -35,9 +35,21 @@ const Login = () => {
     setLoading(true);
     setError('');
 
-    // Basic client-side validation
+    // Enhanced client-side validation
+    if (!email || !password) {
+      setError('Email and password are required');
+      setLoading(false);
+      return;
+    }
+
     if (!email.trim() || !password.trim()) {
-      setError('Please fill in all fields');
+      setError('Email and password cannot be empty');
+      setLoading(false);
+      return;
+    }
+
+    if (!email.includes('@')) {
+      setError('Please enter a valid email address');
       setLoading(false);
       return;
     }
@@ -45,10 +57,11 @@ const Login = () => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email: email.trim(),
-        password: password
+        password: password.trim()
       }, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
 

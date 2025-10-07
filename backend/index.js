@@ -1,4 +1,8 @@
 const serverlessExpress = require('@vendia/serverless-express');
 const app = require('./server');
 
-exports.handler = serverlessExpress({ app });
+// Enhanced handler with proper body parsing
+exports.handler = serverlessExpress({ 
+  app,
+  binaryMimeTypes: ['image/*', 'application/pdf']
+});
