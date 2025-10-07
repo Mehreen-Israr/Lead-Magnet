@@ -30,7 +30,8 @@ app.use(cors({
     "https://lead-magnet.onrender.com",
     "https://*.onrender.com",
     "https://*.vercel.app",
-    "https://main.d1yrlzw4i6kxpc.amplifyapp.com"
+    "https://main.d1yrlzw4i6kxpc.amplifyapp.com",
+    "https://*.amplifyapp.com"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
@@ -70,16 +71,21 @@ app.get('/health', (req, res) => {
 });
 
 /* ------------------------------ API ROUTES -------------------------------- */
-const api = express.Router();
+// Mount API routes at /api prefix for consistency
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/contact', require('./routes/contact'));
+app.use('/api/calendly', require('./routes/calendly'));
+app.use('/api/billing', require('./routes/billing').router);
+app.use('/api/packages', require('./routes/packages'));
+app.use('/api/webhook', require('./routes/webhook'));
 
-api.use('/auth', require('./routes/auth'));
-api.use('/contact', require('./routes/contact'));
-api.use('/calendly', require('./routes/calendly'));
-api.use('/billing', require('./routes/billing').router);
-api.use('/packages', require('./routes/packages'));
-api.use('/webhook', require('./routes/webhook'));
-
-app.use('/', api);
+// Also mount at root for backward compatibility
+app.use('/auth', require('./routes/auth'));
+app.use('/contact', require('./routes/contact'));
+app.use('/calendly', require('./routes/calendly'));
+app.use('/billing', require('./routes/billing').router);
+app.use('/packages', require('./routes/packages'));
+app.use('/webhook', require('./routes/webhook'));
 
 /* ------------------------------ 404 Handler ------------------------------- */
 app.use((req, res) => {

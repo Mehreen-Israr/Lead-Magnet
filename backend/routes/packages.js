@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Package = require('../models/Package');
 const { protect } = require('../middleware/auth');
 
@@ -8,18 +9,25 @@ const { protect } = require('../middleware/auth');
 // @access  Public
 router.get('/', async (req, res) => {
   try {
+    console.log('🔍 Fetching packages...');
+    console.log('🔍 Database connection state:', mongoose.connection.readyState);
+    
     const packages = await Package.find({ isActive: true })
       .sort({ sortOrder: 1, createdAt: 1 });
+    
+    console.log(`✅ Found ${packages.length} packages`);
     
     res.json({
       success: true,
       packages
     });
   } catch (error) {
-    console.error('Error fetching packages:', error);
+    console.error('❌ Error fetching packages:', error);
+    console.error('❌ Error stack:', error.stack);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch packages'
+      message: 'Failed to fetch packages',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

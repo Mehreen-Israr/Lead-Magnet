@@ -69,6 +69,10 @@ const packageSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  popular: {
+    type: Boolean,
+    default: false
+  },
   sortOrder: {
     type: Number,
     default: 0
@@ -78,62 +82,40 @@ const packageSchema = new mongoose.Schema({
     of: String
   },
   pricing: {
-    currency: {
-      type: String,
-      default: 'USD'
-    },
-    amount: {
-      type: Number,
-      default: 0
-    },
-    discount: {
-      type: String,
-      default: ''
-    },
-    popular: {
-      type: Boolean,
-      default: false
-    },
-    trialDays: {
-      type: Number,
-      default: 0
-    },
     monthly: {
-      amount: {
+      price: {
         type: Number,
         required: true
       },
-      discount: {
-        type: String,
-        default: ''
+      originalPrice: {
+        type: Number
+      },
+      stripePriceId: {
+        type: String
       }
     },
     quarterly: {
-      amount: {
+      price: {
         type: Number,
         required: true
       },
-      discount: {
-        type: String,
-        default: ''
+      originalPrice: {
+        type: Number
       },
-      autoCalculated: {
-        type: Boolean,
-        default: false
+      stripePriceId: {
+        type: String
       }
     },
     yearly: {
-      amount: {
+      price: {
         type: Number,
         required: true
       },
-      discount: {
-        type: String,
-        default: ''
+      originalPrice: {
+        type: Number
       },
-      autoCalculated: {
-        type: Boolean,
-        default: false
+      stripePriceId: {
+        type: String
       }
     }
   }

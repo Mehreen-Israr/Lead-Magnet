@@ -21,7 +21,7 @@ const getApiBaseUrl = () => {
 // Export the API base URL
 export const API_BASE_URL = getApiBaseUrl();
 
-// ✅ API Endpoints (removed /api prefix)
+// ✅ API Endpoints (with /api prefix for production)
 export const API_ENDPOINTS = {
   PACKAGES: `${API_BASE_URL}/packages`,
   AUTH: `${API_BASE_URL}/auth`,
