@@ -1,33 +1,27 @@
 require('dotenv').config();
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '');
 
 const app = express();
 
-// Security middleware
+/* ------------------------------- Security -------------------------------- */
 app.use(helmet());
 
-// Rate limiting - configured for Lambda/API Gateway
+// Rate limiting (optimized for API Gateway)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100,
-  trustProxy: 1, // Trust the first proxy (API Gateway)
-  keyGenerator: (req, res) => {
-    // Use the IP from X-Forwarded-For header, which API Gateway provides
-    return req.headers['x-forwarded-for'] || req.ip || 'unknown';
-  },
-  skip: (req, res) => {
-    // Skip rate limiting if we can't determine IP
-    return !req.headers['x-forwarded-for'] && !req.ip;
-  }
+  trustProxy: 1,
+  keyGenerator: (req) => req.headers['x-forwarded-for'] || req.ip || 'unknown',
+  skip: (req) => !req.headers['x-forwarded-for'] && !req.ip,
 });
 app.use(limiter);
 
-// CORS middleware
+/* ------------------------------- CORS ------------------------------------ */
 app.use(cors({
   origin: [
     "https://lead-magnet-frontend.onrender.com",
@@ -43,15 +37,16 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 
-// Stripe webhook route — must be before body parsers
+/* -------------------------- Stripe Webhook Route -------------------------- */
+// This must come *before* body parsers
 const { webhookHandler } = require('./routes/billing');
-app.use('/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
+app.use('/api/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 
-// JSON and URL-encoded parsers
+/* ------------------------------ Body Parsers ------------------------------ */
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// MongoDB connection (single, clean connection)
+/* ---------------------------- Mongo Connection ---------------------------- */
 if (!process.env.MONGODB_URI) {
   console.error('❌ MONGODB_URI not defined.');
   process.exit(1);
@@ -61,12 +56,12 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// Routes
+/* ------------------------------ Health Routes ----------------------------- */
 app.get('/', (req, res) => {
-  res.json({ message: 'Lead Magnet API is running!' });
+  res.json({ message: 'Lead Magnet API root is live.' });
 });
 
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
@@ -75,19 +70,30 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.use('/auth', require('./routes/auth'));
-app.use('/contact', require('./routes/contact'));
-app.use('/calendly', require('./routes/calendly'));
-app.use('/billing', require('./routes/billing').router);
-app.use('/packages', require('./routes/packages'));
-app.use('/webhook', require('./routes/webhook'));
+/* ------------------------------ API ROUTES -------------------------------- */
+// Mount all your routes under /api
+const api = express.Router();
 
-// 404 handler
+api.use('/auth', require('./routes/auth'));
+api.use('/contact', require('./routes/contact'));
+api.use('/calendly', require('./routes/calendly'));
+api.use('/billing', require('./routes/billing').router);
+api.use('/packages', require('./routes/packages'));
+api.use('/webhook', require('./routes/webhook'));
+
+// attach /api router to the main app
+app.use('/api', api);
+
+/* ------------------------------ 404 Handler ------------------------------- */
 app.use((req, res) => {
-  res.status(404).json({ success: false, message: 'Route not found', path: req.path });
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    path: req.path
+  });
 });
 
-// Global error handler
+/* -------------------------- Global Error Handler -------------------------- */
 app.use((err, req, res, next) => {
   console.error('❌ Global error handler:', err);
   res.status(err.status || 500).json({
