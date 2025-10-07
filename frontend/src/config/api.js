@@ -7,21 +7,22 @@ const getApiBaseUrl = () => {
     !window.location.hostname.includes("localhost");
 
   if (isProduction) {
-    // ✅ Production: AWS API Gateway base URL (no /api prefix)
+    // ✅ Production: AWS API Gateway base URL (no /api prefix needed)
+    // Because API Gateway’s root (/) already proxies everything
     return (
       process.env.REACT_APP_API_URL ||
       "https://2uepc2kf3f.execute-api.eu-west-2.amazonaws.com/prod"
     );
   }
 
-  // ✅ Development: Local backend (Express server)
-  return "http://localhost:5000";
+  // ✅ Development: Local backend (Express server usually runs with /api prefix)
+  return "http://localhost:5000/api";
 };
 
 // Export the API base URL
 export const API_BASE_URL = getApiBaseUrl();
 
-// ✅ API Endpoints (with /api prefix for production)
+// ✅ API Endpoints (no /api prefix for production; included in dev URL above)
 export const API_ENDPOINTS = {
   PACKAGES: `${API_BASE_URL}/packages`,
   AUTH: `${API_BASE_URL}/auth`,
