@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser, FaPhone } from 'react-icons/fa';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import './Signup.css';
 import '../animations.css';
 import { useAuth } from '../contexts/AuthContext';
@@ -73,9 +74,7 @@ const Signup = () => {
     }
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-      
-      const response = await axios.post(`${backendUrl}/api/auth/register`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: email.trim(),

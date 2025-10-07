@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import './Login.css';
 import '../animations.css';
 import { useAuth } from '../contexts/AuthContext';
@@ -42,9 +43,7 @@ const Login = () => {
     }
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-      
-      const response = await axios.post(`${backendUrl}/api/auth/login`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email: email.trim(),
         password
       });
