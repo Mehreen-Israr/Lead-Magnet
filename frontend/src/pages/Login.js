@@ -62,10 +62,13 @@ const Login = () => {
     } catch (err) {
       console.error('Login error:', err);
       console.error('Login error response:', err.response?.data);
+      console.error('Full error details:', JSON.stringify(err.response?.data, null, 2));
+      
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else if (err.response?.data?.errors) {
         // Handle validation errors
+        console.error('Validation errors:', err.response.data.errors);
         const errorMessages = err.response.data.errors.map(error => error.msg).join(', ');
         setError(errorMessages);
       } else if (err.response?.status === 401) {
