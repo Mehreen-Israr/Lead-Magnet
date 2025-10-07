@@ -61,6 +61,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
+      console.error('Login error response:', err.response?.data);
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else if (err.response?.data?.errors) {

@@ -22,20 +22,35 @@ const limiter = rateLimit({
 app.use(limiter);
 
 /* ------------------------------- CORS ------------------------------------ */
+// More permissive CORS for production
 app.use(cors({
-  origin: [
-    "https://lead-magnet-frontend.onrender.com",
-    "https://lead-magnet-oc4d.vercel.app",
-    "http://localhost:3000",
-    "https://lead-magnet.onrender.com",
-    "https://*.onrender.com",
-    "https://*.vercel.app",
-    "https://main.d1yrlzw4i6kxpc.amplifyapp.com",
-    "https://*.amplifyapp.com"
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      "https://lead-magnet-frontend.onrender.com",
+      "https://lead-magnet-oc4d.vercel.app",
+      "http://localhost:3000",
+      "https://lead-magnet.onrender.com",
+      "https://main.d1yrlzw4i6kxpc.amplifyapp.com"
+    ];
+    
+    // Check if origin is in allowed list or matches wildcard patterns
+    if (allowedOrigins.includes(origin) || 
+        origin.includes('.onrender.com') ||
+        origin.includes('.vercel.app') ||
+        origin.includes('.amplifyapp.com')) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
+  exposedHeaders: ["Content-Length", "X-Foo", "X-Bar"]
 }));
 
 /* -------------------------- Stripe Webhook Route -------------------------- */
