@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
+import { useAuth } from '../contexts/AuthContext';
 import './Login.css';
 import '../animations.css';
-import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({
