@@ -11,10 +11,19 @@ const app = express();
 // Security middleware
 app.use(helmet());
 
-// Rate limiting
+// Rate limiting - configured for Lambda/API Gateway
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100
+  max: 100,
+  trustProxy: 1, // Trust the first proxy (API Gateway)
+  keyGenerator: (req, res) => {
+    // Use the IP from X-Forwarded-For header, which API Gateway provides
+    return req.headers['x-forwarded-for'] || req.ip || 'unknown';
+  },
+  skip: (req, res) => {
+    // Skip rate limiting if we can't determine IP
+    return !req.headers['x-forwarded-for'] && !req.ip;
+  }
 });
 app.use(limiter);
 
