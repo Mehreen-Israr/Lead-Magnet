@@ -11,9 +11,9 @@ const app = express();
 /* ------------------------------- Security -------------------------------- */
 app.use(helmet());
 
-// Rate limiting (optimized for API Gateway)
+// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 100,
   trustProxy: 1,
   keyGenerator: (req) => req.headers['x-forwarded-for'] || req.ip || 'unknown',
@@ -38,9 +38,8 @@ app.use(cors({
 }));
 
 /* -------------------------- Stripe Webhook Route -------------------------- */
-// This must come *before* body parsers
 const { webhookHandler } = require('./routes/billing');
-app.use('/api/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
+app.use('/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 
 /* ------------------------------ Body Parsers ------------------------------ */
 app.use(express.json({ limit: '10mb' }));
@@ -61,7 +60,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Lead Magnet API root is live.' });
 });
 
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({
     status: 'OK',
     timestamp: new Date().toISOString(),
@@ -71,7 +70,6 @@ app.get('/api/health', (req, res) => {
 });
 
 /* ------------------------------ API ROUTES -------------------------------- */
-// Mount all your routes under /api
 const api = express.Router();
 
 api.use('/auth', require('./routes/auth'));
@@ -81,8 +79,7 @@ api.use('/billing', require('./routes/billing').router);
 api.use('/packages', require('./routes/packages'));
 api.use('/webhook', require('./routes/webhook'));
 
-// attach /api router to the main app
-app.use('/api', api);
+app.use('/', api);
 
 /* ------------------------------ 404 Handler ------------------------------- */
 app.use((req, res) => {
@@ -102,4 +99,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-module.exports = app; // ✅ Export app for Lambda
+module.exports = app; // ✅ export app, not handler
