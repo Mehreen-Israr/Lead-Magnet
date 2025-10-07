@@ -27,7 +27,8 @@ app.use(cors({
     "http://localhost:3000", // allow local dev frontend
     "https://lead-magnet.onrender.com", // alternative Render URL
     "https://*.onrender.com", // allow any Render subdomain
-    "https://*.vercel.app" // allow any Vercel subdomain
+    "https://*.vercel.app",
+    "https://main.d1yrlzw4i6kxpc.amplifyapp.com" // allow aaws domain
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
