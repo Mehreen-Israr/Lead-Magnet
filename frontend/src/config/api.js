@@ -6,8 +6,8 @@ const getApiBaseUrl = () => {
                       !window.location.hostname.includes('localhost');
   
   if (isProduction) {
-    // Production URL - your actual backend URL
-    return 'https://2uepc2kf3f.execute-api.eu-west-2.amazonaws.com/prod';
+    // Production URL - use environment variable or fallback
+    return process.env.REACT_APP_API_URL || 'https://2uepc2kf3f.execute-api.eu-west-2.amazonaws.com/prod';
   }
   
   // Development - use localhost
