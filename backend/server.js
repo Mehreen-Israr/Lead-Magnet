@@ -45,7 +45,7 @@ app.use(cors({
 
 // Stripe webhook route — must be before body parsers
 const { webhookHandler } = require('./routes/billing');
-app.use('/api/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
+app.use('/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 
 // JSON and URL-encoded parsers
 app.use(express.json({ limit: '10mb' }));
@@ -75,11 +75,11 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/contact', require('./routes/contact'));
-app.use('/api/calendly', require('./routes/calendly'));
-app.use('/api/billing', require('./routes/billing').router);
-app.use('/api/packages', require('./routes/packages'));
+app.use('/auth', require('./routes/auth'));
+app.use('/contact', require('./routes/contact'));
+app.use('/calendly', require('./routes/calendly'));
+app.use('/billing', require('./routes/billing').router);
+app.use('/packages', require('./routes/packages'));
 app.use('/webhook', require('./routes/webhook'));
 
 // 404 handler
