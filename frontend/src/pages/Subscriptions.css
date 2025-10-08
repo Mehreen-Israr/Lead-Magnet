@@ -414,12 +414,13 @@
 /* Grid Layouts */
 .subscriptions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  justify-items: center;
 }
 
 /* Recommended Packages Grid */
@@ -855,7 +856,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  max-width: 500px;
+  width: 100%;
+  min-width: 400px;
+  max-width: 450px;
+  min-height: 500px;
   margin: 0 auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
@@ -1108,6 +1112,7 @@ h3.package-name {
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 80px;
 }
 
 .subscription-logo {
@@ -1496,6 +1501,10 @@ h3.package-name {
 /* Subscription Details */
 .subscription-details {
   margin-bottom: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .billing-info {
@@ -1831,8 +1840,9 @@ h3.package-name {
   
   /* Multiple subscriptions layout */
   .subscriptions-grid {
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     max-width: 1000px;
+    justify-items: center;
   }
 }
 
@@ -1859,8 +1869,10 @@ h3.package-name {
   
   .subscriptions-grid,
   .packages-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1.5rem;
+    max-width: 450px;
+    margin: 0 auto;
   }
   
   .recommended-packages-grid {
