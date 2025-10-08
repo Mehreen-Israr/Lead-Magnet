@@ -28,20 +28,62 @@ export const AuthProvider = ({ children }) => {
           // Set axios default header
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           
-          // Verify token with backend
-          const response = await axios.get(`${API_BASE_URL}/api/auth/me`);
+          console.log('🔐 Checking auth status with token:', token.substring(0, 20) + '...');
+          console.log('🔐 API URL:', `${API_BASE_URL}/api/auth/me`);
           
-          if (response.data.success) {
+          // Verify token with backend with retry logic
+          let response;
+          let retryCount = 0;
+          const maxRetries = 3;
+          
+          while (retryCount < maxRetries) {
+            try {
+              response = await axios.get(`${API_BASE_URL}/api/auth/me`);
+              break; // Success, exit retry loop
+            } catch (error) {
+              retryCount++;
+              console.log(`🔐 Auth check attempt ${retryCount} failed:`, error.response?.status, error.message);
+              
+              if (retryCount >= maxRetries) {
+                throw error; // Re-throw the error after max retries
+              }
+              
+              // Wait before retry (exponential backoff)
+              await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+            }
+          }
+          
+          if (response && response.data.success) {
+            console.log('✅ Auth check successful');
             setUser(response.data.user);
             setIsLoggedIn(true);
           } else {
+            console.log('❌ Auth check failed - invalid response');
             // Token is invalid, clear storage
             logout();
           }
         } catch (error) {
-          console.error('Auth check failed:', error);
-          // Token is invalid or expired, clear storage
-          logout();
+          console.error('❌ Auth check failed after retries:', error);
+          console.error('❌ Error response:', error.response?.data);
+          console.error('❌ Error status:', error.response?.status);
+          
+          // Only logout if it's a 401 (unauthorized) or 403 (forbidden)
+          // Don't logout for network errors or server errors
+          if (error.response?.status === 401 || error.response?.status === 403) {
+            console.log('🔐 Token is invalid, logging out');
+            logout();
+          } else {
+            console.log('🔐 Network/server error, keeping user logged in with cached data');
+            // Keep user logged in with cached data for network/server errors
+            try {
+              const cachedUser = JSON.parse(userData);
+              setUser(cachedUser);
+              setIsLoggedIn(true);
+            } catch (parseError) {
+              console.error('❌ Failed to parse cached user data:', parseError);
+              logout();
+            }
+          }
         }
       }
       setLoading(false);

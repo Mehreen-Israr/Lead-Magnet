@@ -77,15 +77,76 @@ app.use((req, res, next) => {
   next();
 });
 
+// Database connection check middleware
+app.use((req, res, next) => {
+  // Skip database check for webhook endpoints (they handle their own errors)
+  if (req.path.includes('/webhook')) {
+    return next();
+  }
+  
+  // Check if MongoDB is connected
+  if (mongoose.connection.readyState !== 1) {
+    console.log('⚠️ Database not connected, attempting to reconnect...');
+    connectDB().then(() => {
+      next();
+    }).catch((err) => {
+      console.error('❌ Failed to reconnect to database:', err);
+      res.status(503).json({
+        success: false,
+        message: 'Database connection failed',
+        error: 'Service temporarily unavailable'
+      });
+    });
+  } else {
+    next();
+  }
+});
+
 /* ---------------------------- Mongo Connection ---------------------------- */
 if (!process.env.MONGODB_URI) {
   console.error('❌ MONGODB_URI not defined.');
   process.exit(1);
 }
 
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ MongoDB connected successfully'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+// Enhanced MongoDB connection for Lambda
+const connectDB = async () => {
+  try {
+    const options = {
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      bufferMaxEntries: 0, // Disable mongoose buffering
+      bufferCommands: false, // Disable mongoose buffering
+      connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
+      heartbeatFrequencyMS: 10000, // Send a ping every 10 seconds
+      retryWrites: true,
+      retryReads: true
+    };
+
+    await mongoose.connect(process.env.MONGODB_URI, options);
+    console.log('✅ MongoDB connected successfully');
+    
+    // Handle connection events
+    mongoose.connection.on('error', (err) => {
+      console.error('❌ MongoDB connection error:', err);
+    });
+    
+    mongoose.connection.on('disconnected', () => {
+      console.log('⚠️ MongoDB disconnected');
+    });
+    
+    mongoose.connection.on('reconnected', () => {
+      console.log('✅ MongoDB reconnected');
+    });
+    
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err);
+    // Don't exit process in Lambda, just log the error
+  }
+};
+
+// Connect to MongoDB
+connectDB();
 
 /* ------------------------------ Health Routes ----------------------------- */
 app.get('/', (req, res) => {

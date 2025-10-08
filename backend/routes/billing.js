@@ -498,6 +498,29 @@ const webhookHandler = async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
+  // Check database connection before processing
+  const mongoose = require('mongoose');
+  if (mongoose.connection.readyState !== 1) {
+    console.log('⚠️ Database not connected, attempting to reconnect...');
+    try {
+      await mongoose.connect(process.env.MONGODB_URI, {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+        bufferMaxEntries: 0,
+        bufferCommands: false,
+        connectTimeoutMS: 10000,
+        heartbeatFrequencyMS: 10000,
+        retryWrites: true,
+        retryReads: true
+      });
+      console.log('✅ Database reconnected for webhook processing');
+    } catch (dbErr) {
+      console.error('❌ Failed to reconnect to database:', dbErr);
+      return res.status(503).send('Database connection failed');
+    }
+  }
+
   try {
     switch (event.type) {
       case 'checkout.session.completed':
@@ -595,11 +618,18 @@ const webhookHandler = async (req, res) => {
 
 // Helper functions for webhook handling
 async function handleSubscriptionUpdate(subscription) {
-  const user = await User.findOne({
-    'subscription.stripeCustomerId': subscription.customer
-  });
-  
-  if (user) {
+  try {
+    console.log('🔄 Processing subscription update:', subscription.id);
+    
+    const user = await User.findOne({
+      'subscription.stripeCustomerId': subscription.customer
+    });
+    
+    if (!user) {
+      console.log('⚠️ User not found for customer:', subscription.customer);
+      return;
+    }
+    
     const plan = subscription.metadata?.plan || 'pro';
     const stripePriceId = subscription.items.data[0]?.price?.id;
     
@@ -675,7 +705,10 @@ async function handleSubscriptionUpdate(subscription) {
     };
     
     await user.save();
-    console.log(`✅ Updated user subscription: ${packageName} (${plan})`);
+    console.log(`✅ Updated user subscription: ${packageName} (${plan}) for user: ${user.email}`);
+  } catch (error) {
+    console.error('❌ Error in handleSubscriptionUpdate:', error);
+    throw error; // Re-throw to be caught by webhook handler
   }
 }
 
