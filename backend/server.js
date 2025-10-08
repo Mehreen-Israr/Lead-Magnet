@@ -8,6 +8,11 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || '');
 
 const app = express();
 
+/* -------------------------- Stripe Webhook Routes (MUST BE FIRST) -------------------------- */
+const { webhookHandler } = require('./routes/billing');
+app.use('/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
+app.use('/api/webhook/stripe', express.raw({ type: 'application/json' }), webhookHandler);
+
 /* ------------------------------- Security -------------------------------- */
 app.use(helmet());
 
@@ -53,10 +58,6 @@ app.use(cors({
   exposedHeaders: ["Content-Length", "X-Foo", "X-Bar"]
 }));
 
-/* -------------------------- Stripe Webhook Route -------------------------- */
-const { webhookHandler } = require('./routes/billing');
-app.use('/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
-app.use('/api/webhook/stripe', express.raw({ type: 'application/json' }), webhookHandler);
 
 /* ------------------------------ Body Parsers ------------------------------ */
 // Enhanced JSON parsing for Lambda
@@ -115,8 +116,6 @@ const connectDB = async () => {
       maxPoolSize: 10, // Maintain up to 10 socket connections
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-      bufferMaxEntries: 0, // Disable mongoose buffering
-      bufferCommands: false, // Disable mongoose buffering
       connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
       heartbeatFrequencyMS: 10000, // Send a ping every 10 seconds
       retryWrites: true,

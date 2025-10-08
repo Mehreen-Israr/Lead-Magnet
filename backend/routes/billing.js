@@ -143,7 +143,7 @@ router.post('/create-checkout-session', protect, async (req, res) => {
             optional: true
           }
         ],
-        locale: 'auto',
+        locale: 'en',
         billing_address_collection: 'required',
         customer_update: {
           address: 'auto',
@@ -270,7 +270,7 @@ router.post('/create-checkout-session', protect, async (req, res) => {
         timestamp: new Date().toISOString()
       },
       // Professional appearance
-      locale: 'auto',
+      locale: 'en',
       automatic_tax: {
         enabled: true
       }
@@ -503,17 +503,15 @@ const webhookHandler = async (req, res) => {
   if (mongoose.connection.readyState !== 1) {
     console.log('⚠️ Database not connected, attempting to reconnect...');
     try {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 45000,
-        bufferMaxEntries: 0,
-        bufferCommands: false,
-        connectTimeoutMS: 10000,
-        heartbeatFrequencyMS: 10000,
-        retryWrites: true,
-        retryReads: true
-      });
+              await mongoose.connect(process.env.MONGODB_URI, {
+                maxPoolSize: 10,
+                serverSelectionTimeoutMS: 5000,
+                socketTimeoutMS: 45000,
+                connectTimeoutMS: 10000,
+                heartbeatFrequencyMS: 10000,
+                retryWrites: true,
+                retryReads: true
+              });
       console.log('✅ Database reconnected for webhook processing');
     } catch (dbErr) {
       console.error('❌ Failed to reconnect to database:', dbErr);
@@ -621,14 +619,37 @@ async function handleSubscriptionUpdate(subscription) {
   try {
     console.log('🔄 Processing subscription update:', subscription.id);
     
-    const user = await User.findOne({
+    // Try to find user by legacy subscription field first
+    let user = await User.findOne({
       'subscription.stripeCustomerId': subscription.customer
     });
+    
+    // If not found, try to find by subscriptions array
+    if (!user) {
+      user = await User.findOne({
+        'subscriptions.stripeCustomerId': subscription.customer
+      });
+    }
+    
+    // If still not found, try to find by email from Stripe customer
+    if (!user) {
+      try {
+        const stripeCustomer = await stripe.customers.retrieve(subscription.customer);
+        if (stripeCustomer.email) {
+          user = await User.findOne({ email: stripeCustomer.email });
+          console.log('🔍 Found user by email:', stripeCustomer.email);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching Stripe customer:', error);
+      }
+    }
     
     if (!user) {
       console.log('⚠️ User not found for customer:', subscription.customer);
       return;
     }
+    
+    console.log('✅ Found user:', user.email, 'for customer:', subscription.customer);
     
     const plan = subscription.metadata?.plan || 'pro';
     const stripePriceId = subscription.items.data[0]?.price?.id;
@@ -664,6 +685,7 @@ async function handleSubscriptionUpdate(subscription) {
       packageName: packageName,
       packageId: packageId,
       status: subscription.status,
+      stripeCustomerId: subscription.customer, // Ensure this is set
       stripeSubscriptionId: subscription.id,
       stripePriceId: stripePriceId,
       currentPeriodStart: new Date(subscription.current_period_start * 1000),
@@ -694,6 +716,7 @@ async function handleSubscriptionUpdate(subscription) {
       plan: plan,
       packageName: packageName,
       status: subscription.status,
+      stripeCustomerId: subscription.customer, // Ensure this is set
       stripeSubscriptionId: subscription.id,
       stripePriceId: stripePriceId,
       currentPeriodStart: new Date(subscription.current_period_start * 1000),

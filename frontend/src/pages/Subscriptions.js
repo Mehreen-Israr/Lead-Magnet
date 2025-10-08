@@ -101,30 +101,54 @@ const Subscriptions = () => {
           console.log('Subscriptions page - API response not successful:', packagesData);
         }
 
-        // Check user's subscription status from user context (restored original logic)
-        if (token && user?.subscription) {
-          const userSub = user.subscription;
-          if (userSub.status === 'active' || userSub.status === 'trialing') {
-            // Find the package details for user's subscription
-            const userPackage = packagesData.packages.find(pkg => 
-              pkg.stripePriceId === userSub.stripePriceId
+        // Check user's subscription status from user context (multiple subscriptions support)
+        if (token && user) {
+          let activeSubs = [];
+          
+          // First, try to get multiple subscriptions from the new array
+          if (user.subscriptions && Array.isArray(user.subscriptions)) {
+            console.log('📋 Found multiple subscriptions:', user.subscriptions.length);
+            activeSubs = user.subscriptions.filter(sub => 
+              sub.status === 'active' || sub.status === 'trialing' || sub.status === 'incomplete'
             );
-            
-            if (userPackage) {
-              setActiveSubscriptions([{
-                id: userSub.stripeSubscriptionId,
-                name: userPackage.name,
-                platform: userPackage.platform,
-                price: `$${userPackage.price}`,
-                period: `/${userPackage.billingPeriod}`,
-                status: userSub.status,
-                nextBilling: userSub.currentPeriodEnd ? 
-                  new Date(userSub.currentPeriodEnd).toISOString().split('T')[0] : 
-                  new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                features: userPackage.features || [],
-                logo: userPackage.logo || "/logo192.png"
-              }]);
+          }
+          
+          // Fallback to legacy single subscription if no multiple subscriptions found
+          if (activeSubs.length === 0 && user.subscription) {
+            console.log('📋 Using legacy single subscription');
+            if (user.subscription.status === 'active' || user.subscription.status === 'trialing' || user.subscription.status === 'incomplete') {
+              activeSubs = [user.subscription];
             }
+          }
+          
+          // Process active subscriptions
+          if (activeSubs.length > 0) {
+            const processedSubs = activeSubs.map(userSub => {
+              // Find the package details for user's subscription
+              const userPackage = packagesData.packages.find(pkg => 
+                pkg.stripePriceId === userSub.stripePriceId
+              );
+              
+              if (userPackage) {
+                return {
+                  id: userSub.stripeSubscriptionId,
+                  name: userPackage.name,
+                  platform: userPackage.platform,
+                  price: `$${userPackage.price}`,
+                  period: `/${userPackage.billingPeriod}`,
+                  status: userSub.status,
+                  nextBilling: userSub.currentPeriodEnd ? 
+                    new Date(userSub.currentPeriodEnd).toISOString().split('T')[0] : 
+                    new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                  features: userPackage.features || [],
+                  logo: userPackage.logo || "/logo192.png"
+                };
+              }
+              return null;
+            }).filter(Boolean);
+            
+            console.log('✅ Processed active subscriptions:', processedSubs.length);
+            setActiveSubscriptions(processedSubs);
           }
         }
         

@@ -80,7 +80,7 @@ const userSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      enum: ['active', 'trialing', 'past_due', 'canceled', 'unpaid'],
+      enum: ['active', 'trialing', 'past_due', 'canceled', 'unpaid', 'incomplete'],
       default: 'active'
     },
     stripeCustomerId: String,
@@ -117,7 +117,7 @@ const userSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      enum: ['active', 'trialing', 'past_due', 'canceled', 'unpaid'],
+      enum: ['active', 'trialing', 'past_due', 'canceled', 'unpaid', 'incomplete'],
       default: 'active'
     },
     stripeCustomerId: String,
