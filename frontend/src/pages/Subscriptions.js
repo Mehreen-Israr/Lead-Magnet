@@ -101,30 +101,27 @@ const Subscriptions = () => {
           console.log('Subscriptions page - API response not successful:', packagesData);
         }
 
-        // Check user's subscription status from user context
-        if (token && user?.subscription) {
-          const userSub = user.subscription;
-          if (userSub.status === 'active' || userSub.status === 'trialing') {
-            // Find the package details for user's subscription
-            const userPackage = packagesData.packages.find(pkg => 
-              pkg.stripePriceId === userSub.stripePriceId
-            );
+        // Fetch user's active subscriptions from API
+        if (token) {
+          try {
+            const subscriptionsResponse = await apiCall(API_ENDPOINTS.BILLING + '/subscriptions', {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            });
             
-            if (userPackage) {
-              setActiveSubscriptions([{
-                id: userSub.stripeSubscriptionId,
-                name: userPackage.name,
-                platform: userPackage.platform,
-                price: `$${userPackage.price}`,
-                period: `/${userPackage.billingPeriod}`,
-                status: userSub.status,
-                nextBilling: userSub.currentPeriodEnd ? 
-                  new Date(userSub.currentPeriodEnd).toISOString().split('T')[0] : 
-                  new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                features: userPackage.features || [],
-                logo: userPackage.logo || "/logo192.png"
-              }]);
+            if (subscriptionsResponse.success && subscriptionsResponse.subscriptions) {
+              console.log('✅ Fetched subscriptions from API:', subscriptionsResponse.subscriptions);
+              setActiveSubscriptions(subscriptionsResponse.subscriptions);
+            } else {
+              console.log('No active subscriptions found');
+              setActiveSubscriptions([]);
             }
+          } catch (error) {
+            console.error('Error fetching subscriptions:', error);
+            setActiveSubscriptions([]);
           }
         }
         

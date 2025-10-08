@@ -67,6 +67,7 @@ const userSchema = new mongoose.Schema({
     website: String,
     bio: String
   },
+  // Legacy single subscription (for backward compatibility)
   subscription: {
     plan: {
       type: String,
@@ -98,7 +99,47 @@ const userSchema = new mongoose.Schema({
       type: Date,
       default: Date.now
     }
-  }
+  },
+  // New multiple subscriptions support
+  subscriptions: [{
+    plan: {
+      type: String,
+      enum: ['free', 'pro', 'business', 'enterprise', 'instagram_growth', 'linkedin_starter', 'x_growth', 'premium_service'],
+      default: 'free'
+    },
+    packageName: {
+      type: String,
+      default: 'Free Plan'
+    },
+    packageId: {
+      type: String,
+      required: true
+    },
+    status: {
+      type: String,
+      enum: ['active', 'trialing', 'past_due', 'canceled', 'unpaid'],
+      default: 'active'
+    },
+    stripeCustomerId: String,
+    stripeSubscriptionId: {
+      type: String,
+      required: true
+    },
+    stripePriceId: String,
+    currentPeriodStart: Date,
+    currentPeriodEnd: Date,
+    trialStart: Date,
+    trialEnd: Date,
+    cancelAtPeriodEnd: Boolean,
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }]
 }, {
   timestamps: true
 });

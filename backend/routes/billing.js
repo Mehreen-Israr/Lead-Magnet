@@ -35,7 +35,15 @@ const SUBSCRIPTION_TIERS = {
 // Create Checkout Session for subscription with 14-day trial
 router.post('/create-checkout-session', protect, async (req, res) => {
   try {
-    const { plan, priceId, packageId, billingPeriod, successUrl, cancelUrl } = req.body;
+    // Fix: Parse Buffer manually if needed
+    let body = req.body;
+    if (Buffer.isBuffer(body)) {
+      body = JSON.parse(body.toString());
+    } else if (body && typeof body === 'object' && body.type === 'Buffer') {
+      body = JSON.parse(Buffer.from(body.data).toString());
+    }
+    
+    const { plan, priceId, packageId, billingPeriod, successUrl, cancelUrl } = body;
     
     console.log('🔍 Billing request:', { plan, priceId, packageId, billingPeriod, successUrl, cancelUrl });
     
@@ -317,43 +325,85 @@ router.get('/subscriptions', protect, async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    // Check if user has an active subscription
-    if (!user.subscription || !user.subscription.stripeSubscriptionId || user.subscription.status !== 'active') {
-      return res.json({ success: true, subscriptions: [] });
+    const subscriptions = [];
+
+    // Check new multiple subscriptions array first
+    if (user.subscriptions && user.subscriptions.length > 0) {
+      for (const userSub of user.subscriptions) {
+        if (userSub.status === 'active' || userSub.status === 'trialing') {
+          try {
+            // Fetch subscription details from Stripe
+            const stripeSubscription = await stripe.subscriptions.retrieve(userSub.stripeSubscriptionId);
+            
+            // Get package details from database
+            const Package = require('../models/Package');
+            const packageData = await Package.findById(userSub.packageId);
+            
+            const subscription = {
+              id: stripeSubscription.id,
+              plan: userSub.plan,
+              packageName: userSub.packageName,
+              packageId: userSub.packageId,
+              platform: packageData?.platform || 'Unknown',
+              price: packageData?.pricing?.monthly?.price || 0,
+              status: stripeSubscription.status,
+              currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+              nextBilling: new Date(stripeSubscription.current_period_end * 1000),
+              features: packageData?.features || [],
+              billingCycle: stripeSubscription.items.data[0]?.price?.recurring?.interval || 'month',
+              cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
+              logo: packageData?.logo || "/logo192.png",
+              // Mock usage data - replace with real usage tracking later
+              usage: {
+                leadsGenerated: Math.floor(Math.random() * 1000),
+                emailsSent: Math.floor(Math.random() * 5000),
+                campaignsActive: Math.floor(Math.random() * 10)
+              }
+            };
+            
+            subscriptions.push(subscription);
+          } catch (error) {
+            console.error('Error fetching subscription details:', error);
+          }
+        }
+      }
+    }
+    
+    // Fallback to legacy single subscription for backward compatibility
+    if (subscriptions.length === 0 && user.subscription && user.subscription.stripeSubscriptionId && 
+        (user.subscription.status === 'active' || user.subscription.status === 'trialing')) {
+      try {
+        const stripeSubscription = await stripe.subscriptions.retrieve(user.subscription.stripeSubscriptionId);
+        
+        const subscription = {
+          id: stripeSubscription.id,
+          plan: user.subscription.plan,
+          packageName: user.subscription.packageName,
+          name: user.subscription.packageName,
+          price: 0, // Legacy doesn't have package reference
+          status: stripeSubscription.status,
+          currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
+          currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+          nextBilling: new Date(stripeSubscription.current_period_end * 1000),
+          features: [],
+          billingCycle: stripeSubscription.items.data[0]?.price?.recurring?.interval || 'month',
+          cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
+          logo: "/logo192.png",
+          usage: {
+            leadsGenerated: Math.floor(Math.random() * 1000),
+            emailsSent: Math.floor(Math.random() * 5000),
+            campaignsActive: Math.floor(Math.random() * 10)
+          }
+        };
+        
+        subscriptions.push(subscription);
+      } catch (error) {
+        console.error('Error fetching legacy subscription:', error);
+      }
     }
 
-    // Fetch subscription details from Stripe
-    const stripeSubscription = await stripe.subscriptions.retrieve(user.subscription.stripeSubscriptionId);
-    
-    // Get the subscription tier info
-    const tierInfo = SUBSCRIPTION_TIERS[user.subscription.plan] || {
-      name: 'Unknown Plan',
-      price: 0,
-      features: []
-    };
-
-    const subscription = {
-      id: stripeSubscription.id,
-      plan: user.subscription.plan,
-      packageName: user.subscription.packageName || tierInfo.name, // Use stored package name
-      name: tierInfo.name,
-      price: tierInfo.price,
-      status: stripeSubscription.status,
-      currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-      nextBilling: new Date(stripeSubscription.current_period_end * 1000),
-      features: tierInfo.features,
-      billingCycle: stripeSubscription.items.data[0]?.price?.recurring?.interval || 'month',
-      cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
-      // Mock usage data - replace with real usage tracking later
-      usage: {
-        leadsGenerated: Math.floor(Math.random() * 1000),
-        emailsSent: Math.floor(Math.random() * 5000),
-        campaignsActive: Math.floor(Math.random() * 10)
-      }
-    };
-
-    res.json({ success: true, subscriptions: [subscription] });
+    res.json({ success: true, subscriptions });
   } catch (error) {
     console.error('Get subscriptions error:', error);
     res.status(500).json({ success: false, message: 'Failed to get subscriptions' });
@@ -459,13 +509,47 @@ const webhookHandler = async (req, res) => {
           try {
             const user = await User.findOne({ email: session.customer_email });
             if (user) {
+              // Initialize subscriptions array if it doesn't exist
+              if (!user.subscriptions) {
+                user.subscriptions = [];
+              }
+              
+              // Check if this subscription already exists
+              const existingSubIndex = user.subscriptions.findIndex(
+                sub => sub.stripeSubscriptionId === session.subscription
+              );
+              
+              if (existingSubIndex >= 0) {
+                // Update existing subscription
+                user.subscriptions[existingSubIndex].status = 'active';
+                user.subscriptions[existingSubIndex].updatedAt = new Date();
+              } else {
+                // Add new subscription to array
+                const newSubscription = {
+                  plan: 'premium_service', // Will be updated by handleSubscriptionUpdate
+                  packageName: 'New Subscription', // Will be updated by handleSubscriptionUpdate
+                  packageId: session.metadata?.packageId || 'unknown',
+                  status: 'active',
+                  stripeCustomerId: session.customer,
+                  stripeSubscriptionId: session.subscription,
+                  stripePriceId: session.metadata?.priceId,
+                  createdAt: new Date(),
+                  updatedAt: new Date()
+                };
+                
+                user.subscriptions.push(newSubscription);
+                console.log('✅ New subscription added to user:', user.email);
+              }
+              
+              // Also update legacy single subscription for backward compatibility
               user.subscription = user.subscription || {};
               user.subscription.status = 'active';
               user.subscription.stripeCustomerId = session.customer;
               user.subscription.stripeSubscriptionId = session.subscription;
               user.subscription.updatedAt = new Date();
+              
               await user.save();
-              console.log('✅ User subscription updated:', user.email);
+              console.log('✅ User subscriptions updated:', user.email);
               
               // Also fetch and update the full subscription details
               if (session.subscription) {
@@ -521,22 +605,64 @@ async function handleSubscriptionUpdate(subscription) {
     
     // Get package name from database using Stripe Price ID
     let packageName = plan; // fallback to plan name
+    let packageId = 'unknown';
     if (stripePriceId) {
       try {
         const Package = require('../models/Package');
         const packageData = await Package.findOne({ stripePriceId: stripePriceId });
         if (packageData) {
           packageName = packageData.name;
+          packageId = packageData._id.toString();
         }
       } catch (error) {
         console.error('Error fetching package name:', error);
       }
     }
     
+    // Initialize subscriptions array if it doesn't exist
+    if (!user.subscriptions) {
+      user.subscriptions = [];
+    }
+    
+    // Find existing subscription in the array
+    const existingSubIndex = user.subscriptions.findIndex(
+      sub => sub.stripeSubscriptionId === subscription.id
+    );
+    
+    const subscriptionData = {
+      plan: plan,
+      packageName: packageName,
+      packageId: packageId,
+      status: subscription.status,
+      stripeSubscriptionId: subscription.id,
+      stripePriceId: stripePriceId,
+      currentPeriodStart: new Date(subscription.current_period_start * 1000),
+      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      trialStart: subscription.trial_start ? new Date(subscription.trial_start * 1000) : null,
+      trialEnd: subscription.trial_end ? new Date(subscription.trial_end * 1000) : null,
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      updatedAt: new Date()
+    };
+    
+    if (existingSubIndex >= 0) {
+      // Update existing subscription
+      user.subscriptions[existingSubIndex] = {
+        ...user.subscriptions[existingSubIndex],
+        ...subscriptionData
+      };
+    } else {
+      // Add new subscription
+      user.subscriptions.push({
+        ...subscriptionData,
+        createdAt: new Date()
+      });
+    }
+    
+    // Also update legacy single subscription for backward compatibility
     user.subscription = {
       ...user.subscription,
       plan: plan,
-      packageName: packageName, // Store the actual package name
+      packageName: packageName,
       status: subscription.status,
       stripeSubscriptionId: subscription.id,
       stripePriceId: stripePriceId,
