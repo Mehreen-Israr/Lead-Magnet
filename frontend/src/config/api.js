@@ -1,35 +1,45 @@
 // 🌐 API Configuration for different environments
 const getApiBaseUrl = () => {
   // Detect environment (local vs production)
-  const isProduction =
-    window.location.hostname !== "localhost" &&
-    window.location.hostname !== "127.0.0.1" &&
-    !window.location.hostname.includes("localhost");
+  const hostname = window.location.hostname;
+  const isProduction = 
+    hostname !== "localhost" && 
+    hostname !== "127.0.0.1" && 
+    !hostname.includes("localhost") &&
+    (hostname.includes("amplifyapp.com") || hostname.includes("vercel.app") || hostname.includes("onrender.com"));
+
+  console.log("🌐 Hostname:", hostname);
+  console.log("🌐 Is production:", isProduction);
 
   if (isProduction) {
-    // ✅ Production: AWS API Gateway base URL (no /api prefix needed)
-    // Because API Gateway’s root (/) already proxies everything
-    return (
-      process.env.REACT_APP_API_URL ||
-      "https://2uepc2kf3f.execute-api.eu-west-2.amazonaws.com/prod"
-    );
+    // ✅ Production: AWS API Gateway base URL
+    const prodUrl = process.env.REACT_APP_API_URL || "https://2uepc2kf3f.execute-api.eu-west-2.amazonaws.com/prod";
+    console.log("🌐 Using production URL:", prodUrl);
+    return prodUrl;
   }
 
-  // ✅ Development: Local backend (Express server usually runs with /api prefix)
-  return "http://localhost:5000/api";
+  // ✅ Development: Local backend
+  const devUrl = "http://localhost:5000";
+  console.log("🌐 Using development URL:", devUrl);
+  return devUrl;
 };
 
 // Export the API base URL
 export const API_BASE_URL = getApiBaseUrl();
 
-// ✅ API Endpoints (no /api prefix for production; included in dev URL above)
+// ✅ API Endpoints
+const isProduction = window.location.hostname !== "localhost" && 
+  window.location.hostname !== "127.0.0.1" && 
+  !window.location.hostname.includes("localhost") &&
+  (window.location.hostname.includes("amplifyapp.com") || window.location.hostname.includes("vercel.app") || window.location.hostname.includes("onrender.com"));
+
 export const API_ENDPOINTS = {
-  PACKAGES: `${API_BASE_URL}/packages`,
-  AUTH: `${API_BASE_URL}/auth`,
-  CONTACT: `${API_BASE_URL}/contact`,
-  BILLING: `${API_BASE_URL}/billing`,
-  CALENDLY: `${API_BASE_URL}/calendly`,
-  HEALTH: `${API_BASE_URL}/health`,
+  PACKAGES: isProduction ? `${API_BASE_URL}/api/packages` : `${API_BASE_URL}/api/packages`,
+  AUTH: isProduction ? `${API_BASE_URL}/api/auth` : `${API_BASE_URL}/api/auth`,
+  CONTACT: isProduction ? `${API_BASE_URL}/api/contact` : `${API_BASE_URL}/api/contact`,
+  BILLING: isProduction ? `${API_BASE_URL}/api/billing` : `${API_BASE_URL}/api/billing`,
+  CALENDLY: isProduction ? `${API_BASE_URL}/api/calendly` : `${API_BASE_URL}/api/calendly`,
+  HEALTH: isProduction ? `${API_BASE_URL}/api/health` : `${API_BASE_URL}/api/health`,
 };
 
 // 🛠️ Helper function to make API calls

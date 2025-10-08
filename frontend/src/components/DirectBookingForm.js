@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const DirectBookingForm = () => {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ const DirectBookingForm = () => {
     
     try {
     // Use the same environment variable as Contact.js
-    const backendUrl = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    const backendUrl = API_BASE_URL;
     
     const response = await axios.post(
       `${backendUrl}/api/calendly/direct-booking`,

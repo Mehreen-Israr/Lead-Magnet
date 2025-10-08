@@ -30,7 +30,15 @@ router.post('/test', (req, res) => {
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
-    const { firstName, lastName, email, password, phone } = req.body;
+    // Fix: Parse Buffer manually if needed
+    let body = req.body;
+    if (Buffer.isBuffer(body)) {
+      body = JSON.parse(body.toString());
+    } else if (body && typeof body === 'object' && body.type === 'Buffer') {
+      body = JSON.parse(Buffer.from(body.data).toString());
+    }
+    
+    const { firstName, lastName, email, password, phone } = body;
     
     // Manual validation
     if (!firstName || !lastName || !email || !password) {
@@ -142,16 +150,15 @@ router.post('/register', async (req, res) => {
 // @access  Public
 router.post('/login', async (req, res) => {
   try {
-    console.log('=== LOGIN REQUEST DEBUG ===');
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
-    console.log('Request headers:', JSON.stringify(req.headers, null, 2));
-    console.log('Body type:', typeof req.body);
-    console.log('Body keys:', Object.keys(req.body || {}));
-    console.log('Email value:', req.body?.email);
-    console.log('Password value:', req.body?.password);
-    console.log('=== END DEBUG ===');
+    // Fix: Parse Buffer manually if needed
+    let body = req.body;
+    if (Buffer.isBuffer(body)) {
+      body = JSON.parse(body.toString());
+    } else if (body && typeof body === 'object' && body.type === 'Buffer') {
+      body = JSON.parse(Buffer.from(body.data).toString());
+    }
     
-    const { email, password } = req.body;
+    const { email, password } = body;
     
     // Manual validation
     if (!email || !password) {

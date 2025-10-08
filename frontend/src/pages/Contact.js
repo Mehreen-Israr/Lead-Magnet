@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { InlineWidget, PopupWidget } from 'react-calendly';
+import { API_BASE_URL } from '../config/api';
 import './Contact.css';
 import '../animations.css';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
@@ -72,10 +73,8 @@ const Contact = () => {
     setSubmitStatus('');
     
     try {
-      // Get the backend URL from environment or use default
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-      
-      const response = await fetch(`${backendUrl}/api/contact`, {
+      // Use the API configuration
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

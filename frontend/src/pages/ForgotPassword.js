@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 import './Login.css'; // Reuse login styles
 
 const ForgotPassword = () => {
@@ -29,7 +30,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+      const backendUrl = API_BASE_URL;
       
       const response = await axios.post(`${backendUrl}/api/auth/forgot-password`, {
         email: email.trim()

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import './Login.css'; // Reuse login styles
 
 const ResetPassword = () => {
@@ -63,7 +64,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+      const backendUrl = API_BASE_URL;
       
       const response = await axios.put(`${backendUrl}/api/auth/reset-password/${resetToken}`, {
         password

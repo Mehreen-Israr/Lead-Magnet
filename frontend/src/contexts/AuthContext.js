@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const AuthContext = createContext();
 
@@ -28,8 +29,7 @@ export const AuthProvider = ({ children }) => {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           
           // Verify token with backend
-          const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-          const response = await axios.get(`${backendUrl}/api/auth/me`);
+          const response = await axios.get(`${API_BASE_URL}/api/auth/me`);
           
           if (response.data.success) {
             setUser(response.data.user);

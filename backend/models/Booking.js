@@ -105,7 +105,7 @@ bookingSchema.pre('save', function(next) {
 });
 
 // Indexes for better query performance
-bookingSchema.index({ calendlyEventId: 1 });
+// calendlyEventId already has unique: true, so no need for separate index
 bookingSchema.index({ 'attendee.email': 1 });
 bookingSchema.index({ scheduledTime: 1 });
 bookingSchema.index({ status: 1 });
