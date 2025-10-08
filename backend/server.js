@@ -56,6 +56,7 @@ app.use(cors({
 /* -------------------------- Stripe Webhook Route -------------------------- */
 const { webhookHandler } = require('./routes/billing');
 app.use('/billing/webhook', express.raw({ type: 'application/json' }), webhookHandler);
+app.use('/api/webhook/stripe', express.raw({ type: 'application/json' }), webhookHandler);
 
 /* ------------------------------ Body Parsers ------------------------------ */
 // Enhanced JSON parsing for Lambda
