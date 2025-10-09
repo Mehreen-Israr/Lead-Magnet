@@ -34,6 +34,7 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
+      "https://app.magnetleads.ai", // ✅ Custom domain
       "https://lead-magnet-frontend.onrender.com",
       "https://lead-magnet-oc4d.vercel.app",
       "http://localhost:3000",

@@ -2,11 +2,14 @@
 const getApiBaseUrl = () => {
   // Detect environment (local vs production)
   const hostname = window.location.hostname;
+  
+  // More explicit production detection
   const isProduction = 
-    hostname !== "localhost" && 
-    hostname !== "127.0.0.1" && 
-    !hostname.includes("localhost") &&
-    (hostname.includes("amplifyapp.com") || hostname.includes("vercel.app") || hostname.includes("onrender.com"));
+    hostname === "app.magnetleads.ai" ||
+    hostname.includes("amplifyapp.com") || 
+    hostname.includes("vercel.app") || 
+    hostname.includes("onrender.com") ||
+    hostname.includes("magnetleads.ai");
 
   console.log("🌐 Hostname:", hostname);
   console.log("🌐 Is production:", isProduction);
@@ -28,10 +31,11 @@ const getApiBaseUrl = () => {
 export const API_BASE_URL = getApiBaseUrl();
 
 // ✅ API Endpoints
-const isProduction = window.location.hostname !== "localhost" && 
-  window.location.hostname !== "127.0.0.1" && 
-  !window.location.hostname.includes("localhost") &&
-  (window.location.hostname.includes("amplifyapp.com") || window.location.hostname.includes("vercel.app") || window.location.hostname.includes("onrender.com"));
+const isProduction = window.location.hostname === "app.magnetleads.ai" ||
+  window.location.hostname.includes("amplifyapp.com") || 
+  window.location.hostname.includes("vercel.app") || 
+  window.location.hostname.includes("onrender.com") ||
+  window.location.hostname.includes("magnetleads.ai");
 
 export const API_ENDPOINTS = {
   PACKAGES: isProduction ? `${API_BASE_URL}/api/packages` : `${API_BASE_URL}/api/packages`,

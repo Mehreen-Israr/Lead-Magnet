@@ -413,9 +413,28 @@ router.get('/subscriptions', protect, async (req, res) => {
 // Cancel subscription endpoint
 router.post('/cancel-subscription', protect, async (req, res) => {
   try {
-    const { subscriptionId } = req.body;
+    console.log('🚫 Cancel subscription request body:', req.body);
+    console.log('🚫 Cancel subscription request headers:', req.headers);
+    
+    // Handle Buffer body in Lambda
+    let requestBody = req.body;
+    if (Buffer.isBuffer(req.body)) {
+      try {
+        requestBody = JSON.parse(req.body.toString());
+        console.log('🚫 Parsed Buffer body:', requestBody);
+      } catch (parseError) {
+        console.error('❌ Error parsing Buffer body:', parseError);
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid request body format'
+        });
+      }
+    }
+    
+    const { subscriptionId } = requestBody;
     
     if (!subscriptionId) {
+      console.log('❌ No subscription ID provided');
       return res.status(400).json({ 
         success: false, 
         message: 'Subscription ID is required' 
@@ -432,20 +451,47 @@ router.post('/cancel-subscription', protect, async (req, res) => {
     console.log('✅ Subscription cancelled in Stripe:', subscription.id);
 
     // Update user subscription in database
-    const user = await User.findOne({
+    let user = await User.findOne({
       'subscription.stripeSubscriptionId': subscriptionId
     });
 
+    // If not found in legacy field, check the new subscriptions array
+    if (!user) {
+      user = await User.findOne({
+        'subscriptions.stripeSubscriptionId': subscriptionId
+      });
+    }
+
     if (user) {
-      user.subscription = {
-        ...user.subscription,
-        status: 'canceled',
-        cancelAtPeriodEnd: true,
-        updatedAt: new Date()
-      };
+      // Update the specific subscription in the subscriptions array
+      if (user.subscriptions && user.subscriptions.length > 0) {
+        const subscriptionIndex = user.subscriptions.findIndex(
+          sub => sub.stripeSubscriptionId === subscriptionId
+        );
+        
+        if (subscriptionIndex >= 0) {
+          user.subscriptions[subscriptionIndex].status = 'canceled';
+          user.subscriptions[subscriptionIndex].cancelAtPeriodEnd = true;
+          user.subscriptions[subscriptionIndex].updatedAt = new Date();
+          console.log('✅ Updated subscription in subscriptions array:', subscriptionId);
+        }
+      }
+      
+      // Also update legacy single subscription for backward compatibility
+      if (user.subscription && user.subscription.stripeSubscriptionId === subscriptionId) {
+        user.subscription = {
+          ...user.subscription,
+          status: 'canceled',
+          cancelAtPeriodEnd: true,
+          updatedAt: new Date()
+        };
+        console.log('✅ Updated legacy subscription field:', subscriptionId);
+      }
       
       await user.save();
       console.log('✅ User subscription updated in database:', user.email);
+    } else {
+      console.log('⚠️ User not found for subscription:', subscriptionId);
     }
 
     res.json({ 
@@ -563,11 +609,17 @@ const webhookHandler = async (req, res) => {
               }
               
               // Also update legacy single subscription for backward compatibility
-              user.subscription = user.subscription || {};
-              user.subscription.status = 'active';
-              user.subscription.stripeCustomerId = session.customer;
-              user.subscription.stripeSubscriptionId = session.subscription;
-              user.subscription.updatedAt = new Date();
+              // Only update if this is the same subscription or if no legacy subscription exists
+              if (!user.subscription || user.subscription.stripeSubscriptionId === session.subscription) {
+                user.subscription = user.subscription || {};
+                user.subscription.status = 'active';
+                user.subscription.stripeCustomerId = session.customer;
+                user.subscription.stripeSubscriptionId = session.subscription;
+                user.subscription.updatedAt = new Date();
+                console.log('✅ Updated legacy subscription field for session:', session.subscription);
+              } else {
+                console.log('⚠️ Not updating legacy subscription - different subscription ID');
+              }
               
               await user.save();
               console.log('✅ User subscriptions updated:', user.email);
@@ -711,21 +763,27 @@ async function handleSubscriptionUpdate(subscription) {
     }
     
     // Also update legacy single subscription for backward compatibility
-    user.subscription = {
-      ...user.subscription,
-      plan: plan,
-      packageName: packageName,
-      status: subscription.status,
-      stripeCustomerId: subscription.customer, // Ensure this is set
-      stripeSubscriptionId: subscription.id,
-      stripePriceId: stripePriceId,
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      trialStart: subscription.trial_start ? new Date(subscription.trial_start * 1000) : null,
-      trialEnd: subscription.trial_end ? new Date(subscription.trial_end * 1000) : null,
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
-      updatedAt: new Date()
-    };
+    // Only update if this is the same subscription or if no legacy subscription exists
+    if (!user.subscription || user.subscription.stripeSubscriptionId === subscription.id) {
+      user.subscription = {
+        ...user.subscription,
+        plan: plan,
+        packageName: packageName,
+        status: subscription.status,
+        stripeCustomerId: subscription.customer, // Ensure this is set
+        stripeSubscriptionId: subscription.id,
+        stripePriceId: stripePriceId,
+        currentPeriodStart: new Date(subscription.current_period_start * 1000),
+        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        trialStart: subscription.trial_start ? new Date(subscription.trial_start * 1000) : null,
+        trialEnd: subscription.trial_end ? new Date(subscription.trial_end * 1000) : null,
+        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+        updatedAt: new Date()
+      };
+      console.log('✅ Updated legacy subscription field for:', subscription.id);
+    } else {
+      console.log('⚠️ Not updating legacy subscription - different subscription ID');
+    }
     
     await user.save();
     console.log(`✅ Updated user subscription: ${packageName} (${plan}) for user: ${user.email}`);
@@ -736,21 +794,49 @@ async function handleSubscriptionUpdate(subscription) {
 }
 
 async function handleSubscriptionCanceled(subscription) {
-  const user = await User.findOne({
+  let user = await User.findOne({
     'subscription.stripeSubscriptionId': subscription.id
   });
   
+  // If not found in legacy field, check the new subscriptions array
+  if (!user) {
+    user = await User.findOne({
+      'subscriptions.stripeSubscriptionId': subscription.id
+    });
+  }
+  
   if (user) {
-    user.subscription = {
-      ...user.subscription,
-      status: 'canceled',
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
-      canceledAt: new Date(subscription.canceled_at * 1000),
-      updatedAt: new Date()
-    };
+    // Update the specific subscription in the subscriptions array
+    if (user.subscriptions && user.subscriptions.length > 0) {
+      const subscriptionIndex = user.subscriptions.findIndex(
+        sub => sub.stripeSubscriptionId === subscription.id
+      );
+      
+      if (subscriptionIndex >= 0) {
+        user.subscriptions[subscriptionIndex].status = 'canceled';
+        user.subscriptions[subscriptionIndex].cancelAtPeriodEnd = subscription.cancel_at_period_end;
+        user.subscriptions[subscriptionIndex].canceledAt = subscription.canceled_at ? new Date(subscription.canceled_at * 1000) : null;
+        user.subscriptions[subscriptionIndex].updatedAt = new Date();
+        console.log('✅ Updated subscription in subscriptions array:', subscription.id);
+      }
+    }
+    
+    // Also update legacy single subscription for backward compatibility
+    if (user.subscription && user.subscription.stripeSubscriptionId === subscription.id) {
+      user.subscription = {
+        ...user.subscription,
+        status: 'canceled',
+        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+        canceledAt: subscription.canceled_at ? new Date(subscription.canceled_at * 1000) : null,
+        updatedAt: new Date()
+      };
+      console.log('✅ Updated legacy subscription field:', subscription.id);
+    }
     
     await user.save();
     console.log(`✅ Subscription cancelled for user: ${user.email}`);
+  } else {
+    console.log('⚠️ User not found for subscription:', subscription.id);
   }
 }
 
